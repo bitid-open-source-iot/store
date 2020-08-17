@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        Reviews
+    </label>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body"></div>

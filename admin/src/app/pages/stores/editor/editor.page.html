@@ -1,0 +1,224 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="history.back()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        store editor
+    </label>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+        <app-file-upload [file]="this.form.value.logo" accept="image/*" [required]="true" [disabled]="loading"></app-file-upload>
+
+        <mat-form-field appearance="outline">
+            <mat-label text-uppercase>
+                description
+            </mat-label>
+
+            <input matInput type="text" name="description" placeholder="description" formControlName="description" required>
+
+            <mat-error *ngIf="errors.description">
+                {{ errors.description }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label text-uppercase>
+                Sharing Rules
+            </mat-label>
+
+            <mat-select name="organizationOnly" placeholder="Sharing Rules" formControlName="organizationOnly" required>
+                <mat-option [value]="0">
+                    Share To Anyone
+                </mat-option>
+                <mat-option [value]="1">
+                    Share In Organization
+                </mat-option>
+            </mat-select>
+
+            <mat-error *ngIf="errors.organizationOnly">
+                {{ errors.organizationOnly }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label text-uppercase>
+                dns
+            </mat-label>
+
+            <mat-chip-list #dns>
+                <mat-chip *ngFor="let record of records" [selectable]="false" [removable]="true" (removed)="remove(record)">
+                    {{ record }}
+                    <mat-icon matChipRemove>
+                        cancel
+                    </mat-icon>
+                </mat-chip>
+
+                <input type="url" #dnsinput placeholder="New DNS Record" [matChipInputFor]="dns" [matChipInputSeparatorKeyCodes]="keycodes" (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+        <h2>
+            address
+        </h2>
+
+        <div formGroupName="address">
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    vat
+                </mat-label>
+
+                <input matInput type="text" name="vat" placeholder="vat" formControlName="vat" required>
+
+                <mat-error *ngIf="errors.address.vat">
+                    {{ errors.address.vat }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    reg
+                </mat-label>
+
+                <input matInput type="text" name="reg" placeholder="reg" formControlName="reg" required>
+
+                <mat-error *ngIf="errors.address.reg">
+                    {{ errors.address.reg }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    street
+                </mat-label>
+
+                <input matInput type="text" name="street" placeholder="street" formControlName="street" required>
+
+                <mat-error *ngIf="errors.address.street">
+                    {{ errors.address.street }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    suburb
+                </mat-label>
+
+                <input matInput type="text" name="suburb" placeholder="suburb" formControlName="suburb" required>
+
+                <mat-error *ngIf="errors.address.suburb">
+                    {{ errors.address.suburb }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    City/Town
+                </mat-label>
+
+                <input matInput type="text" name="cityTown" placeholder="City/Town" formControlName="cityTown" required>
+
+                <mat-error *ngIf="errors.address.cityTown">
+                    {{ errors.address.cityTown }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    Postal Code
+                </mat-label>
+
+                <input matInput type="text" name="postalCode" placeholder="Postal Code" formControlName="postalCode"
+                    required>
+
+                <mat-error *ngIf="errors.address.postalCode">
+                    {{ errors.address.postalCode }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <h2>
+            contact
+        </h2>
+
+        <div formGroupName="contact">
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    email
+                </mat-label>
+
+                <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
+
+                <mat-error *ngIf="errors.contact.email">
+                    {{ errors.contact.email }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    number
+                </mat-label>
+
+                <input matInput type="tel" name="number" placeholder="number" formControlName="number" required>
+
+                <mat-error *ngIf="errors.contact.number">
+                    {{ errors.contact.number }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    website
+                </mat-label>
+
+                <input matInput type="url" name="website" placeholder="website" formControlName="website" required>
+
+                <mat-error *ngIf="errors.contact.website">
+                    {{ errors.contact.website }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <h2>
+            payfast
+        </h2>
+
+        <div formGroupName="payfast">
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    Merchant Id
+                </mat-label>
+
+                <input matInput type="merchantId" name="merchantId" placeholder="Merchant Id"
+                    formControlName="merchantId" required>
+
+                <mat-error *ngIf="errors.payfast.merchantId">
+                    {{ errors.payfast.merchantId }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label text-uppercase>
+                    Merchant Key
+                </mat-label>
+
+                <input matInput type="merchantKey" name="merchantKey" placeholder="Merchant Key"
+                    formControlName="merchantKey" required>
+
+                <mat-error *ngIf="errors.payfast.merchantKey">
+                    {{ errors.payfast.merchantKey }}
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <button type="submit" mat-flat-button color="primary">
+            submit
+        </button>
+    </form>
+</div>

@@ -1,0 +1,134 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+    
+    <div class="spacer page-title">
+        orders
+    </div>
+
+    <button mat-icon-button routerLink="/wishlist">
+        <mat-icon [matBadge]="wishlist.items.length" matBadgeColor="warn">
+            favorite
+        </mat-icon>
+    </button>
+
+    <button mat-icon-button routerLink="/cart">
+        <mat-icon [matBadge]="cart.items.length" matBadgeColor="warn">
+            shopping_cart
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <div class="container">
+        <div class="order" *ngFor="let order of orders.data">
+            <div class="date">
+                {{ order.date[order.status] | date : 'yyyy/MM/dd HH:mm' }}
+            </div>
+
+            <div class="status">
+                {{ order.status }}
+            </div>
+
+            <header>
+                <div class="orderId">
+                    #{{ order.orderId }}
+                </div>
+
+                <button mat-icon-button (click)="action(order)">
+                    <mat-icon>
+                        arrow_forward
+                    </mat-icon>
+                </button>
+            </header>
+
+            <ul [class.hide-line]="order.status == 'initialized'">
+                <li *ngFor="let product of order.products">
+                    <div class="image-container">
+                        <img [src]="product.image" alt="product.title">
+                    </div>
+                    
+                    <div class="details">
+                        <h3 [routerLink]="['/products', product.productId]">
+                            {{ product.title }}
+                        </h3>
+                        <p class="price">
+                            {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }} <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+                        </p>
+                        <p class="quantity">
+                            ✕ {{ product.quantity | number : '0.2-2' }}
+                        </p>
+                    </div>
+                </li>
+            </ul>
+
+            <table *ngIf="order.status != 'initialized'">
+                <tr>
+                    <td>
+                        subtotal ({{ order.products.length }} items)
+                    </td>
+    
+                    <td>
+                        {{ order.payment.subtotal | currency : 'R' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        shipping
+                    </td>
+    
+                    <td>
+                        {{ order.payment.shipping | currency : 'R' }}
+                    </td>
+                </tr>
+    
+                <tr>
+                    <td>
+                        discount
+                    </td>
+    
+                    <td>
+                        {{ order.payment.discount | currency : 'R' }}
+                    </td>
+                </tr>
+    
+                <tr>
+                    <td>
+                        vat (15%)
+                    </td>
+    
+                    <td>
+                        {{ order.payment.vat | currency : 'R' }}
+                    </td>
+                </tr>
+    
+                <tr>
+                    <th>
+                        total
+                    </th>
+    
+                    <th>
+                        {{ order.payment.total | currency : 'R' }}
+                    </th>
+                </tr>
+            </table>
+        </div>
+
+        <message *ngIf="!loading && orders.data.length == 0">
+            <message-image src="./assets/empty-orders.png" alt="empty orders image"></message-image>
+    
+            <message-title>
+                orders are empty
+            </message-title>
+    
+            <message-caption>
+                you have no orders
+            </message-caption>
+        </message>
+    </div>
+</div>

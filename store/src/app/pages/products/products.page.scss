@@ -1,0 +1,94 @@
+.page-body {
+    display:        flex;
+    flex-wrap:      wrap;
+    flex-direction: row;
+}
+.product {
+    flex:               0 calc(16.66% - 10px);
+    margin:             5px;
+    cursor:             pointer;
+    display:            flex;
+    overflow:           hidden;
+    border-radius:      4px;
+    flex-direction:     column;
+    background-color:   #FFFFFF;
+    .image {
+        width:                  100%;
+        outline:                none;
+        padding-top:            100%;
+        background-size:        contain;
+        background-repeat:      no-repeat;
+        background-position:    center center;
+    }
+    .title {
+        height:         50px;
+        padding:        5px;
+        display:        flex;
+        outline:        none;
+        align-items:    center;
+        border-bottom:  1px solid #E0E0E0;
+        flex-direction: row;
+        h3, p {
+            margin:         0px;
+            padding:        0px;
+            text-transform: uppercase;
+        }
+        h3 {
+            width:          calc(100% - 60px);
+            overflow:       hidden;
+            font-size:      12px;
+            text-align:     left;
+            font-weight:    500;
+            line-height:    12px;
+        }
+        p {
+            width:          60px;
+            font-size:      10px;
+            text-align:     right;
+            font-weight:    500;
+            line-height:    10px;
+            small {
+                color:              #616161;
+                text-decoration:    line-through;
+            }
+        }
+        .promotion {
+            color: #2196F3;
+        }
+    }
+    .footer {
+        margin:             5px;
+        display:            flex;
+        align-items:        center;
+        flex-direction:     row;
+        justify-content:    center;
+        ngx-star-rating {
+            height: 16px;
+        }
+    }
+}
+@media screen and (max-width: 1500px) {
+    .product {
+        flex: 0 calc(20% - 10px);
+    }
+}
+@media screen and (max-width: 1200px) {
+    .product {
+        flex: 0 calc(25% - 10px);
+    }
+}
+@media screen and (max-width: 900px) {
+    .product {
+        flex: 0 calc(33.33% - 10px);
+    }
+}
+@media screen and (max-width: 600px) {
+    .product {
+        flex: 0 calc(50% - 10px);
+    }
+}
+@media screen and (max-width: 400px) {
+    .product {
+        flex: 0 calc(100% - 10px);
+    }
+}

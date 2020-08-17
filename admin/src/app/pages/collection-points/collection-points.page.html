@@ -1,0 +1,36 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        collection points
+    </label>
+
+    <search placeholder="search collection points"></search>
+
+    <button mat-icon-button routerLink="editor" [queryParams]="{'mode': 'add', 'storeId': storeId}">
+        <mat-icon>
+            add
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <mat-list class="column-list">
+        <mat-list-item *ngFor="let collectionpoint of collectionpoints.data | orderBy : 'description' | filterBy : 'description' : filter" (click)="options(collectionpoint)" matRipple>
+            <section>
+                <h3>
+                    {{ collectionpoint.description }}                
+                </h3>
+                <p>
+                    {{ collectionpoint.address.street }}, {{ collectionpoint.address.suburb }}, {{ collectionpoint.address.cityTown }}, {{ collectionpoint.address.postalCode }}
+                </p>
+            </section>
+        </mat-list-item>
+    </mat-list>
+</div>

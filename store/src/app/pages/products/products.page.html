@@ -1,0 +1,59 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+    
+    <div class="spacer"></div>
+
+    <search placeholder="search products"></search>
+    
+    <button mat-icon-button routerLink="/wishlist">
+        <mat-icon [matBadge]="wishlist.items.length" matBadgeColor="warn">
+            favorite
+        </mat-icon>
+    </button>
+
+    <button mat-icon-button routerLink="/cart">
+        <mat-icon [matBadge]="cart.items.length" matBadgeColor="warn">
+            shopping_cart
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <div class="product" *ngFor="let product of products.data | orderBy : 'title' | filterBy : 'title' : filter">
+        <div class="image" [style.background-image]="'url(' + product.image + ')'" matRipple [routerLink]="product.productId"></div>
+        
+        <div class="title" matRipple [routerLink]="product.productId">
+            <h3>
+                {{ product.title }}
+            </h3>
+            
+            <p [class.promotion]="product.promotion.enabled">
+                {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }}
+                <br *ngIf="product.promotion.enabled">
+                <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+            </p>
+        </div>
+
+        <div class="footer">
+            <ngx-star-rating [value]="product.score" class="spacer"></ngx-star-rating>
+            
+            <button mat-icon-button (click)="wishlist.add(product)">
+                <mat-icon>
+                    favorite
+                </mat-icon>
+            </button>
+    
+            <button mat-icon-button (click)="cart.add(product)">
+                <mat-icon>
+                    add_shopping_cart
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

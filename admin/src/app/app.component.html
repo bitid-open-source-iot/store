@@ -1,0 +1,41 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="over">
+        <mat-toolbar color="primary">
+            <img class="logo" src="./assets/icons/icon-512x512.png" alt="logo">
+
+            <label class="spacer">
+                Store Admin
+            </label>
+
+            <button mat-icon-button (click)="menu.close()">
+                <mat-icon>
+                    close
+                </mat-icon>
+            </button>
+        </mat-toolbar>
+
+        <mat-list>
+            <mat-list-item *ngFor="let page of pages | orderBy : 'title'" routerLinkActive="active current" queryParamsHandling="preserve" [routerLink]="page.route" [disabled]="page.locked && !storeId" (click)="menu.close()">
+                {{ page.title }}
+            </mat-list-item>
+
+            <mat-list-item (click)="logout()" *ngIf="authenticated">
+                sign out
+            </mat-list-item>
+
+            <mat-list-item routerLink="/signin" (click)="menu.close()" *ngIf="!authenticated">
+                sign in
+            </mat-list-item>
+        </mat-list>
+
+        <version>
+            V1.0.0
+        </version>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-splashscreen></app-splashscreen>

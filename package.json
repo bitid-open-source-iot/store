@@ -1,0 +1,37 @@
+{
+  "name": "store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "store.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "dependencies": {
+    "@bitid/health-check": "^1.0.1",
+    "@open-iot/error-response": "^1.0.0",
+    "@payfast/core": "^0.1.8",
+    "chalk": "^2.4.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.6",
+    "log4js": "^5.0.0",
+    "md5": "^2.2.1",
+    "moment": "^2.24.0",
+    "mongodb": "^3.5.7",
+    "mysql": "^2.17.1",
+    "node-fetch": "^2.6.0",
+    "nodemailer": "^6.4.2",
+    "nodemailer-express-handlebars": "^4.0.0",
+    "q": "^1.5.1",
+    "saslprep": "^1.0.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "app/*"
+    ]
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-subset": "^1.6.0"
+  }
+}

@@ -1,0 +1,31 @@
+img {
+    width:      100px;
+    margin:     auto;
+    display:    block;
+    margin-top: 25px;
+}
+h1 {
+    font-size:      24px;
+    margin-top:     10px;
+    text-align:     center;
+    line-height:    24px;
+    font-weight:    300;
+}
+.close-button {
+    top:        8px;
+    right:      16px;
+    z-index:    10;
+    position:   fixed;
+}
+form {
+    width:  400px;
+    margin: auto;
+    [mat-stroked-button] {
+        margin-top: 20px;
+    }
+}
+@media screen and (max-width: 420px) {
+    form {
+        width: calc(100% - 20px);
+    }
+};

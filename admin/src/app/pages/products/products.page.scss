@@ -1,0 +1,47 @@
+mat-list {
+    mat-list-item {
+        flex:           1 auto;
+        cursor:         pointer;
+        display:        flex;
+        align-items:    center;
+        border-bottom:  1px solid #E0E0E0;
+        flex-direction: row;
+        button {
+            margin-right: 15px;
+        }
+        img {
+            width:          40px;
+            height:         40px;
+            margin-right:   15px;
+            border-radius:  4px;
+        }
+        section {
+            display:        flex;
+            text-transform: uppercase;
+            flex-direction: column;
+            h3, p {
+                margin: 0px;
+                padding: 0px;
+            }
+            h3 {
+                margin: 2px 0px;
+                font-size: 12px;
+                line-height: 12px;
+                font-weight: 500;
+            }
+            p {
+                font-size: 10px;
+                line-height: 10px;
+                small {
+                    text-decoration: line-through;
+                }
+            }
+            .promotion {
+                color: #2196F3;
+                small {
+                    color: #000;
+                }
+            }
+        }
+    }
+}

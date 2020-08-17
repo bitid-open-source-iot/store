@@ -1,0 +1,54 @@
+img {
+    width:      100px;
+    margin:     auto;
+    display:    block;
+    margin-top: 25px;
+}
+h1 {
+    font-size:      24px;
+    margin-top:     10px;
+    text-align:     center;
+    line-height:    24px;
+    font-weight:    300;
+}
+.close-button {
+    top:        8px;
+    right:      16px;
+    z-index:    10;
+    position:   fixed;
+}
+form {
+    width:  400px;
+    margin: auto;
+    mat-form-field {
+        width: 100%;
+    }
+    [mat-stroked-button] {
+        margin-top: 20px;
+    }
+    section {
+        display:        flex;
+        flex-direction: row;
+        mat-form-field:last-child {
+            width:          calc(50% - 5px);
+            margin-left:    5px;
+        }
+        mat-form-field:first-child {
+            width:          calc(50% - 5px);
+            margin-right:   5px;
+        }
+    }
+    h2 {
+        margin:         0px;
+        padding:        0px;
+        font-size:      14px;
+        font-weight:    500;
+        margin-bottom:  10px;
+        text-transform: uppercase;
+    }
+}
+@media screen and (max-width: 420px) {
+    form {
+        width: calc(100% - 20px);
+    }
+};

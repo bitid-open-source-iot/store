@@ -1,0 +1,133 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+    
+    <div class="spacer page-title">
+        cart
+    </div>
+
+    <button mat-icon-button routerLink="/wishlist">
+        <mat-icon [matBadge]="wishlist.items.length" matBadgeColor="warn">
+            favorite
+        </mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="download()" [disabled]="cart.items.length == 0">
+        <mat-icon>
+            cloud_download
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body cart-body">
+    <div class="items" *ngIf="cart.items.length > 0">
+        <ul>
+            <li *ngFor="let item of cart.items">
+                <div class="image-container">
+                    <img [src]="item.image" alt="item.title">
+                </div>
+                
+                <div class="details">
+                    <h3 [routerLink]="['/products', item.productId]">
+                        {{ item.title }}
+                    </h3>
+                    <p class="price">
+                        {{ item.promotion.enabled ? (item.promotion.price | currency : 'R') : (item.price | currency : 'R') }} <small *ngIf="item.promotion.enabled">{{ item.price | currency : 'R' }}</small>
+                    </p>
+                    <p class="quantity">
+                        ✕ <input type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)">
+                    </p>
+                </div>
+
+                <div class="buttons">
+                    <button mat-icon-button (click)="cart.more(item)">
+                        <mat-icon>
+                            add
+                        </mat-icon>
+                    </button>
+
+                    <button mat-icon-button (click)="cart.less(item)">
+                        <mat-icon>
+                            remove
+                        </mat-icon>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="summary" *ngIf="cart.items.length > 0">
+        <mat-toolbar>
+            <div class="page-title">
+                summary
+            </div>
+        </mat-toolbar>
+
+        <table>
+            <tr>
+                <td>
+                    subtotal ({{ cart.items.length }} items)
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).subtotal | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    discount
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).discount | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    vat (15%)
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).vat | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    total
+                </th>
+
+                <th>
+                    {{ (cart.summary | async).total | currency : 'R' }}
+                </th>
+            </tr>
+        </table>
+
+        <button mat-flat-button color="primary" routerLink="/checkout">
+            checkout
+        </button>
+
+        <button mat-flat-button color="accent" routerLink="/products">
+            continue shopping
+        </button>
+    </div>
+
+    <message *ngIf="!loading && cart.items.length == 0">
+        <message-image src="./assets/empty-cart.png" alt="empty cart image"></message-image>
+
+        <message-title>
+            cart is empty
+        </message-title>
+
+        <message-caption>
+            your cart has no products
+        </message-caption>
+    </message>
+</div>

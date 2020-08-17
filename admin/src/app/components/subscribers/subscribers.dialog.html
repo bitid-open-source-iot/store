@@ -1,0 +1,49 @@
+<mat-toolbar color="primary">
+    <div class="page-title spacer">
+        subscribers
+    </div>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" color="accent" *ngIf="loading"></mat-progress-bar>
+
+<mat-table [dataSource]="users">
+    <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        
+        <mat-cell *matCellDef="let element">
+            {{ element.email }}
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        
+        <mat-cell *matCellDef="let element">
+            <mat-select [(ngModel)]="element.role" (ngModelChange)="update(element.email, $event)" [disabled]="role < 4 || element.role >= 4 && role < 5 || element.role == role && element.role == 5" required>
+                <mat-option *ngFor="let role of roles" [value]="role.value" [disabled]="role.value == 5">
+                    {{ role.title }}
+                </mat-option>
+            </mat-select>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="remove">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        
+        <mat-cell *matCellDef="let element">
+            <button mat-icon-button color="warn" (click)="remove(element.email)" [disabled]="role < 4 || element.role >= 4 && role < 5 || element.role == role && element.role == 5">
+                <mat-icon aria-label="remove">
+                    remove
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+</mat-table>

@@ -1,0 +1,18 @@
+mat-toolbar {
+	background-color: #000 !important;
+	.label {
+		width: 			100%;
+		text-align: 	center;
+		text-transform: uppercase;
+	}
+}
+form {
+    button,
+    mat-form-field {
+		width: 100%;
+    }
+    button {
+        margin-bottom: 	15px;
+        text-transform: uppercase;
+    }
+}

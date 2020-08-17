@@ -1,0 +1,131 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="back()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+    
+    <div class="spacer"></div>
+
+    <button mat-icon-button routerLink="/wishlist">
+        <mat-icon [matBadge]="wishlist.items.length" matBadgeColor="warn">
+            favorite
+        </mat-icon>
+    </button>
+
+    <button mat-icon-button routerLink="/cart">
+        <mat-icon [matBadge]="cart.items.length" matBadgeColor="warn">
+            shopping_cart
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <div class="product-body" *ngIf="product">
+        <table class="images">
+            <tr>
+                <td colspan="3" [style.background-image]="'url(' + product.image + ')'"></td>
+            </tr>
+
+            <tr>
+                <td *ngFor="let image of product.images" [style.background-image]="'url(' + image.src + ')'" matRipple (click)="product.image = image.src">
+                    <mat-icon *ngIf="product.image == image.src">
+                        check
+                    </mat-icon>
+                </td>
+
+                <td *ngFor="let row of fill" class="fill"></td>
+            </tr>
+        </table>
+
+        <div class="details">
+            <mat-toolbar>
+                <div class="page-title spacer">
+                    {{ product.title }}
+                </div>
+
+                <button mat-icon-button (click)="wishlist.add(product)">
+                    <mat-icon>
+                        favorite
+                    </mat-icon>
+                </button>
+        
+                <button mat-icon-button (click)="cart.add(product)">
+                    <mat-icon>
+                        add_shopping_cart
+                    </mat-icon>
+                </button>
+            </mat-toolbar>
+
+            <h1>
+                {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }} <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+            </h1>
+
+            <ngx-star-rating [value]="product.score"></ngx-star-rating>
+
+            <p [innerHtml]="product.description"></p>
+
+            <mat-toolbar class="toolbar" *ngIf="product.info.length > 0">
+                <div class="page-title spacer">
+                    information
+                </div>
+            </mat-toolbar>
+
+            <table class="information" *ngIf="product.info.length > 0">
+                <tbody>
+                    <tr *ngFor="let row of product.info">
+                        <th>
+                            {{ row.title }}
+                        </th>
+
+                        <td>
+                            {{ row.value }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <mat-toolbar class="toolbar">
+                <div class="page-title spacer">
+                    reviews
+                </div>
+
+                <button mat-icon-button (click)="review()">
+                    <mat-icon>
+                        rate_review
+                    </mat-icon>
+                </button>
+            </mat-toolbar>
+
+            <table class="reviews">
+                <tbody>
+                    <tr *ngFor="let review of reviews.data">
+                        <th>
+                            <ngx-star-rating [value]="review.score"></ngx-star-rating>
+                        </th>
+
+                        <td>
+                            {{ review.message }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 *ngIf="links.length > 0">
+                People Also Buy
+            </h3>
+
+            <div class="products" *ngIf="links.length > 0">
+                <mat-grid-list cols="4" gutterSize="5px">
+                    <mat-grid-tile *ngFor="let link of links" colspan="1" rowspan="1" [style.background-image]="'url(' + link.image + ')'" matRipple [routerLink]="['/products', link.productId]">
+                        <label>
+                            {{ link.title }}
+                        </label>
+                    </mat-grid-tile>
+                </mat-grid-list>
+            </div>
+        </div>
+    </div>
+</div>

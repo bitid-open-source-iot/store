@@ -1,0 +1,68 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+    
+    <div class="spacer page-title">
+        wishlist
+    </div>
+
+    <button mat-icon-button routerLink="/cart">
+        <mat-icon [matBadge]="cart.items.length" matBadgeColor="warn">
+            shopping_cart
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <div class="container">
+        <div class="items" *ngIf="wishlist.items.length > 0">
+            <ul>
+                <li *ngFor="let item of wishlist.items">
+                    <div class="image-container">
+                        <img [src]="item.image" alt="item.title">
+                    </div>
+                    
+                    <div class="details">
+                        <h3 [routerLink]="['/products', item.productId]">
+                            {{ item.title }}
+                        </h3>
+                        <p class="price">
+                            {{ item.promotion.enabled ? (item.promotion.price | currency : 'R') : (item.price | currency : 'R') }} <small *ngIf="item.promotion.enabled">{{ item.price | currency : 'R' }}</small>
+                        </p>
+                    </div>
+    
+                    <div class="buttons">
+                        <button mat-icon-button (click)="MoveToCart(item)">
+                            <mat-icon>
+                                add_shopping_cart
+                            </mat-icon>
+                        </button>
+    
+                        <button mat-icon-button (click)="wishlist.delete(item)">
+                            <mat-icon>
+                                remove
+                            </mat-icon>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <message *ngIf="!loading && wishlist.items.length == 0">
+            <message-image src="./assets/empty-wishlist.png" alt="empty wishlist image"></message-image>
+    
+            <message-title>
+                wishlist is empty
+            </message-title>
+    
+            <message-caption>
+                you have no wishlist
+            </message-caption>
+        </message>
+    </div>
+</div>

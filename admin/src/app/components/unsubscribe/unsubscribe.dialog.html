@@ -1,0 +1,41 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <div class="label">
+            unsubscribe
+        </div>
+        
+        <div spacer></div>
+
+        <button mat-icon-button (click)="close()">
+            <mat-icon>
+                close
+            </mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<form [formGroup]="form" (ngSubmit)="!form.invalid && form.value.confirm && submit()">
+    <mat-form-field appearance="outline">
+        <mat-label>
+            Confirm
+        </mat-label>
+
+        <mat-select name="confirm" placeholder="Confirm" formControlName="confirm" required>
+            <mat-option [value]="true">
+                Yes, Unsubscribe From This!
+            </mat-option>
+
+            <mat-option [value]="false">
+                No, Don't Unsubscribe From This!
+            </mat-option>
+        </mat-select>
+        
+        <mat-error align="start" *ngIf="errors.confirm" class="form__error">
+            {{ errors.confirm }}
+        </mat-error>
+    </mat-form-field>
+
+    <button type="submit" mat-flat-button color="primary" [disabled]="!form.value.confirm">
+        unsubscribe
+    </button>
+</form>

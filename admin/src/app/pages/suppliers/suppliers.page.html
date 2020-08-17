@@ -1,0 +1,31 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        suppliers
+    </label>
+
+    <search placeholder="search suppliers"></search>
+
+    <button mat-icon-button routerLink="editor" [queryParams]="{'mode': 'add', 'storeId': storeId}">
+        <mat-icon>
+            add
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <mat-list>
+        <mat-list-item *ngFor="let supplier of suppliers.data | orderBy : 'description' | filterBy : 'description' : filter" (click)="options(supplier)" matRipple>
+            <h3>
+                {{ supplier.description }}
+            </h3>
+        </mat-list-item>
+    </mat-list>
+</div>

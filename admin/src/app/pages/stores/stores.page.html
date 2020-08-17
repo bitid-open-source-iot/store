@@ -1,0 +1,39 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        Stores
+    </label>
+
+    <search placeholder="search stores"></search>
+
+    <button mat-icon-button routerLink="editor" [queryParams]="{'mode': 'add'}">
+        <mat-icon>
+            add
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <mat-list>
+        <mat-list-item *ngFor="let store of stores.data | orderBy : 'description' | filterBy : 'description' : filter" (click)="options(store)" matRipple>
+            <button class="select" mat-icon-button color="primary" (click)="SelectStore($event, store.storeId)">
+                <mat-icon>
+                    {{ store.storeId == storeId ? 'radio_button_checked' : 'radio_button_unchecked' }}
+                </mat-icon>
+            </button>
+
+            <img [src]="store.logo" [alt]="store.description">
+
+            <h3 class="spacer">
+                {{ store.description }}
+            </h3>
+        </mat-list-item>
+    </mat-list>
+</div>

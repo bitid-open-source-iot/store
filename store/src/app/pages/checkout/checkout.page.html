@@ -1,0 +1,509 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="back()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+    
+    <div class="spacer page-title">
+        checkout
+    </div>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <mat-vertical-stepper linear>
+        <mat-step [stepControl]="shipping" label="shipping">
+            <section>
+                <form [formGroup]="shipping">
+                    <mat-form-field appearance="outline">
+                        <mat-label text-uppercase>
+                            Shipping Method
+                        </mat-label>
+
+                        <mat-select placeholder="Shipping Method" formControlName="method" required>
+                            <mat-option value="collect">
+                                Collect
+                            </mat-option>
+                            <mat-option value="deliver">
+                                Deliver
+                            </mat-option>
+                            <mat-option value="exworks">
+                                Ex Works
+                            </mat-option>
+                        </mat-select>
+                        
+                        <mat-error *ngIf="ShippingErrors.method">
+                            {{ ShippingErrors.method }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div formGroupName="address" *ngIf="shipping.value.method == 'deliver' || shipping.value.method == 'exworks'">
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                type
+                            </mat-label>
+                            
+                            <mat-select name="type" placeholder="type" formControlName="type" [required]="shipping.value.method == 'deliver'">
+                                <mat-option value="business">
+                                    Business
+                                </mat-option>
+                                <mat-option value="residential">
+                                    Residential
+                                </mat-option>
+                            </mat-select>
+                    
+                            <mat-error *ngIf="ShippingErrors.address.type">
+                                {{ ShippingErrors.address.type }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                street
+                            </mat-label>
+                            
+                            <input matInput type="text" name="street" placeholder="street" formControlName="street" [required]="shipping.value.method == 'deliver'">
+                    
+                            <mat-error *ngIf="ShippingErrors.address.street">
+                                {{ ShippingErrors.address.street }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                suburb
+                            </mat-label>
+                            
+                            <input matInput type="text" name="suburb" placeholder="suburb" formControlName="suburb" [required]="shipping.value.method == 'deliver'">
+                    
+                            <mat-error *ngIf="ShippingErrors.address.suburb">
+                                {{ ShippingErrors.address.suburb }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                City/Town
+                            </mat-label>
+                            
+                            <input matInput type="text" name="cityTown" placeholder="City/Town" formControlName="cityTown" [required]="shipping.value.method == 'deliver'">
+                    
+                            <mat-error *ngIf="ShippingErrors.address.cityTown">
+                                {{ ShippingErrors.address.cityTown }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                postalCode
+                            </mat-label>
+                            
+                            <input matInput type="text" name="postalCode" placeholder="postalCode" formControlName="postalCode" [required]="shipping.value.method == 'deliver'">
+                    
+                            <mat-error *ngIf="ShippingErrors.address.postalCode">
+                                {{ ShippingErrors.address.postalCode }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                additionalInfo
+                            </mat-label>
+                            
+                            <input matInput type="text" name="additionalInfo" placeholder="additionalInfo" formControlName="additionalInfo">
+                    
+                            <mat-error *ngIf="ShippingErrors.address.additionalInfo">
+                                {{ ShippingErrors.address.additionalInfo }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label text-uppercase>
+                            courier
+                        </mat-label>
+                        
+                        <mat-select name="courierId" placeholder="courier" formControlName="courierId" [required]="shipping.value.method == 'deliver'">
+                            <mat-option *ngFor="let courier of couriers.data" [value]="courier.courierId">
+                                {{ courier.description }}
+                            </mat-option>
+                        </mat-select>
+                
+                        <mat-error *ngIf="ShippingErrors.courierId">
+                            {{ ShippingErrors.courierId }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'deliver' && options.length > 0">
+                        <mat-label text-uppercase>
+                            delivery option
+                        </mat-label>
+                        
+                        <mat-select name="optionId" placeholder="delivery option" formControlName="optionId" [required]="shipping.value.method == 'deliver'">
+                            <mat-option *ngFor="let option of options" [value]="option.optionId">
+                                {{ option.description }} - {{ option.price | currency : 'R' }}
+                            </mat-option>
+                        </mat-select>
+                
+                        <mat-error *ngIf="ShippingErrors.optionId">
+                            {{ ShippingErrors.optionId }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'collect'">
+                        <mat-label text-uppercase>
+                            collection point
+                        </mat-label>
+                        
+                        <mat-select name="collectionpointId" placeholder="collection point" formControlName="collectionpointId" [required]="shipping.value.method == 'collect'">
+                            <mat-option *ngFor="let point of collection.data" [value]="point.collectionpointId">
+                                {{ point.address.street }}, {{ point.address.suburb }}, {{ point.address.cityTown }}, {{ point.address.postalCode }}
+                            </mat-option>
+                        </mat-select>
+                
+                        <mat-error *ngIf="ShippingErrors.collectionpointId">
+                            {{ ShippingErrors.collectionpointId }}
+                        </mat-error>
+                    </mat-form-field>
+                </form>
+
+                <div class="buttons">
+                    <button mat-flat-button matStepperNext color="primary">
+                        Next
+                    </button>
+                </div>
+            </section>
+        </mat-step>
+
+        <mat-step [stepControl]="recipient" label="recipient">
+            <section>
+                <form [formGroup]="recipient">
+                    <div formGroupName="name">
+                        <section>
+                            <mat-form-field appearance="outline">
+                                <mat-label text-uppercase>
+                                    first name
+                                </mat-label>
+                                
+                                <input matInput type="text" name="first" placeholder="first name" formControlName="first" required>
+                        
+                                <mat-error *ngIf="RecipientErrors.name.first">
+                                    {{ RecipientErrors.name.first }}
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label text-uppercase>
+                                    last name
+                                </mat-label>
+                                
+                                <input matInput type="text" name="last" placeholder="last name" formControlName="last" required>
+                        
+                                <mat-error *ngIf="RecipientErrors.name.last">
+                                    {{ RecipientErrors.name.last }}
+                                </mat-error>
+                            </mat-form-field>
+                        </section>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label text-uppercase>
+                            email
+                        </mat-label>
+                        
+                        <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
+                
+                        <mat-error *ngIf="RecipientErrors.email">
+                            {{ RecipientErrors.email }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label text-uppercase>
+                            number
+                        </mat-label>
+                        
+                        <input matInput type="tel" name="number" placeholder="number" formControlName="number" required>
+                
+                        <mat-error *ngIf="RecipientErrors.number">
+                            {{ RecipientErrors.number }}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div formGroupName="company">
+                        <section>
+                            <mat-form-field appearance="outline">
+                                <mat-label text-uppercase>
+                                    vat
+                                </mat-label>
+                                
+                                <input matInput type="text" name="vat" placeholder="vat" formControlName="vat">
+                        
+                                <mat-error *ngIf="RecipientErrors.company.vat">
+                                    {{ RecipientErrors.company.vat }}
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label text-uppercase>
+                                    reg
+                                </mat-label>
+                                
+                                <input matInput type="text" name="reg" placeholder="reg" formControlName="reg">
+                        
+                                <mat-error *ngIf="RecipientErrors.company.reg">
+                                    {{ RecipientErrors.company.reg }}
+                                </mat-error>
+                            </mat-form-field>
+                        </section>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label text-uppercase>
+                                company name
+                            </mat-label>
+                            
+                            <input matInput type="text" name="name" placeholder="company name" formControlName="name">
+                    
+                            <mat-error *ngIf="RecipientErrors.company.name">
+                                {{ RecipientErrors.company.name }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </form>
+
+                <div class="buttons">
+                    <button mat-flat-button matStepperPrevious color="primary">
+                        Back
+                    </button>
+
+                    <button mat-flat-button matStepperNext color="primary">
+                        Next
+                    </button>
+                </div>
+            </section>
+        </mat-step>
+
+        <mat-step [stepControl]="payment" label="payment">
+            <section>
+                <form [formGroup]="payment">
+                    <mat-form-field>
+                        <mat-label>
+                            Payment Method
+                        </mat-label>
+
+                        <mat-select placeholder="Payment Method" formControlName="method" required>
+                            <mat-option value="bc">
+                                Bitcoin
+                            </mat-option>
+                            <mat-option value="cc">
+                                Credit Card
+                            </mat-option>
+                            <mat-option value="dc">
+                                Debit Card
+                            </mat-option>
+                            <mat-option value="eft">
+                                EFT
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+
+                <div class="buttons">
+                    <button mat-flat-button matStepperPrevious color="primary">
+                        Back
+                    </button>
+
+                    <button mat-flat-button matStepperNext color="primary">
+                        Next
+                    </button>
+                </div>
+            </section>
+        </mat-step>
+
+        <mat-step label="confirm">
+            <div class="container">
+                <h2 *ngIf="order">
+                    products
+                </h2>
+
+                <div class="order" *ngIf="order">
+                    <ul>
+                        <li *ngFor="let product of order.products">
+                            <div class="image-container">
+                                <img [src]="product.image" alt="product.title">
+                            </div>
+                            
+                            <div class="details">
+                                <h3 [routerLink]="['/products', product.productId]">
+                                    {{ product.title }}
+                                </h3>
+                                <p class="price">
+                                    {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }} <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+                                </p>
+                                <p class="quantity">
+                                    ✕ {{ product.quantity | number : '0.2-2' }}
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <h2 *ngIf="order && order.shipping.address">
+                    shipping
+                </h2>
+
+                <div class="order" *ngIf="order">
+                    <table class="shipping" *ngIf="shipping.value.address">
+                        <tr>
+                            <td>
+                                method: {{ shipping.value.method }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ shipping.value.address.street }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ shipping.value.address.suburb }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ shipping.value.address.cityTown }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ shipping.value.address.postalCode }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h2 *ngIf="order && order.shipping.address">
+                    recipient & company
+                </h2>
+
+                <div class="order" *ngIf="order">
+                    <table class="shipping" *ngIf="recipient.value">
+                        <tr *ngIf="recipient.value.name">
+                            <td>
+                                {{ recipient.value.name.first }} {{ recipient.value.name.last }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-transform: lowercase;">
+                                {{ recipient.value.email }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{ recipient.value.number }}
+                            </td>
+                        </tr>
+                        <tr *ngIf="recipient.value.company.name">
+                            <td>
+                                company: {{ recipient.value.company.name }}
+                            </td>
+                        </tr>
+                        <tr *ngIf="recipient.value.company.vat">
+                            <td>
+                                vat: {{ recipient.value.company.vat }}
+                            </td>
+                        </tr>
+                        <tr *ngIf="recipient.value.company.reg">
+                            <td>
+                                reg: {{ recipient.value.company.reg }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h2 *ngIf="order">
+                    summary
+                </h2>
+
+                <div class="order" *ngIf="order">
+                    <table class="summary">
+                        <tr>
+                            <td>
+                                subtotal ({{ order.products.length }} items)
+                            </td>
+            
+                            <td>
+                                {{ payment.value.subtotal | currency : 'R' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                shipping
+                            </td>
+            
+                            <td>
+                                {{ payment.value.shipping | currency : 'R' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                discount
+                            </td>
+            
+                            <td>
+                                {{ payment.value.discount | currency : 'R' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                vat (15%)
+                            </td>
+            
+                            <td>
+                                {{ payment.value.vat | currency : 'R' }}
+                            </td>
+                        </tr>
+            
+                        <tr>
+                            <th>
+                                total
+                            </th>
+            
+                            <th>
+                                {{ payment.value.total | currency : 'R' }}
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <form id="payfast" ngNoForm [action]="payfast.url" method="POST" *ngIf="order">
+                    <input type="hidden" name="amount" [value]="payment.value.total | number : '0.2-2'" required>
+                    <input type="hidden" name="item_name" value="Online Store Purchase" required>
+                    <input type="hidden" name="name_last" [(ngModel)]="recipient.value.name.last" required>
+                    <input type="hidden" name="return_url" [(ngModel)]="payfast.return_url" required>
+                    <input type="hidden" name="cancel_url" [(ngModel)]="payfast.cancel_url" required>
+                    <input type="hidden" name="notify_url" [(ngModel)]="payfast.notify_url" required>
+                    <input type="hidden" name="name_first" [(ngModel)]="recipient.value.name.first" required>
+                    <input type="hidden" name="cell_number" [(ngModel)]="recipient.value.number" required>
+                    <input type="hidden" name="custom_str1" value="order" required>
+                    <input type="hidden" name="merchant_id" [(ngModel)]="payfast.merchant_id" required>
+                    <input type="hidden" name="m_payment_id" [(ngModel)]="payfast.m_payment_id" required>
+                    <input type="hidden" name="merchant_key" [(ngModel)]="payfast.merchant_key" required>
+                    <input type="hidden" name="email_address" [(ngModel)]="order.email" required>
+                    <input type="hidden" name="payment_method" [(ngModel)]="payment.value.method" required>
+                    <input type="hidden" name="item_description" value="Online Store Purchase" required>
+                    <input type="hidden" name="email_confirmation" value="1" required>
+                    <input type="hidden" name="confirmation_address" [(ngModel)]="order.email" required>
+        
+                    <button mat-flat-button color="accent" type="button" color="primary" mat-flat-button (click)="verify()" [disabled]="payment.value.total == 0">
+                        {{ loading ? '' : 'Confirm & Pay' }}
+
+                        <mat-progress-spinner class="mat-spinner-negative" mode="indeterminate" diameter="30" *ngIf="loading"></mat-progress-spinner>
+                    </button>
+                </form>
+            </div>
+        </mat-step>
+    </mat-vertical-stepper>
+</div>

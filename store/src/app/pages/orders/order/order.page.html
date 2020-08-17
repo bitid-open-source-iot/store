@@ -1,0 +1,160 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="back()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+    
+    <div class="spacer page-title">
+        {{ loading ? 'order loading' : 'view order' }}
+    </div>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <div class="container">
+        <h2 *ngIf="order">
+            products
+        </h2>
+
+        <section *ngIf="order">
+            <ul>
+                <li *ngFor="let product of order.products">
+                    <div class="image-container">
+                        <img [src]="product.image" alt="product.title">
+                    </div>
+                    
+                    <div class="details">
+                        <h3 [routerLink]="['/products', product.productId]">
+                            {{ product.title }}
+                        </h3>
+                        <p class="price">
+                            {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }} <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+                        </p>
+                        <p class="quantity">
+                            ✕ {{ product.quantity | number : '0.2-2' }}
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <h2 *ngIf="order">
+            shipping
+        </h2>
+        
+        <section *ngIf="order">
+            <table>
+                <tr>
+                    <th>
+                        method: {{ order.shipping.method }}
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.street }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.suburb }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.cityTown }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.postalCode }}
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <h2 *ngIf="order">
+            recipient & company
+        </h2>
+        
+        <section *ngIf="order">
+            <table>
+                <tr>
+                    <th>
+                        {{ order.recipient.name.first }} {{ order.recipient.name.last }} {{ order.recipient.company.name ? '(' + order.recipient.company.name + ')' : '' }}
+                    </th>
+                </tr>
+                <tr>
+                    <td style="text-transform: lowercase;">
+                        {{ order.recipient.email }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.recipient.number }}
+                    </td>
+                </tr>
+                <tr *ngIf="order.recipient.company.vat">
+                    <td>
+                        vat: {{ order.recipient.company.vat }}
+                    </td>
+                </tr>
+                <tr *ngIf="order.recipient.company.reg">
+                    <td>
+                        reg: {{ order.recipient.company.reg }}
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <h2 *ngIf="order">
+            summary
+        </h2>
+        
+        <section *ngIf="order">
+            <table class="summary">
+                <tr>
+                    <td>
+                        subtotal ({{ order.products.lenth }} items)
+                    </td>
+                    <td>
+                        {{ order.payment.subtotal | currency : 'R' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        shipping
+                    </td>
+                    <td>
+                        {{ order.payment.shipping | currency : 'R' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        discount
+                    </td>
+                    <td>
+                        {{ order.payment.discount | currency : 'R' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        vat (15%)
+                    </td>
+                    <td>
+                        {{ order.payment.vat | currency : 'R' }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        total
+                    </th>
+                    <th>
+                        {{ order.payment.total | currency : 'R' }}
+                    </th>
+                </tr>
+            </table>
+        </section>
+    </div>
+</div>

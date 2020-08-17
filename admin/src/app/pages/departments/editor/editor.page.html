@@ -1,0 +1,52 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="history.back()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        department editor
+    </label>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+        <mat-form-field appearance="outline">
+            <mat-label text-uppercase>
+                description
+            </mat-label>
+
+            <input matInput type="text" name="description" placeholder="description" formControlName="description" required>
+
+            <mat-error *ngIf="errors.description">
+                {{ errors.description }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label text-uppercase>
+                Sharing Rules
+            </mat-label>
+
+            <mat-select name="organizationOnly" placeholder="Sharing Rules" formControlName="organizationOnly" required>
+                <mat-option [value]="0">
+                    Share To Anyone
+                </mat-option>
+                <mat-option [value]="1">
+                    Share In Organization
+                </mat-option>
+            </mat-select>
+
+            <mat-error *ngIf="errors.organizationOnly">
+                {{ errors.organizationOnly }}
+            </mat-error>
+        </mat-form-field>
+
+        <button type="submit" mat-flat-button color="primary">
+            submit
+        </button>
+    </form>
+</div>

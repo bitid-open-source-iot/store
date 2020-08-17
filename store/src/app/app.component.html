@@ -1,0 +1,61 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="over">
+        <mat-toolbar color="primary">
+            <img class="logo" [src]="store ? store.logo : './assets/icons/icon-512x512.png'" (click)="menu.toggle()">
+
+            <label class="spacer">
+                {{ store ? store.description : 'Shop' }}
+            </label>
+
+            <button mat-icon-button (click)="menu.close()">
+                <mat-icon>
+                    close
+                </mat-icon>
+            </button>
+        </mat-toolbar>
+
+        <mat-list>
+            <mat-list-item routerLinkActive="active current" routerLink="/products" (click)="menu.close()">
+                Home
+            </mat-list-item>
+
+            <mat-list-item routerLinkActive="active current" routerLink="/orders" (click)="menu.close()" *ngIf="authenticated">
+                Orders
+            </mat-list-item>
+
+            <mat-list-item (click)="website()">
+                Our Website
+            </mat-list-item>
+
+            <div mat-subheader>
+                Account
+            </div>
+
+            <!-- <mat-list-item routerLinkActive="active current" routerLink="/account" (click)="menu.close()" *ngIf="authenticated">
+                open
+            </mat-list-item> -->
+
+            <mat-list-item (click)="logout()" *ngIf="authenticated">
+                sign out
+            </mat-list-item>
+
+            <mat-list-item routerLink="/signin" (click)="menu.close()" *ngIf="!authenticated">
+                sign in
+            </mat-list-item>
+
+            <mat-list-item routerLink="/signup" (click)="menu.close()" *ngIf="!authenticated">
+                sign up
+            </mat-list-item>
+        </mat-list>
+
+        <version>
+            V1.0.0
+        </version>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-splashscreen></app-splashscreen>

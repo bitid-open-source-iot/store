@@ -1,0 +1,116 @@
+<mat-toolbar color="primary">
+    <div class="page-title spacer">
+        download cart
+    </div>
+
+    <button mat-icon-button (click)="download()" [disabled]="loading">
+        <mat-icon>
+            cloud_download
+        </mat-icon>
+    </button>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<div class="page-body">
+    <section id="invoice">
+        <div class="loading-overlay" *ngIf="loading">
+            <mat-spinner></mat-spinner>
+        </div>
+
+		<header *ngIf="merchant">
+            <img [src]="merchant.logo" [alt]="merchant.description">
+
+            <div class="details">
+                <h1>
+                    {{ merchant.description }}
+                </h1>
+                <p>
+                    {{ merchant.address.street }}, {{ merchant.address.suburb }}, {{ merchant.address.cityTown }}, {{ merchant.address.postalCode }}
+                </p>
+                <p>
+                    VAT: {{ merchant.address.vat }} REG: {{ merchant.address.reg }}
+                </p>
+            </div>
+        </header>
+
+        <table class="products">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                        description
+                    </th>
+                    <th>
+                        qty
+                    </th>
+                    <th>
+                        amount
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let item of items">
+                    <td>
+                        <img [src]="item.icon" [alt]="item.title" *ngIf="item.icon">
+                    </td>
+                    <td>
+                        {{ item.title }}
+                    </td>
+                    <td>
+                        ✕ {{ item.quantity | number : '0.2-2' }}
+                    </td>
+                    <td [class.promotion]="item.promotion.enabled">
+                        {{ item.promotion.enabled ? (item.promotion.price | currency : 'R') : (item.price | currency : 'R') }} <small *ngIf="item.promotion.enabled">{{ item.price | currency : 'R' }}</small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="totals">
+            <tr>
+                <td>
+                    subtotal ({{ cart.items.length }} items)
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).subtotal | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    discount
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).discount | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    vat (15%)
+                </td>
+
+                <td>
+                    {{ (cart.summary | async).vat | currency : 'R' }}
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    total
+                </th>
+
+                <th>
+                    {{ (cart.summary | async).total | currency : 'R' }}
+                </th>
+            </tr>
+        </table>
+	</section>
+</div>
