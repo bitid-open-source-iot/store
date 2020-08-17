@@ -21,11 +21,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	public user: any = {};
 	public pages: any[] = [
-		{
-			'title': 'apis',
-			'route': '/apis',
-			'locked': true
-		},
+		// {
+		// 	'title': 'apis',
+		// 	'route': '/apis',
+		// 	'locked': true
+		// },
 		{
 			'title': 'stores',
 			'route': '/stores',
@@ -55,11 +55,6 @@ export class AppComponent implements OnInit, OnDestroy {
 			'title': 'departments',
 			'route': '/departments',
 			'locked': true
-		},
-		{
-			'title': 'quick setup',
-			'route': '/quick-setup',
-			'locked': false
 		},
 		{
 			'title': 'collection points',
