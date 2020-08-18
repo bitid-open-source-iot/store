@@ -1,6 +1,7 @@
 import { User } from './user';
+import { Utilities } from './utilities';
 
-export interface Product {
+export interface Product extends Utilities {
     'promotion'?: {
         'price'?:    number;
         'enabled'?:  boolean;
@@ -15,6 +16,7 @@ export interface Product {
     'price'?:       number;
     'title'?:       string;
     'images'?:      Image[];
+    'visible'?:     boolean;
     'storeId'?:     string;
     'reviews'?:     number;
     'returned'?:    number;

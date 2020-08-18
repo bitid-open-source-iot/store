@@ -12,7 +12,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal API Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalApis',
+					'location': 'dalApis',
 					'locationType': 'header'
 				}]
 			},
@@ -405,7 +405,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Carts Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalCarts',
+					'location': 'dalCarts',
 					'locationType': 'header'
 				}]
 			},
@@ -661,7 +661,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Orders Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalOrders',
+					'location': 'dalOrders',
 					'locationType': 'header'
 				}]
 			},
@@ -1191,7 +1191,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Config Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalStores',
+					'location': 'dalStores',
 					'locationType': 'header'
 				}]
 			},
@@ -1677,7 +1677,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Ratings Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalReviews',
+					'location': 'dalReviews',
 					'locationType': 'header'
 				}]
 			},
@@ -2064,7 +2064,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Products Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalProducts',
+					'location': 'dalProducts',
 					'locationType': 'header'
 				}]
 			},
@@ -2509,7 +2509,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Warning Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalWarnings',
+					'location': 'dalWarnings',
 					'locationType': 'header'
 				}]
 			},
@@ -2883,7 +2883,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Courier Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalCouriers',
+					'location': 'dalCouriers',
 					'locationType': 'header'
 				}]
 			},
@@ -3291,7 +3291,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Supplier Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalSuppliers',
+					'location': 'dalSuppliers',
 					'locationType': 'header'
 				}]
 			},
@@ -3718,7 +3718,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Wishlists Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalWishlists',
+					'location': 'dalWishlists',
 					'locationType': 'header'
 				}]
 			},
@@ -3875,7 +3875,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Address Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalAddresses',
+					'location': 'dalAddresses',
 					'locationType': 'header'
 				}]
 			},
@@ -4107,7 +4107,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Department Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalDepartments',
+					'location': 'dalDepartments',
 					'locationType': 'header'
 				}]
 			},
@@ -4480,7 +4480,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Transactions Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalTransactions',
+					'location': 'dalTransactions',
 					'locationType': 'header'
 				}]
 			},
@@ -4532,7 +4532,7 @@ var module = function () {
 				'errors': [{
 					'reason': 'Dal Collection Point Error',
 					'message': 'Invalid Credentials',
-					'locaction': 'dalCollectionPoints',
+					'location': 'dalCollectionPoints',
 					'locationType': 'header'
 				}]
 			},

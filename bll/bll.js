@@ -16,7 +16,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Apis Error",
                     "message":      "Apis Error",
-                    "locaction":    "bllApis",
+                    "location":    "bllApis",
                     "locationType": "body"
                 }]
             },
@@ -172,7 +172,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Carts Error",
                     "message":      "Carts Error",
-                    "locaction":    "bllCarts",
+                    "location":    "bllCarts",
                     "locationType": "body"
                 }]
             },
@@ -269,7 +269,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Orders Error",
                     "message":      "Orders Error",
-                    "locaction":    "bllOrders",
+                    "location":    "bllOrders",
                     "locationType": "body"
                 }]
             },
@@ -843,7 +843,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Stores Error",
                     "message":      "Stores Error",
-                    "locaction":    "bllStores",
+                    "location":    "bllStores",
                     "locationType": "body"
                 }]
             },
@@ -998,7 +998,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Payfast Error",
                     "message":      "Payfast Error",
-                    "locaction":    "bllPayfast",
+                    "location":    "bllPayfast",
                     "locationType": "body"
                 }]
             },
@@ -1057,7 +1057,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Reviews Error",
                     "message":      "Reviews Error",
-                    "locaction":    "bllReviews",
+                    "location":    "bllReviews",
                     "locationType": "body"
                 }]
             },
@@ -1186,7 +1186,7 @@ var module = function() {
                     "code":         1,
 					"reason": 		"General Products Error",
 					"message": 		"Products Error",
-					"locaction": 	"bllProducts",
+					"location": 	"bllProducts",
 					"locationType": "body"
 				}]
 			},
@@ -1334,7 +1334,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Warnings Error",
                     "message":      "Warnings Error",
-                    "locaction":    "bllWarnings",
+                    "location":    "bllWarnings",
                     "locationType": "body"
                 }]
             },
@@ -1482,7 +1482,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Couriers Error",
                     "message":      "Couriers Error",
-                    "locaction":    "bllCouriers",
+                    "location":    "bllCouriers",
                     "locationType": "body"
                 }]
             },
@@ -1630,7 +1630,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Suppliers Error",
                     "message":      "Suppliers Error",
-                    "locaction":    "bllSuppliers",
+                    "location":    "bllSuppliers",
                     "locationType": "body"
                 }]
             },
@@ -1778,7 +1778,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Wishlists Error",
                     "message":      "Wishlists Error",
-                    "locaction":    "bllWishlists",
+                    "location":    "bllWishlists",
                     "locationType": "body"
                 }]
             },
@@ -1904,7 +1904,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Addresses Error",
                     "message":      "Addresses Error",
-                    "locaction":    "bllAddresses",
+                    "location":    "bllAddresses",
                     "locationType": "body"
                 }]
             },
@@ -2001,7 +2001,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Departments Error",
                     "message":      "Departments Error",
-                    "locaction":    "bllDepartments",
+                    "location":    "bllDepartments",
                     "locationType": "body"
                 }]
             },
@@ -2149,7 +2149,7 @@ var module = function() {
                     "code":         1,
                     "reason":       "General Collection Points Error",
                     "message":      "Collection Points Error",
-                    "locaction":    "bllCollectionPoints",
+                    "location":    "bllCollectionPoints",
                     "locationType": "body"
                 }]
             },

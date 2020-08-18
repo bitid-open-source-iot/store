@@ -46,6 +46,7 @@ export class ProductsService {
                     Object.keys(params).map(key => {
                         this.data[i][key] = params[key];
                     });
+                    this.data[i] = JSON.parse(JSON.stringify(this.data[i]));
                     break;
                 };
             };
@@ -58,15 +59,24 @@ export class ProductsService {
         const response = await this.api.post(environment.store, '/store/products/delete', params);
 
         if (response.ok) {
-            for (let i = 0; i < this.data.length; i++) {
-                if (this.data[i].productId == params.productId) {
-                    this.data.splice(i, 1);
-                    break;
+            if (response.result.deleted == 1) {
+                for (let i = 0; i < this.data.length; i++) {
+                    if (this.data[i].productId == params.productId) {
+                        this.data.splice(i, 1);
+                        break;
+                    };
                 };
-            };
+                return response;
+            } else {
+                return {
+                    'ok': false,
+                    'error': {
+                        'message': 'Product not deleted, Check your role!'
+                    }
+                };
+            }
         };
 
-        return response;
     };
 
     public async unsubscribe(params: any) {

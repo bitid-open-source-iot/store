@@ -1945,7 +1945,7 @@ describe('orders', function () {
 
 describe('payfast', function () {
     it('/store/payfast/payment', function (done) {
-        this.timeout(5000);
+        this.timeout(50000);
 
         tools.api.payfast.payment()
             .then((result) => {

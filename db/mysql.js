@@ -10,7 +10,7 @@ var module = function() {
 				"errors": [{
 					"reason": 		"General Error",
 					"message": 		"Database Error",
-					"locaction": 	"dbMySQL",
+					"location": 	"dbMySQL",
 					"locationType": "Database",
 				}]
 			},
