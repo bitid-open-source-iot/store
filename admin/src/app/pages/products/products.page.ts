@@ -42,7 +42,8 @@ export class ProductsPage implements OnInit, OnDestroy {
                 'storeId',
                 'promotion',
                 'productId'
-            ]
+            ],
+            'storeId': this.storeId
         });
 
         if (response.ok) {

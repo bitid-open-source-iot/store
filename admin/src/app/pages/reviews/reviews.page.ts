@@ -35,7 +35,8 @@ export class ReviewsPage implements OnInit, OnDestroy {
                 'productId',
                 'serverDate'
             ],
-            'status': 'pending approval'
+            'status': 'pending approval',
+            'storeId': this.storeId
         });
 
         if (response.ok) {

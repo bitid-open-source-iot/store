@@ -39,7 +39,8 @@ export class SuppliersPage implements OnInit, OnDestroy {
                 'storeId',
                 'supplierId',
                 'description'
-            ]
+            ],
+            'storeId': this.storeId
         });
 
         if (response.ok) {

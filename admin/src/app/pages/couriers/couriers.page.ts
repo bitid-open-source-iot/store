@@ -39,7 +39,8 @@ export class CouriersPage implements OnInit, OnDestroy {
                 'storeId',
                 'courierId',
                 'description'
-            ]
+            ],
+            'storeId': this.storeId
         });
 
         if (response.ok) {

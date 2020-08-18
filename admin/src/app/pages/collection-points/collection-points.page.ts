@@ -39,7 +39,8 @@ export class CollectionPointsPage implements OnInit, OnDestroy {
                 'storeId',
                 'description',
                 'collectionpointId'
-            ]
+            ],
+            'storeId': this.storeId
         });
 
         if (response.ok) {

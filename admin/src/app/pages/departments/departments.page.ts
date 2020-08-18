@@ -38,7 +38,8 @@ export class DepartmentsPage implements OnInit, OnDestroy {
                 'storeId',
                 'description',
                 'departmentId'
-            ]
+            ],
+            'storeId': this.storeId
         });
 
         if (response.ok) {
