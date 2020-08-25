@@ -1,8 +1,10 @@
 import { Title } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
 import { MenuService } from 'src/app/services/menu/menu.service';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
 import { OrdersService } from 'src/app/services/orders/orders.service';
+import { DownloadDialog } from './download/download.dialog';
 import { ActivatedRoute } from '@angular/router';
 import { HistoryService } from 'src/app/services/history/history.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
@@ -16,7 +18,7 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 
 export class OrderPage implements OnInit, OnDestroy {
 
-    constructor(public menu: MenuService, public cart: CartService, private route: ActivatedRoute, private history: HistoryService, private service: OrdersService, public wishlist: WishlistService, private store: StoresService, private title: Title) {};
+    constructor(public menu: MenuService, public cart: CartService, private dialog: MatDialog, private route: ActivatedRoute, private history: HistoryService, private service: OrdersService, public wishlist: WishlistService, private store: StoresService, private title: Title) {};
 
     public order:           any;
     public orderId:         string;
@@ -49,6 +51,13 @@ export class OrderPage implements OnInit, OnDestroy {
 
     public async back() {
         this.history.back();
+    };
+
+    public async download() {
+        await this.dialog.open(DownloadDialog, {
+            'data': this.order,
+            'panelClass': 'download-dialog'
+        });
     };
 
     ngOnInit(): void {

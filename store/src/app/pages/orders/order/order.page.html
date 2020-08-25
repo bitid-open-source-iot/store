@@ -8,6 +8,12 @@
     <div class="spacer page-title">
         {{ loading ? 'order loading' : 'view order' }}
     </div>
+
+    <button mat-icon-button class="menu-toggle" (click)="download()">
+        <mat-icon>
+            cloud_download
+        </mat-icon>
+    </button>
 </mat-toolbar>
 
 <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
