@@ -449,7 +449,6 @@ var module = function () {
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 			
-			console.log('CLEARING CART');
 			
 			db.call({
 				'params': params,
@@ -469,7 +468,6 @@ var module = function () {
 						};
 					});
 
-					console.log('SYNCING CART => ', JSON.stringify(params));
 
 					deferred.resolve({
 						'params': params,
@@ -481,11 +479,9 @@ var module = function () {
 				}, null)
 				.then(db.call, null)
 				.then(result => {
-					console.log('SYNCING CART PASSED');
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
 				}, err => {
-					console.log('SYNCING CART FAILED => ', err);
 					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
 					dalCarts.errorResponse.error.errors[0].reason = err.description || 'Sync Cart Error';
 					dalCarts.errorResponse.hiddenErrors.push(err.error);
