@@ -113,7 +113,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
     };
 
     public async back() {
-        await this.history.back();
+        this.router.navigate(['/'])
     };
 
     private async get() {
@@ -270,7 +270,8 @@ export class CheckoutPage implements OnInit, OnDestroy {
             this.router.navigate(['/checkout'], {
                 'queryParams': {
                     'orderId': response.result.orderId
-                }
+                },
+                'replaceUrl': true
             });
         } else {
             // this.toast.error();

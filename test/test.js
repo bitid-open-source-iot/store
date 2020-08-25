@@ -2525,6 +2525,10 @@ var tools = {
                         {
                             'quantity': 2,
                             'productId': productId
+                        },
+                        {
+                            'quantity': 1,
+                            'productId': '000000000000000000000001'
                         }
                     ],
                     'storeId': storeId
