@@ -75,7 +75,7 @@ exports.call = (args) => {
 			});
 			break;
 		case('remove'):
-			collection.removeOne(args.params, (err, result) => {
+			collection.removeMany(args.params, (err, result) => {
 				if (err) {
 					deferred.reject(err);
 				} else {
