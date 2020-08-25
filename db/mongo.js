@@ -184,6 +184,29 @@ exports.call = (args) => {
 				};
 			});
 			break;
+		case('removeMany'):
+			collection.removeMany(args.params, (err, result) => {
+				if (err) {
+					deferred.reject(err);
+				} else {
+					if (typeof(result) !== 'undefined') {
+						if (result.result.ok == 1) {
+							deferred.resolve(result.result);
+						} else {
+							deferred.reject({
+								'code': 		70,
+								'description': 	'error removing'
+							});
+						};
+					} else {
+						deferred.reject({
+							'code': 		70,
+							'description': 	'error removing'
+						});
+					};
+				};
+			});
+			break;
 		default:
 			deferred.reject({
 				'code': 		503,

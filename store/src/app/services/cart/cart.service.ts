@@ -21,6 +21,13 @@ export class CartService {
 
     constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) {};
 
+    public async clear() {
+        this.items = [];
+        this.localstorage.setObject('cart', this.items);
+        this.calculate();
+        return true;
+    };
+
     public async init() {
         if (this.account.authenticated.value) {
             const response = await this.api.post(environment.store, '/store/carts/list', {});

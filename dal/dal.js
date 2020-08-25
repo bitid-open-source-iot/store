@@ -449,10 +449,9 @@ var module = function () {
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 			
-			
 			db.call({
 				'params': params,
-				'operation': 'remove',
+				'operation': 'removeMany',
 				'collection': 'tblCarts'
 			})
 				.then(result => {

@@ -273,8 +273,9 @@ export class CheckoutPage implements OnInit, OnDestroy {
                 },
                 'replaceUrl': true
             });
+            this.cart.clear();
         } else {
-            // this.toast.error();
+            this.toast.error(response.error.message);
         };
 
         this.loading = false;
