@@ -11,19 +11,19 @@ import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 
 @Component({
-    selector:       'app-order-page',
-    styleUrls:      ['./order.page.scss'],
-    templateUrl:    './order.page.html'
+    selector: 'app-order-page',
+    styleUrls: ['./order.page.scss'],
+    templateUrl: './order.page.html'
 })
 
 export class OrderPage implements OnInit, OnDestroy {
 
-    constructor(public menu: MenuService, public cart: CartService, private dialog: MatDialog, private route: ActivatedRoute, private history: HistoryService, private service: OrdersService, public wishlist: WishlistService, private store: StoresService, private title: Title) {};
+    constructor(public menu: MenuService, public cart: CartService, private dialog: MatDialog, private route: ActivatedRoute, private history: HistoryService, private service: OrdersService, public wishlist: WishlistService, private store: StoresService, private title: Title) { };
 
-    public order:           any;
-    public orderId:         string;
-    public loading:         boolean;
-    private subscriptions:  any = {};
+    public order: any;
+    public orderId: string;
+    public loading: boolean;
+    private subscriptions: any = {};
 
     private async get() {
         this.loading = true;
@@ -45,7 +45,7 @@ export class OrderPage implements OnInit, OnDestroy {
         } else {
             // this.toast.error()
         };
-        
+
         this.loading = false;
     };
 

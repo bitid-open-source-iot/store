@@ -164,3 +164,22 @@ section {
         margin: 50px;
     }
 }
+.details {
+    left: 0px;
+    right: 0px;
+    width: calc(100% - 80px);
+    bottom: 0px;
+    padding: 10px 40px;
+    position: absolute;
+    text-align: left;
+    padding-bottom: 20px;
+    background-color: #FAFAFA;
+    th, td {
+        font-size: 12px;
+        text-transform: lowercase;
+    }
+    th {
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+}

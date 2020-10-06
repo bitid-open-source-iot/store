@@ -112,6 +112,60 @@
                 </th>
             </tr>
         </table>
+
+        <div class="details">
+            <table>
+                <tr>
+                    <th>
+                        SHIPPING
+                    </th>
+
+                    <th>
+                        RECIPIENT & COMPANY
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        METHOD: {{ order.shipping.method }}
+                    </th>
+                    <th>
+                        {{ order.recipient.name.first }} {{ order.recipient.name.last }} <span *ngIf="order.recipient.company.name">({{ order.recipient.company.name }})</span>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.street }}
+                    </td>
+                    <td>
+                        {{ order.recipient.email }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.suburb }}
+                    </td>
+                    <td>
+                        {{ order.recipient.number }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.cityTown }}
+                    </td>
+                    <td>
+                        <span *ngIf="order.recipient.company.vat">VAT: {{ order.recipient.company.vat }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ order.shipping.address.postalCode }}
+                    </td>
+                    <td>
+                        <span *ngIf="order.recipient.company.reg">REG: {{ order.recipient.company.reg }}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
     
         <div class="paid">
             PAID
