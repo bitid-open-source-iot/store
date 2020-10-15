@@ -154,6 +154,22 @@ ul {
         border-bottom: none;
     }
 }
+.banking-details {
+    width: 100%;
+    margin: auto;
+    display: block;
+    max-width: 300px;
+    th {
+        font-size: 12px !important;
+        text-align: right !important;
+        font-weight: 500;
+        padding-right: 15px;
+    }
+    td {
+        font-size: 12px !important;
+        text-align: left !important;
+    }
+}
 @media screen and (max-width: 1500px) {
     .cart-body {
         width: 80%;
