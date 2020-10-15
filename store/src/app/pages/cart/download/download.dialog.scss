@@ -147,3 +147,17 @@ section {
         margin: 50px;
     }
 }
+.banking-details {
+    width: 300px;
+    margin-left: auto;
+    th {
+        font-size: 12px !important;
+        text-align: right !important;
+        font-weight: 500;
+        padding-right: 15px;
+    }
+    td {
+        font-size: 12px !important;
+        text-align: left !important;
+    }
+}
