@@ -1,24 +1,11 @@
-var Q = require('q');
-var db = require('./../db/mongo');
-var dbMySQL = require('./../db/mysql');
-var ObjectId = require('mongodb').ObjectId;
+const Q = require('q');
+const db = require('./../db/mongo');
+const dbMySQL = require('./../db/mysql');
+const ObjectId = require('mongodb').ObjectId;
+const ErrorResponse = require('./../lib/error-response');
 
 var module = function () {
 	var dalApis = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal API Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalApis',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -47,11 +34,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Add API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -90,11 +77,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Get API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -142,11 +129,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'List APIs Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -188,11 +175,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Share API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -250,11 +237,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Update API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -282,11 +269,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Remove API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -324,11 +311,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From API Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -386,11 +373,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalApis.errorResponse.error.errors[0].code = err.code || dalApis.errorResponse.error.errors[0].code;
-					dalApis.errorResponse.error.errors[0].reason = err.description || 'Update API Subscriber Error';
-					dalApis.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalApis.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -398,20 +385,6 @@ var module = function () {
 	};
 
 	var dalCarts = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Carts Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalCarts',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -431,11 +404,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
-					dalCarts.errorResponse.error.errors[0].reason = err.description || 'Add Cart Error';
-					dalCarts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCarts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -448,7 +421,7 @@ var module = function () {
 				'email': args.req.body.header.email,
 				'storeId': ObjectId(args.req.body.storeId)
 			};
-			
+
 			db.call({
 				'params': params,
 				'operation': 'removeMany',
@@ -480,11 +453,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
-					dalCarts.errorResponse.error.errors[0].reason = err.description || 'Sync Cart Error';
-					dalCarts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCarts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -572,11 +545,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
-					dalCarts.errorResponse.error.errors[0].reason = err.description || 'List Carts Error';
-					dalCarts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCarts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -608,11 +581,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
-					dalCarts.errorResponse.error.errors[0].reason = err.description || 'Update Carts Error';
-					dalCarts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCarts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -643,11 +616,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCarts.errorResponse.error.errors[0].code = err.code || dalCarts.errorResponse.error.errors[0].code;
-					dalCarts.errorResponse.error.errors[0].reason = err.description || 'Remove Carts Error';
-					dalCarts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCarts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -655,20 +628,6 @@ var module = function () {
 	};
 
 	var dalOrders = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Orders Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalOrders',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		get: (args) => {
 			var deferred = Q.defer();
 
@@ -705,11 +664,11 @@ var module = function () {
 					args.order = JSON.parse(JSON.stringify(result[0]));
 					args.result = args.order;
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Get Order Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -757,11 +716,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'List Orders Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -794,11 +753,11 @@ var module = function () {
 					args.result = result;
 					args.order.date.paid = new Date();
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Update Order Paid Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -915,11 +874,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Update Order Address Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -946,11 +905,11 @@ var module = function () {
 				.then(result => {
 					args.req.body.storeId = result[0].storeId.toString();
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Get Order Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1014,11 +973,11 @@ var module = function () {
 				.then(result => {
 					args.orderId = result[0]._id.toString();
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Initialize Order Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1106,11 +1065,11 @@ var module = function () {
 				.then(result => {
 					args.suppliers = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Get Products With Supplier Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1173,11 +1132,11 @@ var module = function () {
 				.then(result => {
 					args.products = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalOrders.errorResponse.error.errors[0].code = err.code || dalOrders.errorResponse.error.errors[0].code;
-					dalOrders.errorResponse.error.errors[0].reason = err.description || 'Get Products With Supplier Error';
-					dalOrders.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalOrders.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1185,20 +1144,6 @@ var module = function () {
 	};
 
 	var dalStores = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Config Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalStores',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -1240,11 +1185,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Add Store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1283,11 +1228,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Get store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1335,11 +1280,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Get store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1380,11 +1325,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Share store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1471,11 +1416,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Update Store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1502,11 +1447,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Remove Store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1557,11 +1502,11 @@ var module = function () {
 							args.req.body.storeId = args.store._id.toString();
 						};
 						deferred.resolve(args);
-					}, err => {
-						dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-						dalStores.errorResponse.error.errors[0].reason = err.description || 'Validate Store Error';
-						dalStores.errorResponse.hiddenErrors.push(err.error);
-						deferred.reject(dalStores.errorResponse);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						deferred.reject(err);
 					});
 			};
 
@@ -1599,11 +1544,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From store Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1659,11 +1604,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalStores.errorResponse.error.errors[0].code = err.code || dalStores.errorResponse.error.errors[0].code;
-					dalStores.errorResponse.error.errors[0].reason = err.description || 'Update Store Subscriber Error';
-					dalStores.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalStores.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1671,20 +1616,6 @@ var module = function () {
 	};
 
 	var dalReviews = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Ratings Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalReviews',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -1706,11 +1637,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Add Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1746,11 +1677,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Get Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1809,11 +1740,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'List Ratings Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1848,11 +1779,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Update Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1875,11 +1806,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Remove Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -1923,11 +1854,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Approve Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2046,11 +1977,42 @@ var module = function () {
 				.then(db.call, null)
 				.then(result => {
 					deferred.resolve(args);
-				}, err => {
-					dalReviews.errorResponse.error.errors[0].code = err.code || dalReviews.errorResponse.error.errors[0].code;
-					dalReviews.errorResponse.error.errors[0].reason = err.description || 'Approve Rating Error';
-					dalReviews.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalReviews.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		}
+	};
+
+	var dalReports = {
+		sales: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'email': args.req.body.header.email,
+				'storeId': ObjectId(args.req.body.storeId),
+				'quantity': args.req.body.quantity,
+				'productId': ObjectId(args.req.body.productId),
+				'serverDate': new Date()
+			};
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblOrders'
+			})
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result[0]));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2058,20 +2020,6 @@ var module = function () {
 	};
 
 	var dalProducts = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Products Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalProducts',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -2110,11 +2058,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Add Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2153,11 +2101,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Get Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2223,11 +2171,11 @@ var module = function () {
 						return item;
 					});
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'List Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2269,11 +2217,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Share Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2355,11 +2303,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Update Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2387,11 +2335,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Remove Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2429,11 +2377,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Product Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2491,11 +2439,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalProducts.errorResponse.error.errors[0].code = err.code || dalProducts.errorResponse.error.errors[0].code;
-					dalProducts.errorResponse.error.errors[0].reason = err.description || 'Update Product Subscriber Error';
-					dalProducts.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalProducts.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2503,20 +2451,6 @@ var module = function () {
 	};
 
 	var dalWarnings = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Warning Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalWarnings',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -2540,11 +2474,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Add Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2583,11 +2517,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Get Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2635,11 +2569,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'List Warnings Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2681,11 +2615,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Share Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2729,11 +2663,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Update Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2761,11 +2695,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Remove Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2803,11 +2737,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Warning Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2865,11 +2799,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWarnings.errorResponse.error.errors[0].code = err.code || dalWarnings.errorResponse.error.errors[0].code;
-					dalWarnings.errorResponse.error.errors[0].reason = err.description || 'Update Warning Subscriber Error';
-					dalWarnings.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWarnings.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2877,20 +2811,6 @@ var module = function () {
 	};
 
 	var dalCouriers = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Courier Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalCouriers',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -2925,11 +2845,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Add Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -2972,11 +2892,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Get Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3024,11 +2944,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'List Couriers Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3070,11 +2990,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Share Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3137,11 +3057,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Update Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3169,11 +3089,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Remove Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3211,11 +3131,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Courier Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3273,11 +3193,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCouriers.errorResponse.error.errors[0].code = err.code || dalCouriers.errorResponse.error.errors[0].code;
-					dalCouriers.errorResponse.error.errors[0].reason = err.description || 'Update Courier Subscriber Error';
-					dalCouriers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCouriers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3285,20 +3205,6 @@ var module = function () {
 	};
 
 	var dalSuppliers = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Supplier Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalSuppliers',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -3349,11 +3255,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Add Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3394,11 +3300,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Get Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3448,11 +3354,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'List Suppliers Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3494,11 +3400,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Share Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3564,11 +3470,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Update Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3596,11 +3502,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Remove Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3638,11 +3544,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Supplier Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3700,11 +3606,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalSuppliers.errorResponse.error.errors[0].code = err.code || dalSuppliers.errorResponse.error.errors[0].code;
-					dalSuppliers.errorResponse.error.errors[0].reason = err.description || 'Update Supplier Subscriber Error';
-					dalSuppliers.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalSuppliers.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3712,20 +3618,6 @@ var module = function () {
 	};
 
 	var dalWishlists = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Wishlists Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalWishlists',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -3745,11 +3637,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalWishlists.errorResponse.error.errors[0].code = err.code || dalWishlists.errorResponse.error.errors[0].code;
-					dalWishlists.errorResponse.error.errors[0].reason = err.description || 'Add Wishlist Error';
-					dalWishlists.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWishlists.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3794,11 +3686,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWishlists.errorResponse.error.errors[0].code = err.code || dalWishlists.errorResponse.error.errors[0].code;
-					dalWishlists.errorResponse.error.errors[0].reason = err.description || 'List Wishlists Error';
-					dalWishlists.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWishlists.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3830,11 +3722,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWishlists.errorResponse.error.errors[0].code = err.code || dalWishlists.errorResponse.error.errors[0].code;
-					dalWishlists.errorResponse.error.errors[0].reason = err.description || 'Update Wishlist Error';
-					dalWishlists.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWishlists.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3857,11 +3749,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalWishlists.errorResponse.error.errors[0].code = err.code || dalWishlists.errorResponse.error.errors[0].code;
-					dalWishlists.errorResponse.error.errors[0].reason = err.description || 'Remove Wishlist Error';
-					dalWishlists.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalWishlists.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3869,20 +3761,6 @@ var module = function () {
 	};
 
 	var dalAddresses = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Address Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalAddresses',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -3910,11 +3788,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalAddresses.errorResponse.error.errors[0].code = err.code || dalAddresses.errorResponse.error.errors[0].code;
-					dalAddresses.errorResponse.error.errors[0].reason = err.description || 'Add Address Error';
-					dalAddresses.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalAddresses.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3950,11 +3828,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalAddresses.errorResponse.error.errors[0].code = err.code || dalAddresses.errorResponse.error.errors[0].code;
-					dalAddresses.errorResponse.error.errors[0].reason = err.description || 'Get Address Error';
-					dalAddresses.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalAddresses.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -3999,11 +3877,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalAddresses.errorResponse.error.errors[0].code = err.code || dalAddresses.errorResponse.error.errors[0].code;
-					dalAddresses.errorResponse.error.errors[0].reason = err.description || 'List Addresses Error';
-					dalAddresses.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalAddresses.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4062,11 +3940,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalAddresses.errorResponse.error.errors[0].code = err.code || dalAddresses.errorResponse.error.errors[0].code;
-					dalAddresses.errorResponse.error.errors[0].reason = err.description || 'Update Address Error';
-					dalAddresses.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalAddresses.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4089,11 +3967,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalAddresses.errorResponse.error.errors[0].code = err.code || dalAddresses.errorResponse.error.errors[0].code;
-					dalAddresses.errorResponse.error.errors[0].reason = err.description || 'Remove Address Error';
-					dalAddresses.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalAddresses.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4101,20 +3979,6 @@ var module = function () {
 	};
 
 	var dalDepartments = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Department Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalDepartments',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -4138,11 +4002,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Add Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4181,11 +4045,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Get Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4233,11 +4097,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'List Departments Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4279,11 +4143,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Share Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4326,11 +4190,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Update Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4358,11 +4222,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Remove Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4400,11 +4264,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Department Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4462,11 +4326,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalDepartments.errorResponse.error.errors[0].code = err.code || dalDepartments.errorResponse.error.errors[0].code;
-					dalDepartments.errorResponse.error.errors[0].reason = err.description || 'Update Department Subscriber Error';
-					dalDepartments.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalDepartments.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4474,20 +4338,6 @@ var module = function () {
 	};
 
 	var dalTransactions = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Transactions Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalTransactions',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		order: (args) => {
 			var deferred = Q.defer();
 
@@ -4514,11 +4364,11 @@ var module = function () {
 				.then(result => {
 					args.result = result;
 					deferred.resolve(args);
-				}, err => {
-					dalTransactions.errorResponse.error.errors[0].code = err.code || dalTransactions.errorResponse.error.errors[0].code;
-					dalTransactions.errorResponse.error.errors[0].reason = err.description || 'Pay For Order Transaction Error';
-					dalTransactions.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalTransactions.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4526,20 +4376,6 @@ var module = function () {
 	};
 
 	var dalCollectionPoints = {
-		errorResponse: {
-			'error': {
-				'code': 401,
-				'message': 'Invalid Credentials',
-				'errors': [{
-					'reason': 'Dal Collection Point Error',
-					'message': 'Invalid Credentials',
-					'location': 'dalCollectionPoints',
-					'locationType': 'header'
-				}]
-			},
-			'hiddenErrors': []
-		},
-
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -4588,11 +4424,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Add Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4631,11 +4467,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Get Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4683,11 +4519,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'List Collection Points Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4729,11 +4565,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Share Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4793,11 +4629,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Update Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4825,11 +4661,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Remove Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4867,11 +4703,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Unsubscribe From Collection Point Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;
@@ -4929,11 +4765,11 @@ var module = function () {
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
-				}, err => {
-					dalCollectionPoints.errorResponse.error.errors[0].code = err.code || dalCollectionPoints.errorResponse.error.errors[0].code;
-					dalCollectionPoints.errorResponse.error.errors[0].reason = err.description || 'Update Collection Point Subscriber Error';
-					dalCollectionPoints.errorResponse.hiddenErrors.push(err.error);
-					deferred.reject(dalCollectionPoints.errorResponse);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
 				});
 
 			return deferred.promise;

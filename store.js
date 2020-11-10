@@ -1,43 +1,43 @@
-var Q           = require('q');
-var db          = require('./db/mongo');
-var cors        = require('cors');
-var http        = require('http');
-var auth        = require('./lib/auth');
-var chalk       = require('chalk');
-var express     = require('express');
-var responder   = require('./lib/responder');
-var bodyParser  = require('body-parser');
-var healthcheck = require('@bitid/health-check');
+const Q = require('q');
+const db = require('./db/mongo');
+const cors = require('cors');
+const http = require('http');
+const auth = require('./lib/auth');
+const chalk = require('chalk');
+const express = require('express');
+const responder = require('./lib/responder');
+const bodyParser = require('body-parser');
+const healthcheck = require('@bitid/health-check');
 
-global.__base       = __dirname + '/';
-global.__logger     = require('./lib/logger');
-global.__settings   = require('./config.json');
-global.__responder  = new responder.module();
+global.__base = __dirname + '/';
+global.__logger = require('./lib/logger');
+global.__settings = require('./config.json');
+global.__responder = new responder.module();
 
 try {
     var portal = {
         errorResponse: {
             "error": {
-                "code":     401,
-                "message":  "Invalid Credentials",
-                "errors":[{
-                    "reason":       "Portal Error",
-                    "message":      "Portal Error",
-                    "location":    "portal",
+                "code": 401,
+                "message": "Invalid Credentials",
+                "errors": [{
+                    "reason": "Portal Error",
+                    "message": "Portal Error",
+                    "location": "portal",
                     "locationType": "portal"
                 }]
             },
-            "hiddenErrors":[]
+            "hiddenErrors": []
         },
 
         api: (args) => {
-            var deferred    = Q.defer();
+            var deferred = Q.defer();
 
             try {
-                var app    = express();
+                var app = express();
                 app.use(cors());
                 app.use(bodyParser.urlencoded({
-                    'limit':    '100mb',
+                    'limit': '100mb',
                     'extended': true
                 }));
                 app.use(bodyParser.json({
@@ -51,14 +51,14 @@ try {
                                 'req': req,
                                 'res': res
                             })
-                            .then(result => {
-                                next(); 
-                            }, err => {
-                                __logger.error('authCheck error: ' +  JSON.stringify(err));
-                                err.error.code              = 401;
-                                err.error.errors[0].code    = 401;
-                                __responder.error(req, res, err);
-                            });
+                                .then(result => {
+                                    next();
+                                }, err => {
+                                    __logger.error('authCheck error: ' + JSON.stringify(err));
+                                    err.error.code = 401;
+                                    err.error.errors[0].code = 401;
+                                    __responder.error(req, res, err);
+                                });
                         } else {
                             next();
                         };
@@ -85,6 +85,10 @@ try {
                 var stores = require('./api/stores');
                 app.use('/store/stores', stores);
                 __logger.info('Loaded: ./api/store/stores');
+
+                var reports = require('./api/reports');
+                app.use('/store/reports', reports);
+                __logger.info('Loaded: ./api/store/orders');
 
                 var payfast = require('./api/payfast');
                 app.use('/store/payfast', payfast);
@@ -130,9 +134,9 @@ try {
                 __logger.info('Loaded: ./health-check');
 
                 app.use((err, req, res, next) => {
-                    portal.errorResponse.error.code              = 500;
-                    portal.errorResponse.error.message           = 'Something broke';
-                    portal.errorResponse.error.errors[0].code    = 500;
+                    portal.errorResponse.error.code = 500;
+                    portal.errorResponse.error.message = 'Something broke';
+                    portal.errorResponse.error.errors[0].code = 500;
                     portal.errorResponse.error.errors[0].message = 'Something broke';
                     portal.errorResponse.hiddenErrors.push(err.stack);
                     __responder.error(req, res, portal.errorResponse);
@@ -141,10 +145,10 @@ try {
                 var server = http.createServer(app);
                 server.listen(args.settings.localwebserver.storeport);
                 deferred.resolve(args);
-            } catch(err) {
+            } catch (err) {
                 deferred.reject(err.message);
             };
-            
+
             return deferred.promise;
         },
 
@@ -175,15 +179,15 @@ try {
             };
 
             portal.logger(args)
-            .then(portal.api, null)
-            .then(portal.console, null)
-            .then(portal.database, null)
-            .then(args => {
-                console.log('Console Running on port: ', args.settings.localwebserver.consoleport);
-                console.log('Webserver Running on port: ', args.settings.localwebserver.storeport);
-            }, err => {
-                console.log('Error Initializing: ', err);
-            });
+                .then(portal.api, null)
+                .then(portal.console, null)
+                .then(portal.database, null)
+                .then(args => {
+                    console.log('Console Running on port: ', args.settings.localwebserver.consoleport);
+                    console.log('Webserver Running on port: ', args.settings.localwebserver.storeport);
+                }, err => {
+                    console.log('Error Initializing: ', err);
+                });
         },
 
         logger: (args) => {
@@ -196,13 +200,13 @@ try {
         },
 
         console: (args) => {
-            var deferred    = Q.defer();
+            var deferred = Q.defer();
 
             try {
                 var appconsole = express();
                 appconsole.use(cors());
                 appconsole.use(bodyParser.urlencoded({
-                    'limit':    '100mb',
+                    'limit': '100mb',
                     'extended': true
                 }));
                 appconsole.use(bodyParser.json({
@@ -215,9 +219,9 @@ try {
                 });
 
                 appconsole.use((err, req, res, next) => {
-                    portal.errorResponse.error.code              = 500;
-                    portal.errorResponse.error.message           = 'Something broke';
-                    portal.errorResponse.error.errors[0].code    = 500;
+                    portal.errorResponse.error.code = 500;
+                    portal.errorResponse.error.message = 'Something broke';
+                    portal.errorResponse.error.errors[0].code = 500;
                     portal.errorResponse.error.errors[0].message = 'Something broke';
                     portal.errorResponse.hiddenErrors.push(err.stack);
                     __responder.error(req, res, portal.errorResponse);
@@ -226,10 +230,10 @@ try {
                 var serverconsole = http.createServer(appconsole);
                 serverconsole.listen(args.settings.localwebserver.consoleport);
                 deferred.resolve(args);
-            } catch(err) {
+            } catch (err) {
                 deferred.reject(err.message);
             };
-            
+
             return deferred.promise;
         },
 
@@ -240,7 +244,7 @@ try {
                 global.__database = database;
                 deferred.resolve(args);
             }, err => {
-                __logger.error('Database Connection Error: ' +  err);
+                __logger.error('Database Connection Error: ' + err);
                 deferred.reject(err);
             });
 
@@ -251,6 +255,6 @@ try {
     portal.init({
         'settings': __settings
     });
-} catch(error) {
+} catch (error) {
     console.log('The following error has occurred: ', error.message);
 };
