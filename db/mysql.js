@@ -1,37 +1,37 @@
-var Q       = require('q');
-var mysql 	= require('mysql');
+const Q = require('q');
+const mysql = require('mysql');
 
-var module = function() {
+var module = function () {
 	var db = {
 		errorResponse: {
 			"error": {
-				"code": 	601,
-				"message": 	"database error",
+				"code": 601,
+				"message": "database error",
 				"errors": [{
-					"reason": 		"General Error",
-					"message": 		"Database Error",
-					"location": 	"dbMySQL",
+					"reason": "General Error",
+					"message": "Database Error",
+					"location": "dbMySQL",
 					"locationType": "Database",
 				}]
 			},
 			"hiddenErrors": []
-		},	
+		},
 
 		connect: (args) => {
 			var deferred = Q.defer();
 
 			var connection = mysql.createConnection({
-				"host": 	__settings.sql.host,
-				"user": 	__settings.sql.user,
+				"host": __settings.sql.host,
+				"user": __settings.sql.user,
 				"password": __settings.sql.password,
 				"database": __settings.sql.database
 			});
-			
+
 			connection.connect(err => {
 				if (err) {
 					deferred.reject({
-						'code': 		601,
-						'description': 	err.message
+						'code': 601,
+						'description': err.message
 					});
 				} else {
 					args.connection = connection;
@@ -44,12 +44,12 @@ var module = function() {
 
 		beginTransaction: (args) => {
 			var deferred = Q.defer();
-			
+
 			args.connection.beginTransaction(err => {
 				if (err) {
 					deferred.reject({
-						'code': 		82,
-						'description':	'Begin Transaction Error'
+						'code': 82,
+						'description': 'Begin Transaction Error'
 					});
 				} else {
 					deferred.resolve(args);
@@ -65,8 +65,8 @@ var module = function() {
 			args.connection.commit(err => {
 				if (err) {
 					deferred.reject({
-						'code': 		82,
-						'description':	'Commit Transaction Error'
+						'code': 82,
+						'description': 'Commit Transaction Error'
 					});
 				} else {
 					deferred.resolve(args);
@@ -82,8 +82,8 @@ var module = function() {
 			args.connection.rollback(err => {
 				if (err) {
 					deferred.reject({
-						'code': 		82,
-						'description':	'Rollback Transaction Error'
+						'code': 82,
+						'description': 'Rollback Transaction Error'
 					});
 				} else {
 					deferred.resolve(args);
@@ -101,16 +101,16 @@ var module = function() {
 					args.connection.end();
 
 					deferred.reject({
-						'code': 		72,
-						'description': 	'Error Running SQL Query'
+						'code': 72,
+						'description': 'Error Running SQL Query'
 					});
 				} else {
-					if (typeof(result) == 'undefined') {
+					if (typeof (result) == 'undefined') {
 						args.connection.end();
 
 						deferred.reject({
-							'code': 		71,
-							'description': 	'SQL Result Undefined'
+							'code': 71,
+							'description': 'SQL Result Undefined'
 						});
 					} else {
 						if (args.type == "update" || args.type == "insert") {
@@ -120,26 +120,26 @@ var module = function() {
 							args[3] = result;
 							deferred.resolve(args)
 						} else {
-							if (args.allowNoRecordsFound){
+							if (args.allowNoRecordsFound) {
 								deferred.resolve({
-									'code': 		69,
-									'description': 	'No Records Found',
+									'code': 69,
+									'description': 'No Records Found',
 								});
 							} else {
 								args.connection.end();
 
 								deferred.reject({
-									'code': 		69,
-									'description': 	'No Records Found',
+									'code': 69,
+									'description': 'No Records Found',
 								});
 							};
 						};
 					};
 				};
-			});			
+			});
 
 			return deferred.promise;
-		}		
+		}
 	}
 
 	return db;

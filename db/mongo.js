@@ -1,5 +1,5 @@
-var Q = require('q');
-var mongo = require('mongodb').MongoClient;
+const Q = require('q');
+const mongo = require('mongodb').MongoClient;
 
 exports.call = (args) => {
 	var deferred = Q.defer();
