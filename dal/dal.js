@@ -2005,7 +2005,17 @@ var module = function () {
 					date.from = new Date(args.req.body.date.from);
 				};
 			};
-			
+
+			date.to.setHours(23);
+			date.to.setMinutes(59);
+			date.to.setSeconds(59);
+			date.to.setMilliseconds(999);
+
+			date.from.setHours(0);
+			date.from.setMinutes(0);
+			date.from.setSeconds(0);
+			date.from.setMilliseconds(0);
+
 			var params = [
 				{
 					$match: {
