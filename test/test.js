@@ -1,12 +1,13 @@
-var Q = require('q');
-var chai = require('chai');
-var fetch = require('node-fetch');
-var assert = require('chai').assert;
-var expect = require('chai').expect;
-var should = require('chai').should();
-var config = require('./config.json');
-var chaiSubset = require('chai-subset');
-chai.use(chaiSubset);
+const Q = require('q');
+const chai = require('chai');
+const fetch = require('node-fetch');
+const assert = require('chai').assert;
+const expect = require('chai').expect;
+const should = require('chai').should();
+const config = require('./config.json');
+const subset = require('chai-subset');
+
+chai.use(subset);
 
 var apiId = null;
 var cartId = null;
@@ -1966,6 +1967,33 @@ describe('payfast', function () {
     });
 });
 
+describe('reports', function () {
+    it('/store/reports/sales', function (done) {
+        this.timeout(50000);
+
+        tools.api.reports.sales()
+            .then((result) => {
+                try {
+                    result[0].should.have.property('vat');
+                    result[0].should.have.property('date');
+                    result[0].should.have.property('email');
+                    result[0].should.have.property('total');
+                    result[0].should.have.property('orderId');
+                    result[0].should.have.property('subtotal');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+});
+
 describe('Remove Added Items', function () {
     it('/store/couriers/delete', function (done) {
         this.timeout(5000);
@@ -2681,6 +2709,22 @@ var tools = {
                     'suppliers': 1,
                     'departments': 1,
                     'collectionpoints': 1
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            }
+        },
+        reports: {
+            sales: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/reports/sales', {
+                    'date': {
+                        'to': new Date(),
+                        'from': new Date()
+                    },
+                    'storeId': storeId
                 })
                     .then(deferred.resolve, deferred.resolve);
 

@@ -1991,14 +1991,54 @@ var module = function () {
 	var dalReports = {
 		sales: (args) => {
 			var deferred = Q.defer();
-
-			var params = {
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId),
-				'quantity': args.req.body.quantity,
-				'productId': ObjectId(args.req.body.productId),
-				'serverDate': new Date()
+			
+			var date = {
+				'to': new Date(),
+				'from': new Date()
 			};
+
+			if (typeof(args.req.body.date) != 'undefined' && args.req.body.date !== null) {
+				if (typeof(args.req.body.date.to) != 'undefined' && args.req.body.date.to !== null && args.req.body.date.to != '') {
+					date.to = new Date(args.req.body.date.to);
+				};
+				if (typeof(args.req.body.date.from) != 'undefined' && args.req.body.date.from !== null && args.req.body.date.from != '') {
+					date.from = new Date(args.req.body.date.from);
+				};
+			};
+
+			date.to.setHours(23);
+			date.to.setMinutes(59);
+			date.to.setSeconds(59);
+			date.to.setMilliseconds(999);
+
+			date.from.setHours(0);
+			date.from.setMinutes(0);
+			date.from.setSeconds(0);
+			date.from.setMilliseconds(0);
+
+			var params = [
+				{
+					$match: {
+						'date.paid': {
+							$gte: date.from,
+							$lte: date.to
+						},
+						'status': 'paid',
+						'storeId': ObjectId(args.req.body.storeId),
+					}
+				},
+				{
+					$project: {
+						'_id': 0,
+						'vat': '$payment.vat',
+						'date': '$date.paid',
+						'email': '$email',
+						'total': '$payment.total',
+						'orderId': '$_id',
+						'subtotal': '$payment.subtotal'
+					}
+				}
+			];
 
 			db.call({
 				'params': params,
@@ -2006,7 +2046,7 @@ var module = function () {
 				'collection': 'tblOrders'
 			})
 				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
+					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -4782,6 +4822,7 @@ var module = function () {
 		'orders': dalOrders,
 		'stores': dalStores,
 		'reviews': dalReviews,
+		'reports': dalReports,
 		'products': dalProducts,
 		'warnings': dalWarnings,
 		'couriers': dalCouriers,
