@@ -78,11 +78,12 @@ export class SalesReportPage implements OnInit, OnDestroy {
         this.loading = true;
         
         this.sales.data = [];
-
+        
+        let date: any = JSON.parse(JSON.stringify(this.date.value.toDate()));
         let params: any = {
             'date': {
-                'to': this.date.value.toDate(),
-                'from': this.date.value.toDate()
+                'to': date,
+                'from': date
             },
             'filter': [
                 'vat',
@@ -95,12 +96,14 @@ export class SalesReportPage implements OnInit, OnDestroy {
             'storeId': this.storeId
         };
 
-        params.date.to.setMonth(new Date().getMonth() + 1);
+        params.date.to = new Date(params.date.to);
+        params.date.to.setMonth(new Date(params.date.to).getMonth() + 1);
         params.date.to.setDate(0);
         params.date.to.setHours(23);
         params.date.to.setMinutes(59);
         params.date.to.setSeconds(59);
         params.date.to.setMilliseconds(999);
+        params.date.from = new Date(params.date.from);
         params.date.from.setDate(1);
         params.date.from.setHours(0);
         params.date.from.setMinutes(0);
