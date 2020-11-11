@@ -76,6 +76,8 @@ export class SalesReportPage implements OnInit, OnDestroy {
 
     private async load() {
         this.loading = true;
+        
+        this.sales.data = [];
 
         let params: any = {
             'date': {
@@ -139,6 +141,12 @@ export class SalesReportPage implements OnInit, OnDestroy {
     };
 
     ngOnInit(): void {
+        this.subscriptions.date = this.date.valueChanges.subscribe(date => {
+            if (date.isValid()) {
+                this.load();
+            };
+        });
+
         this.subscriptions.route = this.route.queryParams.subscribe(params => {
             if (typeof(params.storeId) != 'undefined' && params.storeId != null && params.storeId != '') {
                 this.storeId = params.storeId;
@@ -150,6 +158,7 @@ export class SalesReportPage implements OnInit, OnDestroy {
     };
 
     ngOnDestroy(): void {
+        this.subscriptions.date.unsubscribe();
         this.subscriptions.route.unsubscribe();
     };
 
