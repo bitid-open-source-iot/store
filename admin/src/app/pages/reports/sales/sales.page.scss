@@ -1,12 +1,31 @@
 .mat-header-row {
     height: 30px;
 }
+.mat-footer-row {
+    font-weight: 500;
+}
 .page-body {
     height: calc(100vh - 56px) !important;
     overflow-y: auto;
 }
+.mat-column-orderId {
+    width: 250px;
+}
+.mat-column-date {
+    width: 150px;
+}
 .mat-column-vat,
 .mat-column-total,
 .mat-column-subtotal {
+    width: 150px;
     text-align: right;
+}
+td {
+    font-size: 12px;
+}
+mat-form-field {
+    width: 300px;
+    margin: 10px auto;
+    display: block;
+    margin-bottom: 0px;
 }

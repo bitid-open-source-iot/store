@@ -1,3 +1,4 @@
+import { Papa } from 'ngx-papaparse';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { MenuService } from 'src/app/services/menu/menu.service';
@@ -35,7 +36,7 @@ export const MY_FORMATS = {
 
 export class SalesReportPage implements OnInit, OnDestroy {
 
-    constructor(public menu: MenuService, private route: ActivatedRoute, private router: Router, private service: ReportsService) { };
+    constructor(public menu: MenuService, private papa: Papa, private route: ActivatedRoute, private router: Router, private service: ReportsService) { };
 
     public date: FormControl = new FormControl(moment(), [Validators.required]);
     public sales: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -47,9 +48,31 @@ export class SalesReportPage implements OnInit, OnDestroy {
         'vat',
         'total'
     ];
+    public summary: any = {
+        'vat': 0,
+        'total': 0,
+        'subtotal': 0
+    };
     public loading: boolean;
     private storeId: string;
     private subscriptions: any = {};
+
+    public download() {
+        const data = this.papa.unparse(this.sales.data.map(o => {
+            return {
+                'Order ID': ['#', o.orderId].join(''),
+                'Email': o.email,
+                'Date': moment(o.date).format('YYYY/MM/DD HH:mm'),
+                'Sub Total': ['R', parseFloat(o.subtotal).toFixed(2)].join(''),
+                'VAT': ['R', parseFloat(o.vat).toFixed(2)].join(''),
+                'Total': ['R', parseFloat(o.total).toFixed(2)].join('')
+            };
+        }));
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(new Blob([data], {type: 'text/csv;charset=utf-8;'}));
+        link.setAttribute('download', [this.storeId, '-', 'sales', '-', moment(this.date.value.toDate()).format('MM-YYYY'), '.csv'].join(''));
+        link.click();
+    };
 
     private async load() {
         this.loading = true;
@@ -85,7 +108,15 @@ export class SalesReportPage implements OnInit, OnDestroy {
         const response = await this.service.sales(params);
 
         if (response.ok) {
+            this.summary.vat = 0;
+            this.summary.total = 0;
+            this.summary.subtotal = 0;
             this.sales.data = response.result;
+            this.sales.data.map(item => {
+                this.summary.vat += item.vat;
+                this.summary.total += item.total;
+                this.summary.subtotal += item.subtotal;
+            });
         } else {
             this.sales.data = [];
         };

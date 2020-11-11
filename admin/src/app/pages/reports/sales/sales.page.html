@@ -8,12 +8,18 @@
     <label class="page-title spacer">
         monthly sales reports
     </label>
+
+    <button mat-icon-button (click)="download()" [disabled]="sales.data.length == 0">
+        <mat-icon>
+            cloud_download
+        </mat-icon>
+    </button>
 </mat-toolbar>
 
 <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
 
 <div class="page-body">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
         <mat-label>
             Month & Year
         </mat-label>
@@ -33,7 +39,9 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.orderId }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef>
+                Orders: {{ sales.data.length }}
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="email">
@@ -43,7 +51,7 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.email }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>
 
         <ng-container matColumnDef="date">
@@ -53,7 +61,7 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.date | date : 'yyyy/MM/dd HH:mm' }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>
 
         <ng-container matColumnDef="subtotal">
@@ -63,7 +71,9 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.subtotal | currency : 'R' }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ summary.subtotal | currency : 'R' }}
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="vat">
@@ -73,7 +83,9 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.vat | currency : 'R' }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ summary.vat | currency : 'R' }}
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="total">
@@ -83,7 +95,9 @@
             <td mat-cell *matCellDef="let element">
                 {{ element.total | currency : 'R' }}
             </td>
-            <th mat-footer-cell *matFooterCellDef></th>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ summary.total | currency : 'R' }}
+            </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns; sticky: true;"></tr>
