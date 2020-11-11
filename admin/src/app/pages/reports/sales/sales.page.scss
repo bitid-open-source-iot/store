@@ -1,0 +1,12 @@
+.mat-header-row {
+    height: 30px;
+}
+.page-body {
+    height: calc(100vh - 56px) !important;
+    overflow-y: auto;
+}
+.mat-column-vat,
+.mat-column-total,
+.mat-column-subtotal {
+    text-align: right;
+}

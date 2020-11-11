@@ -1,0 +1,93 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button class="menu-toggle" (click)="menu.toggle()">
+        <mat-icon>
+            menu
+        </mat-icon>
+    </button>
+
+    <label class="page-title spacer">
+        monthly sales reports
+    </label>
+</mat-toolbar>
+
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+<div class="page-body">
+    <mat-form-field appearance="fill">
+        <mat-label>
+            Month & Year
+        </mat-label>
+        
+        <input matInput [matDatepicker]="picker" [formControl]="date">
+        
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        
+        <mat-datepicker #picker startView="multi-year" (yearSelected)="year($event)" (monthSelected)="month($event, picker)"></mat-datepicker>
+    </mat-form-field>
+
+    <table mat-table [dataSource]="sales">
+        <ng-container matColumnDef="orderId">
+            <th mat-header-cell *matHeaderCellDef>
+                Order ID
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.orderId }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>
+                Email
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.email }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>
+                Date
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.date | date : 'yyyy/MM/dd HH:mm' }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <ng-container matColumnDef="subtotal">
+            <th mat-header-cell *matHeaderCellDef>
+                Sub Total
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.subtotal | currency : 'R' }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <ng-container matColumnDef="vat">
+            <th mat-header-cell *matHeaderCellDef>
+                VAT
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.vat | currency : 'R' }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>
+                Total
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.total | currency : 'R' }}
+            </td>
+            <th mat-footer-cell *matFooterCellDef></th>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true;"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="columns; sticky: true;"></tr>
+    </table>
+</div>

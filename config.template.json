@@ -1,43 +1,43 @@
 {
-    "production":       false,
-    "authentication":   false,
+    "production": false,
+    "authentication": false,
     "auth": {
-        "host":     "xxx",
-        "token":    "xxx",
-        "email":    "xxx@xxx.co.za",
-        "appId":    "xxx"
+        "host": "xxx",
+        "token": "xxx",
+        "email": "xxx@xxx.co.za",
+        "appId": "xxx"
     },
     "localwebserver": {
-        "storeport":   7000,
+        "storeport": 7000,
         "consoleport": 7001
     },
     "sql": {
-        "host":     "",
-        "user":     "",
+        "host": "",
+        "user": "",
         "password": "",
         "database": ""
     },
     "mongodb": {
-        "url":      "xxx",
+        "url": "xxx",
         "database": "xxx"
     },
     "smtp": {
         "tls": {
             "rejectUnauthorized": false
         },
-        "host":                 "xxx",
-        "port":                 0,
-        "secure":               false,
-        "connectionTimeout":    10000
+        "host": "xxx",
+        "port": 0,
+        "secure": false,
+        "connectionTimeout": 10000
     },
     "logger": {
         "appenders": {
             "store": {
-                "type":         "file",
-                "backups":      10,
-                "filename":     "./logs/store.log",
-                "absolute":     true,
-                "maxLogSize":   102400
+                "type": "file",
+                "backups": 10,
+                "filename": "./logs/store.log",
+                "absolute": true,
+                "maxLogSize": 102400
             }
         },
         "categories": {

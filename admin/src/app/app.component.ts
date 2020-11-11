@@ -32,6 +32,11 @@ export class AppComponent implements OnInit, OnDestroy {
 			'locked': false
 		},
 		{
+			'title': 'reports',
+			'route': '/reports',
+			'locked': false
+		},
+		{
 			'title': 'reviews',
 			'route': '/reviews',
 			'locked': true

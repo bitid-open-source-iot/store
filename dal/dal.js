@@ -2024,7 +2024,7 @@ var module = function () {
 							$lte: date.to
 						},
 						'status': 'paid',
-						'storeId': ObjectId(args.req.body.storeId),
+						'storeId': ObjectId(args.req.body.storeId)
 					}
 				},
 				{

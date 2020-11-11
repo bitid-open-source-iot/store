@@ -1,6 +1,6 @@
 {
-	"token": 	{},
-	"email": 	"xxx@xxx.co.za",
-	"store": 	"http://127.0.0.1:7000",
-	"appId": 	"xxx"
+	"token": {},
+	"email": "xxx@xxx.co.za",
+	"store": "http://127.0.0.1:7000",
+	"appId": "xxx"
 }

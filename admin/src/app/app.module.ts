@@ -10,10 +10,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter, MomentDateModule } from '@angular/material-moment-adapter';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SplashscreenModule } from './splashscreen/splashscreen.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 /* --- SERVICES --- */
 import { ApiService } from './services/api/api.service';
@@ -25,6 +27,7 @@ import { StoresService } from './services/stores/stores.service';
 import { HistoryService } from './services/history/history.service';
 import { AccountService } from './services/account/account.service';
 import { ReviewsService } from './services/reviews/reviews.service';
+import { ReportsService } from './services/reports/reports.service';
 import { CouriersService } from './services/couriers/couriers.service';
 import { ProductsService } from './services/products/products.service';
 import { SuppliersService } from './services/suppliers/suppliers.service';
@@ -55,6 +58,7 @@ import { environment } from '../environments/environment';
         MatSidenavModule,
         MatToolbarModule,
         MatSnackBarModule,
+        MomentDateModule,
         SplashscreenModule,
         BrowserAnimationsModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
@@ -69,13 +73,22 @@ import { environment } from '../environments/environment';
         AccountService,
         ReviewsService,
         HistoryService,
+        ReportsService,
         CouriersService,
         ProductsService,
         SuppliersService,
         FormErrorService,
         DepartmentsService,
         LocalstorageService,
-        CollectionPointsService
+        CollectionPointsService,
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [
+                MAT_DATE_LOCALE,
+                MAT_MOMENT_DATE_ADAPTER_OPTIONS
+            ]
+        }
     ],
     bootstrap: [
         AppComponent

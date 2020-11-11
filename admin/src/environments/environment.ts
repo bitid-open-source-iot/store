@@ -49,6 +49,8 @@ export const environment = {
 		{"url": "/store/stores/unsubscribe", "role": 4},
 		{"url": "/store/stores/updatesubscriber", "role": 4},
 
+		{"url": "/store/reports/sales", "role": 4},
+
 		{"url": "/store/reviews/get", "role": 4},
 		{"url": "/store/reviews/list", "role": 4},
 		{"url": "/store/reviews/reject", "role": 4},
