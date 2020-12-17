@@ -1,4 +1,5 @@
 import { Store } from 'src/app/interfaces/store';
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { ApiService } from './../api/api.service';
 import { environment } from './../../../environments/environment';
@@ -12,7 +13,7 @@ export class StoresService {
 
     public store: BehaviorSubject<Store>  = new BehaviorSubject(null);
 
-    constructor(private api: ApiService) {};
+    constructor(private api: ApiService, private router: Router) {};
 
     public async init() {
         const params = {
@@ -23,6 +24,8 @@ export class StoresService {
 
         if (response.ok) {
             this.store.next(response.result);
+        } else if (response.error.code == 401) {
+            this.router.navigate(['/signin']);
         };
 
         return response;
