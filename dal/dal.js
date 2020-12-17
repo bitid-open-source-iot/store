@@ -1173,6 +1173,7 @@ var module = function () {
 				},
 				'dns': args.req.body.dns || [],
 				'logo': args.req.body.logo,
+				'private': args.req.body.private || false,
 				'serverDate': new Date(),
 				'description': args.req.body.description
 			};
@@ -1460,48 +1461,70 @@ var module = function () {
 		validate: (args) => {
 			var deferred = Q.defer();
 
-			var params = {};
+			var match = {};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
 				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.storeId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
-					params._id = ObjectId(args.req.body.storeId);
+					match._id = ObjectId(args.req.body.storeId);
 				};
 			} else {
-				params.dns = args.req.headers.origin.replace('http://', '').replace('https://', '');
+				match.dns = args.req.headers.origin.replace('http://', '').replace('https://', '');
 			};
 
-			if (Object.keys(params).length == 0) {
+			var params = [
+				{
+					$match: match
+				},
+				{
+					$project: {
+						'dns': 1,
+						'logo': 1,
+						'users': '$bitid.auth.users.email',
+						'storeId': '$_id',
+						'private': 1,
+						'address': 1,
+						'payfast': 1,
+						'contact': 1,
+						'payments': 1,
+						'description': 1
+					}
+				}
+			];
+
+			if (Object.keys(match).length == 0) {
 				dalStores.errorResponse.error.errors[0].code = 503;
 				dalStores.errorResponse.error.errors[0].reason = 'Cant validate store!';
 				deferred.reject(dalStores.errorResponse);
 			} else {
-				var filter = {
-					'_id': 1,
-					'dns': 1,
-					'logo': 1,
-					'address': 1,
-					'payfast': 1,
-					'contact': 1,
-					'payments': 1,
-					'description': 1
-				};
-
 				db.call({
 					'params': params,
-					'filter': filter,
-					'operation': 'find',
+					'operation': 'aggregate',
 					'collection': 'tblStores'
 				})
 					.then(result => {
-						args.store = result[0];
+						args.store = JSON.parse(JSON.stringify(result[0]));
 						if (typeof (args.req.body.storeId) == 'undefined' || args.req.body.storeId == null || args.req.body.storeId == '') {
-							args.req.body.storeId = args.store._id.toString();
+							args.req.body.storeId = args.store.storeId;
 						};
-						deferred.resolve(args);
+
+						if (args.store.private) {
+							if (args.store.users.includes(args.req.body.header.email)) {
+								deferred.resolve(args);
+							} else {
+								var err = new ErrorResponse();
+								err.error.code = 401;
+								err.error.errors[0].code = 401;
+								err.error.errors[0].reason = 'Store is private';
+								err.error.errors[0].message = 'Store is private';
+								deferred.reject(err);
+							};
+						} else {
+							deferred.resolve(args);
+						};
 					}, error => {
 						var err = new ErrorResponse();
 						err.error.errors[0].code = error.code;
