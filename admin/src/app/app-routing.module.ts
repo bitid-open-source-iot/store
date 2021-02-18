@@ -7,73 +7,58 @@ import { AuthService } from './services/auth/auth.service';
 
 const routes: Routes = [
     {
-        'path':         'apis',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/apis/apis.module').then(m => m.ApisModule)
+        path: 'apis',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/apis/apis.module').then(m => m.ApisPageModule)
     },
     {
-        'path':         'stores',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/stores/stores.module').then(m => m.StoresModule)
+        path: 'orders',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/orders/orders.module').then(m => m.OrdersPageModule)
     },
     {
-        'path':         'signin',
-        'loadChildren': () => import('./pages/signin/signin.module').then(m => m.SigninModule)
+        path: 'stores',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/stores/stores.module').then(m => m.StoresPageModule)
     },
     {
-        'path':         'signup',
-        'loadChildren': () => import('./pages/signup/signup.module').then(m => m.SignupModule)
+        path: 'reports',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/reports/reports.module').then(m => m.ReportsPageModule)
     },
     {
-        'path':         'reports',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/reports/reports.module').then(m => m.ReportsModule)
+        path: 'reviews',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/reviews/reviews.module').then(m => m.ReviewsPageModule)
     },
     {
-        'path':         'reviews',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/reviews/reviews.module').then(m => m.ReviewsModule)
+        path: 'products',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/products/products.module').then(m => m.ProductsPageModule)
     },
     {
-        'path':         'couriers',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/couriers/couriers.module').then(m => m.CouriersModule)
+        path: 'couriers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/couriers/couriers.module').then(m => m.CouriersPageModule)
     },
     {
-        'path':         'products',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/products/products.module').then(m => m.ProductsModule)
+        path: 'suppliers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/suppliers/suppliers.module').then(m => m.SuppliersPageModule)
     },
     {
-        'path':         'suppliers',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/suppliers/suppliers.module').then(m => m.SuppliersModule)
+        path: 'departments',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/departments/departments.module').then(m => m.DepartmentsPageModule)
     },
     {
-        'path':         'departments',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/departments/departments.module').then(m => m.DepartmentsModule)
+        path: 'collection-points',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/collection-points/collection-points.module').then(m => m.CollectionPointsPageModule)
     },
     {
-        'path':         'collection-points',
-        'canActivate':  [AuthService],
-        'loadChildren': () => import('./pages/collection-points/collection-points.module').then(m => m.CollectionPointsModule)
-    },
-    {
-        'path':         'verify-account',
-        'loadChildren': () => import('./pages/verify-account/verify-account.module').then(m => m.VerifyAccountModule)
-    },
-    {
-        'path':         'privacy-policy',
-        'loadChildren': () => import('./pages/privacy-policy/privacy-policy.module').then(m => m.PrivacyPolicyModule)
-    },
-    {
-        'path':         'terms-and-conditions',
-        'loadChildren': () => import('./pages/terms-and-conditions/terms-and-conditions.module').then(m => m.TermsAndConditionsModule)
-    },
-    {
-        'path':         '**',
-        'redirectTo':   'stores'
+        path: '**',
+        redirectTo: 'stores'
     }
 ];
 
@@ -82,4 +67,4 @@ const routes: Routes = [
     exports: [RouterModule]
 })
 
-export class AppRoutingModule {}
+export class AppRoutingModule { }

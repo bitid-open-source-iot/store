@@ -1,9 +1,0 @@
-<button class="store-button" matRipple [matMenuTriggerFor]="storemenu">
-    <img [src]="store.logo ? store.logo : './assets/icon-512.png'" alt="store logo" draggable="false">
-</button>
-
-<mat-menu #storemenu="matMenu">
-    <button mat-menu-item *ngFor="let option of options" [disabled]="option.disabled" (click)="nav(option.optionId)">
-        {{ option.title }}
-    </button>
-</mat-menu>

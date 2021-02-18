@@ -1,293 +1,270 @@
-@import '~@angular/material/theming';
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
-
-$mat-myapp-primary: (
-    50 : #000,
-    100 : #000,
-    200 : #000,
-    300 : #000,
-    400 : #000,
-    500 : #000,
-    600 : #000,
-    700 : #000,
-    800 : #000,
-    900 : #000,
-    A100 : #000,
-    A200 : #000,
-    A400 : #000,
-    A700 : #000,
-    contrast: (
-        50 : #FFF,
-        100 : #FFF,
-        200 : #FFF,
-        300 : #FFF,
-        400 : #FFF,
-        500 : #FFF,
-        600 : #FFF,
-        700 : #FFF,
-        800 : #FFF,
-        900 : #FFF,
-        A100 : #FFF,
-        A200 : #FFF,
-        A400 : #FFF,
-        A700 : #FFF,
-    )
-);
-
-$mat-myapp-accent: (
-    50 : #E8F5E9,
-    100 : #C8E6C9,
-    200 : #A5D6A7,
-    300 : #81C784,
-    400 : #66BB6A,
-    500 : #4CAF50,
-    600 : #43A047,
-    700 : #388E3C,
-    800 : #2E7D32,
-    900 : #1B5E20,
-    A100 : #1B5E20,
-    A200 : #1B5E20,
-    A400 : #1B5E20,
-    A700 : #1B5E20,
-    contrast: (
-        50 : #FFFFFF,
-        100 : #FFFFFF,
-        200 : #FFFFFF,
-        300 : #FFFFFF,
-        400 : #FFFFFF,
-        500 : #FFFFFF,
-        600 : #FFFFFF,
-        700 : #FFFFFF,
-        800 : #FFFFFF,
-        900 : #FFFFFF,
-        A100 : #FFFFFF,
-        A200 : #FFFFFF,
-        A400 : #FFFFFF,
-        A700 : #FFFFFF
-    )
-);
-
-$primary: mat-palette($mat-myapp-primary);
-$accent: mat-palette($mat-myapp-accent);
-
-$theme: mat-light-theme($primary, $accent);
-
-@include angular-material-theme($theme);
-
-html, body {
-    height:             100%;
-    background-color:   #FAFAFA;
-}
+html,
 body {
-    margin:         0px;
-    font-family:    Roboto, "Helvetica Neue", sans-serif;
+    margin: 0px;
+    height: 100%;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-input {
-    -webkit-user-select: all !important;
-}
-* {
-    user-select:            none;
-    -ms-user-select:        none;
-    -moz-user-select:       none;
-    -webkit-user-select:    none;
+h1,
+h2,
+h3,
+h4,
+p {
+    margin: 0px !important;
 }
 form {
-    display:        flex;
+    margin: 10px;
+    display: flex;
     flex-direction: column;
-    mat-form-field {
-        flex: 1 auto;
+    h2 {
+        font-size: 16px !important;
     }
     section {
-        display:            flex;
-        flex-direction:     row;
-        justify-content:    space-between;
+        flex: 1 auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
         mat-form-field {
-            flex:   0 calc(50% - 5px) !important;
-            width:  calc(50% - 5px) !important;
+            flex: 0 calc(50% - 5px);
+            min-width: 0px !important;
         }
     }
-}
-mat-toolbar {
-    height: 56px !important;
-    button.disabled,
-    button:disabled {
-        color: #616161 !important;
+    mat-form-field {
+        flex: 1 auto;
+        min-width: 0px !important;
     }
-}
-.spacer {
-    flex: 1 auto;
-}
-.page-title {
-    font-size:      16px;
-    font-weight:    400;
-    text-transform: uppercase;
-}
-.page-body {
-    overflow-y: auto;
-    max-height: calc(100% - 56px);
-}
-.splash-screen {
-    top:                0px;
-    left:               0px;
-    right:              0px;
-    bottom:             0px;
-    display:            flex;
-    z-index:            10000;
-    position:           fixed;
-    align-items:        center;
-    justify-content:    center;
-    background-color:   #FFFFFF;
-}
-.menu-toggle {
-    margin-right: 15px !important;
-}
-.mat-snack-bar-container {
-    text-align:     center !important;
-    border-radius:  25px !important;
-    span {
-        justify-content: center !important;
+    input {
+        min-width: 0px !important;
     }
 }
 table {
     width: 100%;
-}
-mat-header-row {
-    height:         30px !important;
-    min-height:     30px !important;
-    text-transform: uppercase; 
-}
-.page-container {
-    height:     calc(100vh - 56px);
-    overflow-y: auto;
-}
-[text-uppercase] {
-    text-transform: uppercase !important;
-}
-[text-capitalize] {
-    text-transform: capitalize !important;
-}
-mat-bottom-sheet-container {
-    padding: 0px !important;
-}
-simple-snack-bar {
-    justify-content: center !important;
-}
-.mat-tab-group .mat-tab-header .mat-tab-label {
-    text-transform: uppercase !important;
-}
-.toast-error {
-    text-transform:     uppercase;
-    background-color:   #F44336 !important;
-}
-.toast-success {
-    text-transform:     uppercase;
-    background-color:   #4CAF50 !important;
-}
-.mat-progress-bar-fill::after {
-    background-color: rgba(255, 255, 255, 0.5) !important;
-}
-.mat-progress-bar-buffer {
-    background: #3860AD !important;
-}
-.mat-progress-bar {
-    margin-top: -4px !important;
-}
-.mat-spinner-negative.mat-progress-spinner circle, .mat-spinner-negative.mat-spinner circle {
-    stroke: #FFFFFF;
-}
-mat-list {
-    padding: 0px !important;
-}
-mat-vertical-stepper {
-    height:             calc(100vh - 56px);
-    background-color:   #FAFAFA !important;
-    mat-step-header {
-        text-transform: uppercase !important;
+    background-color: transparent !important;
+    .mat-header-row {
+        height: 30px !important;
+        background-color: #fff;
     }
+    .mat-row .mat-cell {
+        font-size: 15px;
+    }
+}
+* {
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+.spacer {
+    flex: 1 auto;
 }
 [mat-flat-button],
 [mat-stroked-button] {
-    height:             48px;
-    display:            flex !important;
-    font-size:          16px;
-    text-align:         center !important;
-    font-weight:        400;
-    align-items:        center !important;
-    text-transform:     uppercase;
-    justify-content:    center;
+    width: 100%;
+    height: 48px;
+    text-transform: uppercase;
 }
-.share-dialog,
-.delete-dialog,
-.review-dialog {
-    width: 500px !important;
-    .mat-dialog-container {
-        padding: 0px !important;
-        mat-toolbar {
-            position:       relative;
-            font-size:      16px;
-            font-weight:    400;
-            text-transform: uppercase;
-        }
-        form {
-            padding: 10px !important;
-            button {
-                font-size:      16px;
-                font-weight:    400;
-                text-transform: uppercase;
-            }
+mat-toolbar {
+    max-height: 56px !important;
+}
+mat-list {
+    padding: 0px !important;
+    mat-list-item {
+        outline: none !important;
+        mat-icon {
+            margin-right: 16px;
         }
     }
-}
-.download-dialog .mat-dialog-container,
-.subscribers-dialog .mat-dialog-container {
-    top:            0px;
-    left:           0px;
-    right:          0px;
-    bottom:         0px;
-    z-index:        5000;
-    padding:        0px;
-    position:       fixed;
-    border-radius:  0px;
-}
-@media screen and (max-width: 600px) {
-    .share-dialog,
-    .delete-dialog,
-    .review-dialog,
-    .download-dialog {
-        .mat-dialog-container {
-            top:            0px;
-            left:           0px;
-            right:          0px;
-            bottom:         0px;
-            z-index:        5000;
-            position:       fixed;
-            border-radius:  0px;
-        }
+    mat-list-item[type="button"] {
+        cursor: pointer;
+        user-select: none;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+    }
+    mat-list-item[lines="full"] {
+        border-bottom: 1px solid #e0e0e0;
     }
 }
 .container {
-    width:          60%;
-    margin:         auto;
-    display:        flex;
-    flex-direction: column;
+    width: 60%;
+    margin: auto;
 }
-@media screen and (max-width: 1500px) {
+@media screen and (max-width: 1200px) {
     .container {
         width: 70%;
     }
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 900px) {
     .container {
         width: 80%;
     }
 }
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 600px) {
     .container {
         width: 90%;
     }
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 400px) {
     .container {
         width: 100%;
     }
+}
+mat-grid-list {
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #e0e0e0;
+    mat-grid-tile {
+        cursor: pointer;
+        background-color: #ffffff;
+    }
+}
+body.dark-mode {
+    *::-webkit-scrollbar {
+        width: 1em !important;
+        background-color: #212121 !important;
+    }
+    *::-webkit-scrollbar-thumb {
+        outline: none !important;
+        background-color: #757575 !important;
+    }
+    color: #e0e0e0 !important;
+    background-color: #000000 !important;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+        color: #e0e0e0 !important;
+    }
+    splashscreen,
+    mat-dialog-container {
+        color: #e0e0e0 !important;
+        background-color: #000000 !important;
+    }
+    mat-grid-list {
+        border-bottom: 1px solid #757575;
+        background-color: #757575;
+        mat-grid-tile {
+            background-color: #000000 !important;
+        }
+    }
+    form {
+        color: #e0e0e0 !important;
+    }
+    mat-card,
+    mat-drawer,
+    mat-footer,
+    mat-toolbar,
+    mat-bottom-sheet-container {
+        color: #e0e0e0 !important;
+        border-color: #212121 !important;
+        background-color: #0a0a0a !important;
+    }
+    mat-account {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    button:disabled {
+        color: rgba(255, 255, 255, 0.25) !important;
+    }
+    input[type="color"] {
+        border-color: #757575 !important;
+    }
+    .mat-form-field,
+    .mat-select-value {
+        color: #e0e0e0 !important;
+    }
+    .mat-form-field-outline {
+        color: #757575 !important;
+    }
+    .mat-form-field-invalid {
+        .mat-form-field-outline {
+            color: #f44336 !important;
+        }
+        .mat-form-field-label-wrapper label {
+            color: #f44336 !important;
+        }
+    }
+    .mat-form-field-label-wrapper label {
+        color: #e0e0e0 !important;
+    }
+    .mat-list {
+        .mat-subheader,
+        .mat-list-item {
+            color: #e0e0e0 !important;
+        }
+        .mat-list-item[lines="full"] {
+            border-color: rgba(255, 255, 255, 0.25) !important;
+        }
+    }
+    .mat-slide-toggle .mat-slide-toggle-bar {
+        background-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .mat-header-row {
+        background-color: #212121 !important;
+        .mat-header-cell {
+            color: #e0e0e0 !important;
+            border-color: #212121 !important;
+        }
+    }
+    .mat-row {
+        .mat-cell {
+            color: #e0e0e0 !important;
+            border-color: #212121 !important;
+        }
+    }
+    .mat-tab-group,
+    .mat-tab-label {
+        color: #e0e0e0 !important;
+    }
+    .mat-tab-header {
+        border-color: #212121 !important;
+    }
+    mat-drawer-container {
+        mat-drawer {
+            mat-button-toggle-group {
+                border-color: #757575 !important;
+                mat-button-toggle {
+                    color: #e0e0e0 !important;
+                    border-color: #757575 !important;
+                    background-color: transparent !important;
+                }
+                .mat-button-toggle-checked {
+                    background-color: #424242 !important;
+                }
+            }
+        }
+        mat-drawer-content {
+            mat-toolbar {
+                border-color: #757575 !important;
+                input {
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                }
+            }
+        }
+    }
+    form h2.collapsed {
+        border-bottom: 1px solid #212121 !important;
+    }
+}
+stores-page {
+    height: calc(100vh - 56px);
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    mat-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        button {
+            max-width: 400px;
+        }
+    }
+}
+input[type="color"] {
+    height: 16px !important;
+}
+button[mat-menu-item] {
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 12px !important;
 }

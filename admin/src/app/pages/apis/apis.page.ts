@@ -1,21 +1,17 @@
-import { MenuService } from 'src/app/services/menu/menu.service';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 
 @Component({
-    selector:       'app-apis-page',
-    styleUrls:      ['./apis.page.scss'],
-    templateUrl:    './apis.page.html'
+    selector: 'apis-page',
+    styleUrls: ['./apis.page.scss'],
+    templateUrl: './apis.page.html'
 })
 
 export class ApisPage implements OnInit, OnDestroy {
 
-    constructor(public menu: MenuService) {};
+    constructor() { }
 
-    public loading:         boolean;
-    private subscriptions:  any = {};
+    ngOnInit(): void { }
 
-    ngOnInit(): void {};
-
-    ngOnDestroy(): void {};
+    ngOnDestroy(): void { }
 
 }

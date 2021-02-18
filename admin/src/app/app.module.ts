@@ -1,98 +1,79 @@
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
-import { OrderModule } from './libs/order/order.module';
-import { VersionModule } from './libs/version/version.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatRippleModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter, MomentDateModule } from '@angular/material-moment-adapter';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SplashscreenModule } from './splashscreen/splashscreen.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SplashscreenModule } from './libs/splashscreen/splashscreen.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 /* --- SERVICES --- */
 import { ApiService } from './services/api/api.service';
 import { AuthService } from './services/auth/auth.service';
-import { MenuService } from './services/menu/menu.service';
-import { ApisService } from './services/apis/apis.service';
 import { ToastService } from './services/toast/toast.service';
 import { StoresService } from './services/stores/stores.service';
-import { HistoryService } from './services/history/history.service';
+import { ConfigService } from './services/config/config.service';
 import { AccountService } from './services/account/account.service';
-import { ReviewsService } from './services/reviews/reviews.service';
-import { ReportsService } from './services/reports/reports.service';
-import { CouriersService } from './services/couriers/couriers.service';
-import { ProductsService } from './services/products/products.service';
-import { SuppliersService } from './services/suppliers/suppliers.service';
+import { ButtonsService } from './services/buttons/buttons.service';
+import { SettingsService } from './services/settings/settings.service';
 import { FormErrorService } from './services/form-error/form-error.service';
-import { DepartmentsService } from './services/departments/departments.service';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
-import { CollectionPointsService } from './services/collection-points/collection-points.service';
 
 /* --- COMPONENTS --- */
 import { AppComponent } from './app.component';
 
-/* --- ENVIRONMENT --- */
+/* --- ENVIRONMENTS --- */
 import { environment } from '../environments/environment';
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
     imports: [
-        OrderModule,
         BrowserModule,
-        MatListModule,
         MatIconModule,
-        VersionModule,
+        MatListModule,
+        MatDialogModule,
+        MatRippleModule,
         MatButtonModule,
         AppRoutingModule,
-        HttpClientModule,
         MatSidenavModule,
         MatToolbarModule,
+        MatTooltipModule,
+        HttpClientModule,
         MatSnackBarModule,
-        MomentDateModule,
         SplashscreenModule,
+        MatFormFieldModule,
         BrowserAnimationsModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production
+        })
     ],
     providers: [
         ApiService,
         AuthService,
-        MenuService,
-        ApisService,
         ToastService,
+        ConfigService,
         StoresService,
         AccountService,
-        ReviewsService,
-        HistoryService,
-        ReportsService,
-        CouriersService,
-        ProductsService,
-        SuppliersService,
+        ButtonsService,
+        SettingsService,
         FormErrorService,
-        DepartmentsService,
-        LocalstorageService,
-        CollectionPointsService,
-        {
-            provide: DateAdapter,
-            useClass: MomentDateAdapter,
-            deps: [
-                MAT_DATE_LOCALE,
-                MAT_MOMENT_DATE_ADAPTER_OPTIONS
-            ]
-        }
+        LocalstorageService
     ],
     bootstrap: [
+        AppComponent
+    ],
+    declarations: [
         AppComponent
     ]
 })
 
-export class AppModule {}
+export class AppModule { }

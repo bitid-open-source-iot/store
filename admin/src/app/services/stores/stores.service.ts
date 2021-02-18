@@ -1,97 +1,45 @@
-import { Store } from 'src/app/interfaces/store';
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { LocalstorageService } from '../localstorage/localstorage.service';
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root'
 })
 
 export class StoresService {
 
-    public data: Store[] = [];
+	constructor(private api: ApiService) { }
 
-    constructor(private api: ApiService, private localstorage: LocalstorageService) { };
+	public async add(params) {
+		return await this.api.post(environment.store, '/store/stores/add', params);
+	}
 
-    public async add(params: any) {
-        const response = await this.api.post(environment.store, '/store/stores/add', params);
+	public async get(params) {
+		return await this.api.post(environment.store, '/store/stores/get', params);
+	}
 
-        if (response.ok) {
-            params.storeId = response.result.storeId;
-            this.data.push(params);
-        };
+	public async list(params) {
+		return await this.api.post(environment.store, '/store/stores/list', params);
+	}
 
-        return response;
-    };
+	public async share(params) {
+		return await this.api.post(environment.store, '/store/stores/share', params);
+	}
 
-    public async get(params: any) {
-        return await this.api.post(environment.store, '/store/stores/get', params);
-    };
+	public async update(params) {
+		return await this.api.post(environment.store, '/store/stores/update', params);
+	}
 
-    public async list(params: any) {
-        return await this.api.post(environment.store, '/store/stores/list', params);
-    };
+	public async delete(params) {
+		return await this.api.post(environment.store, '/store/stores/delete', params);
+	}
 
-    public async share(params: any) {
-        return await this.api.post(environment.store, '/store/stores/share', params);
-    };
+	public async unsubscribe(params) {
+		return await this.api.post(environment.store, '/store/stores/unsubscribe', params);
+	}
 
-    public async update(params: any) {
-        const response = await this.api.post(environment.store, '/store/stores/update', params);
-
-        if (response.ok) {
-            for (let i = 0; i < this.data.length; i++) {
-                if (this.data[i].storeId == params.storeId) {
-                    Object.keys(params).map(key => {
-                        this.data[i][key] = params[key];
-                    });
-                    break;
-                };
-            };
-        };
-
-        return response;
-    };
-
-    public async delete(params: any) {
-        const response = await this.api.post(environment.store, '/store/stores/delete', params);
-
-        if (response.ok) {
-            for (let i = 0; i < this.data.length; i++) {
-                if (this.data[i].storeId == params.storeId) {
-                    this.data.splice(i, 1);
-                    break;
-                };
-            };
-        };
-
-        return response;
-    };
-
-    public async unsubscribe(params: any) {
-        if (typeof (params.email) == 'undefined' || params.email == null || params.email == '') {
-            params.email = this.localstorage.get('email');
-        };
-
-        const response = await this.api.post(environment.store, '/store/stores/unsubscribe', params);
-
-        if (response.ok) {
-            if (params.email == this.localstorage.get('email')) {
-                for (let i = 0; i < this.data.length; i++) {
-                    if (this.data[i].storeId == params.storeId) {
-                        this.data.splice(i, 1);
-                        break;
-                    };
-                };
-            };
-        };
-
-        return response;
-    };
-
-    public async updatesubscriber(params: any) {
-        return await this.api.post(environment.store, '/store/stores/updatesubscriber', params);
-    };
+	public async updatesubscriber(params) {
+		return await this.api.post(environment.store, '/store/stores/updatesubscriber', params);
+	}
 
 }

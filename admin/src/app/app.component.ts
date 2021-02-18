@@ -1,10 +1,15 @@
-import { MatSidenav } from '@angular/material/sidenav';
-import { MenuService } from './services/menu/menu.service';
-import { SplashScreen } from './splashscreen/splashscreen.component';
+import { MatButton } from '@angular/material/button';
+import { SplashScreen } from './libs/splashscreen/splashscreen';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ConfigService } from './services/config/config.service';
+import { UpdateService } from './libs/update/update.service';
+import { ButtonsService } from './services/buttons/buttons.service';
 import { AccountService } from './services/account/account.service';
-import { HistoryService } from './services/history/history.service';
-import { ActivatedRoute } from '@angular/router';
-import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { SettingsService } from './services/settings/settings.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { LocalstorageService } from './services/localstorage/localstorage.service';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
+import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
 
 @Component({
 	selector: 'app-root',
@@ -12,103 +17,109 @@ import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
 	templateUrl: './app.component.html'
 })
 
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-	@ViewChild(MatSidenav, { 'static': true }) private sidenav: MatSidenav;
-	@ViewChild(SplashScreen, { 'static': true }) private splashscreen: SplashScreen;
+	@ViewChild(MatDrawer, { static: true }) private drawer: MatDrawer;
+	@ViewChild(SplashScreen, { static: true }) private splashscreen: SplashScreen;
+	@ViewChild(MatDrawerContainer, { static: true }) private drawercontainer: MatDrawerContainer;
 
-	constructor(public menu: MenuService, public route: ActivatedRoute, private history: HistoryService, private account: AccountService) { };
+	@ViewChild('add', { static: true }) private add: MatButton;
+	@ViewChild('close', { static: true }) private close: MatButton;
+	@ViewChild('filter', { static: true }) private filter: MatButton;
+	@ViewChild('search', { static: true }) private search: MatButton;
 
-	public user: any = {};
-	public pages: any[] = [
-		// {
-		// 	'title': 'apis',
-		// 	'route': '/apis',
-		// 	'locked': true
-		// },
-		{
-			'title': 'stores',
-			'route': '/stores',
-			'locked': false
-		},
-		{
-			'title': 'reports',
-			'route': '/reports',
-			'locked': false
-		},
-		{
-			'title': 'reviews',
-			'route': '/reviews',
-			'locked': true
-		},
-		{
-			'title': 'couriers',
-			'route': '/couriers',
-			'locked': true
-		},
-		{
-			'title': 'products',
-			'route': '/products',
-			'locked': true
-		},
-		{
-			'title': 'suppliers',
-			'route': '/suppliers',
-			'locked': true
-		},
-		{
-			'title': 'departments',
-			'route': '/departments',
-			'locked': true
-		},
-		{
-			'title': 'collection points',
-			'route': '/collection-points',
-			'locked': true
-		}
-	];
-	public storeId: string;
+	constructor(private config: ConfigService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, private settings: SettingsService, private registry: MatIconRegistry, private sanitizer: DomSanitizer, private localstorage: LocalstorageService) {
+		this.registry.addSvgIcon('arc', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/arc.svg'));
+		this.registry.addSvgIcon('button', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/button.svg'));
+		this.registry.addSvgIcon('circle', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/circle.svg'));
+		this.registry.addSvgIcon('line', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/line.svg'));
+		this.registry.addSvgIcon('polygon', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/polygon.svg'));
+		this.registry.addSvgIcon('rectangle', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/rectangle.svg'));
+		this.registry.addSvgIcon('text', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/text.svg'));
+		this.registry.addSvgIcon('vector', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/vector.svg'));
+	}
+
+	public minified: boolean = JSON.parse(this.localstorage.get('minified', false));
 	public authenticated: boolean;
-	public subscriptions: any = {};
 
-	public logout() {
-		this.menu.close();
-		this.account.logout();
-	};
+	public toggle() {
+		this.minified = !this.minified;
+		this.localstorage.set('minified', this.minified);
+	}
 
 	private async initialize() {
 		await this.splashscreen.show();
 
-		await this.menu.init(this.sidenav);
-		await this.history.init();
-		await this.account.init();
+		if (window.innerWidth <= 600) {
+			this.drawer.mode = 'push';
+			this.drawercontainer.hasBackdrop = false;
+		} else {
+			this.drawer.mode = 'side';
+		}
+
+		await this.config.init();
+		await this.update.init();
+		await this.settings.init();
 
 		await this.splashscreen.hide();
-	};
+	}
 
 	ngOnInit(): void {
-		this.subscriptions.route = this.route.queryParams.subscribe(params => {
-			this.storeId = params.storeId;
+		this.drawer.open();
+
+		this.config.loaded.subscribe(async loaded => {
+			if (loaded) {
+				// await this.account.init();
+			}
 		});
 
-		this.subscriptions.account = this.account.user.subscribe(async user => {
-			this.user = user;
-		});
-
-		this.subscriptions.authenticated = this.account.authenticated.subscribe(async authenticated => {
+		this.account.authenticated.subscribe(authenticated => {
 			this.authenticated = authenticated;
-			if (this.authenticated) {
-				await this.account.get();
-			};
+			if (authenticated) {
+				this.drawer.open();
+			} else {
+				this.drawer.close();
+			}
 		});
 
 		this.initialize();
-	};
 
-	ngOnDestroy(): void {
-		this.subscriptions.route.unsubscribe();
-		this.subscriptions.account.unsubscribe();
-		this.subscriptions.authenticated.unsubscribe();
-	};
+		this.renderer.listen(this.add._elementRef.nativeElement, 'click', event => this.buttons.add.click.next(event));
+		this.renderer.listen(this.close._elementRef.nativeElement, 'click', event => this.buttons.close.click.next(event));
+		this.renderer.listen(this.filter._elementRef.nativeElement, 'click', event => this.buttons.filter.click.next(event));
+		this.renderer.listen(this.search._elementRef.nativeElement, 'click', event => this.buttons.search.click.next(event));
+
+		this.buttons.add.visible.subscribe(visible => {
+			if (visible) {
+				this.renderer.setStyle(this.add._elementRef.nativeElement, 'display', 'block');
+			} else {
+				this.renderer.setStyle(this.add._elementRef.nativeElement, 'display', 'none');
+			}
+		});
+
+		this.buttons.close.visible.subscribe(visible => {
+			if (visible) {
+				this.renderer.setStyle(this.close._elementRef.nativeElement, 'display', 'block');
+			} else {
+				this.renderer.setStyle(this.close._elementRef.nativeElement, 'display', 'none');
+			}
+		});
+
+		this.buttons.filter.visible.subscribe(visible => {
+			if (visible) {
+				this.renderer.setStyle(this.filter._elementRef.nativeElement, 'display', 'block');
+			} else {
+				this.renderer.setStyle(this.filter._elementRef.nativeElement, 'display', 'none');
+			}
+		});
+
+		this.buttons.search.visible.subscribe(visible => {
+			if (visible) {
+				this.renderer.setStyle(this.search._elementRef.nativeElement, 'display', 'block');
+			} else {
+				this.renderer.setStyle(this.search._elementRef.nativeElement, 'display', 'none');
+			}
+		});
+	}
 
 }
