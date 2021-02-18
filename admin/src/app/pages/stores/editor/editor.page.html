@@ -1,12 +1,18 @@
 <mat-content>
     <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
 
-    <header upload [upload-src]="form.value.cover" matRipple>
-        
+    <header upload [upload-src]="form.value.cover" (upload-change)="upload('cover', $event)" matRipple>
+        <h1>
+            Upload Cover
+        </h1>
     </header>
 
     <div class="container">
-        <div class="logo" upload [upload-src]="form.value.logo" matRipple></div>
+        <div class="logo" upload [upload-src]="form.value.logo" (upload-change)="upload('logo', $event)" matRipple>
+            <mat-icon>
+                upload
+            </mat-icon>
+        </div>
 
         <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
             <section>
@@ -42,32 +48,50 @@
                 </mat-form-field>
             </section>
 
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    DNS
+                </mat-label>
+    
+                <mat-chip-list #dnslist aria-label="dns">
+                  <mat-chip *ngFor="let key of form.value.dns" (removed)="remove(key)">
+                        {{ key }}
+                        
+                        <mat-icon matChipRemove>
+                            cancel
+                        </mat-icon>
+                  </mat-chip>
+    
+                  <input placeholder="New url..." [matChipInputFor]="dnslist" [matChipInputSeparatorKeyCodes]="keycodes" [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+            </mat-form-field>
+
             <h2>
                 Address
             </h2>
 
             <section formGroupName="address">
-                <mat-form-field appearance="outline" formGroupName="company">
+                <mat-form-field appearance="outline">
                     <mat-label>
                         VAT
                     </mat-label>
 
                     <input matInput type="text" name="vat" placeholder="vat" formControlName="vat" required>
 
-                    <mat-error *ngIf="errors.address.company.vat">
-                        {{ errors.address.company.vat }}
+                    <mat-error *ngIf="errors.address.vat">
+                        {{ errors.address.vat }}
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" formGroupName="company">
+                <mat-form-field appearance="outline">
                     <mat-label>
                         REG
                     </mat-label>
 
                     <input matInput type="text" name="reg" placeholder="reg" formControlName="reg" required>
 
-                    <mat-error *ngIf="errors.address.company.reg">
-                        {{ errors.address.company.reg }}
+                    <mat-error *ngIf="errors.address.reg">
+                        {{ errors.address.reg }}
                     </mat-error>
                 </mat-form-field>
             </section>

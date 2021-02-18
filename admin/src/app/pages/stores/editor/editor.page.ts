@@ -1,4 +1,5 @@
 import { Store } from 'src/app/classes/store';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
@@ -19,10 +20,8 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 
 	public form: FormGroup = new FormGroup({
 		address: new FormGroup({
-			company: new FormGroup({
-				vat: new FormControl(null, [Validators.required]),
-				reg: new FormControl(null, [Validators.required])
-			}),
+			vat: new FormControl(null, [Validators.required]),
+			reg: new FormControl(null, [Validators.required]),
 			street: new FormControl(null, [Validators.required]),
 			suburb: new FormControl(null, [Validators.required]),
 			country: new FormControl(null, [Validators.required]),
@@ -38,6 +37,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			merchantId: new FormControl(null, [Validators.required]),
 			merchantKey: new FormControl(null, [Validators.required])
 		}),
+		dns: new FormControl([], [Validators.required]),
 		logo: new FormControl(null, [Validators.required]),
 		cover: new FormControl('./assets/cover.png', [Validators.required]),
 		description: new FormControl(null, [Validators.required]),
@@ -47,10 +47,8 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 	public store: Store = new Store();
 	public errors: any = {
 		address: {
-			company: {
-				vat: '',
-				reg: ''
-			},
+			vat: '',
+			reg: '',
 			street: '',
 			suburb: '',
 			country: '',
@@ -66,6 +64,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			merchantId: '',
 			merchantKey: ''
 		},
+		dns: '',
 		logo: '',
 		cover: '',
 		description: '',
@@ -73,13 +72,29 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 	};
 	public storeId: string;
 	public loading: boolean;
+	public keycodes: number[] = [ENTER, COMMA];
 	private subscriptions: any = {}
+
+	public add(event) {
+		let value: string = event.value.trim();
+		if (typeof(value) != 'undefined' && value != null && value != '') {
+			let domains: string[] = this.form.value.dns;
+			domains.push(event.value.trim());
+			event.input.value = '';
+			this.form.controls.dns.setValue(domains);
+		};
+	};
+	
+	public remove(url) {
+		this.form.controls.dns.setValue(this.form.value.dns.filter(o => o != url));
+	};
 
 	private async get() {
 		this.loading = true;
 
 		const response = await this.service.get({
 			filter: [
+				'dns',
 				'role',
 				'logo',
 				'cover',
@@ -96,8 +111,8 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		if (response.ok) {
 			this.store = new Store(response.result);
 			if (this.store.role > 2) {
-				((this.form.controls.address as FormGroup).controls.company as FormGroup).controls.vat.setValue(this.store.address.company.vat);
-				((this.form.controls.address as FormGroup).controls.company as FormGroup).controls.reg.setValue(this.store.address.company.reg);
+				(this.form.controls.address as FormGroup).controls.vat.setValue(this.store.address.vat);
+				(this.form.controls.address as FormGroup).controls.reg.setValue(this.store.address.reg);
 				(this.form.controls.address as FormGroup).controls.street.setValue(this.store.address.street);
 				(this.form.controls.address as FormGroup).controls.suburb.setValue(this.store.address.suburb);
 				(this.form.controls.address as FormGroup).controls.country.setValue(this.store.address.country);
@@ -111,6 +126,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				(this.form.controls.payfast as FormGroup).controls.merchantId.setValue(this.store.payfast.merchantId);
 				(this.form.controls.payfast as FormGroup).controls.merchantKey.setValue(this.store.payfast.merchantKey);
 
+				this.form.controls.dns.setValue(this.store.dns);
 				this.form.controls.logo.setValue(this.store.logo);
 				this.form.controls.cover.setValue(this.store.cover);
 				this.form.controls.description.setValue(this.store.description);
@@ -137,6 +153,25 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		};
 
 		const response = await this.service[mode]({
+			address: {
+				vat: this.form.value.address.vat,
+				reg: this.form.value.address.reg,
+				street: this.form.value.address.street,
+				suburb: this.form.value.address.suburb,
+				country: this.form.value.address.country,
+				cityTown: this.form.value.address.cityTown,
+				postalCode: this.form.value.address.postalCode
+			},
+			contact: {
+				email: this.form.value.contact.email,
+				number: this.form.value.contact.number,
+				website: this.form.value.contact.website
+			},
+			payfast: {
+				merchantId: this.form.value.payfast.merchantId,
+				merchantKey: this.form.value.payfast.merchantKey
+			},
+			dns: this.form.value.dns,
 			logo: this.form.value.logo,
 			cover: this.form.value.cover,
 			storeId: this.storeId,
@@ -144,9 +179,17 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			organizationOnly: this.form.value.organizationOnly
 		});
 
-		if (response.ok) { } else { };
+		if (response.ok) {
+			this.router.navigate(['/stores']);
+		} else {
+			this.toast.error(response.error.message);
+		};
 
 		this.loading = false;
+	};
+
+	public upload(key, value) {
+		this.form.controls[key].setValue(value);
 	};
 
 	ngOnInit(): void {

@@ -41,7 +41,7 @@ export class ApiService {
 
 		if (typeof (token) == 'undefined' || (typeof (email) == 'undefined')) {
 			this.localstorage.clear();
-			this.router.navigate(['/signin']);
+			this.router.navigate(['/home']);
 		}
 
 		const options = {
@@ -75,7 +75,7 @@ export class ApiService {
 				error.error = error.error.errors[0];
 				if (error.code == 401) {
 					this.localstorage.clear();
-					this.router.navigate(['/signin']);
+					this.router.navigate(['/home']);
 				}
 				return error;
 			} else {

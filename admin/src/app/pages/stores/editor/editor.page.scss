@@ -1,9 +1,16 @@
 header {
     width: 100%;
+    color: #FFF;
     height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    h1 {
+        font-size: 32px;
+    }
 }
 .logo {
     top: -190px;
@@ -11,9 +18,12 @@ header {
     width: 150px;
     height: 150px;
     border: 1px solid #E0E0E0;
+    display: flex;
     z-index: 10;
     position: absolute;
+    align-items: center;
     border-radius: 5px;
+    justify-content: center;
     background-color: #FAFAFA;
 }
 .container {

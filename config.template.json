@@ -10,7 +10,7 @@
     "client": {
         "auth": "https://auth.bitid.co.za",
         "store": "https://store.bitid.co.za",
-        "appId": "000000000000000000000001",
+        "appId": "000000000000000000000021",
         "appName": "Store Admin"
     },
     "localwebserver": {

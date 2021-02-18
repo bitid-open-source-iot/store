@@ -3,10 +3,8 @@ import { User } from "./user";
 export class Store {
 
     public address = {
-        company: {
-            vat: '',
-            reg: '',
-        },
+        vat: '',
+        reg: '',
         street: '',
         suburb: '',
         country: '',
@@ -22,6 +20,7 @@ export class Store {
         merchantId: '',
         merchantKey: ''
     };
+    public dns?: string[] = [];
     public role?: number;
     public logo?: string;
     public users?: User[];
@@ -34,13 +33,11 @@ export class Store {
     constructor(args?: STORE) {
         if (typeof (args) != 'undefined' && args != null) {
             if (typeof (args.address) != 'undefined' && args.address != null) {
-                if (typeof (args.address.company) != 'undefined' && args.address.company != null) {
-                    if (typeof (args.address.company.vat) != 'undefined' && args.address.company.vat != null) {
-                        this.address.company.vat = args.address.company.vat;
-                    }
-                    if (typeof (args.address.company.reg) != 'undefined' && args.address.company.reg != null) {
-                        this.address.company.reg = args.address.company.reg;
-                    }
+                if (typeof (args.address.vat) != 'undefined' && args.address.vat != null) {
+                    this.address.vat = args.address.vat;
+                }
+                if (typeof (args.address.reg) != 'undefined' && args.address.reg != null) {
+                    this.address.reg = args.address.reg;
                 }
                 if (typeof (args.address.street) != 'undefined' && args.address.street != null) {
                     this.address.street = args.address.street;
@@ -77,6 +74,9 @@ export class Store {
                     this.payfast.merchantKey = args.payfast.merchantKey;
                 }
             }
+            if (typeof (args.dns) != 'undefined' && args.dns != null) {
+                this.dns = args.dns;
+            }
             if (typeof (args.role) != 'undefined' && args.role != null) {
                 this.role = args.role;
             }
@@ -108,10 +108,8 @@ export class Store {
 
 interface STORE {
     address?: {
-        company?: {
-            vat?: string;
-            reg?: string;
-        };
+        vat?: string;
+        reg?: string;
         street?: string;
         suburb?: string;
         country?: string;
@@ -127,6 +125,7 @@ interface STORE {
         merchantId?: string;
         merchantKey?: string;
     };
+    dns?: string[];
     role?: number;
     logo?: string;
     users?: User[];

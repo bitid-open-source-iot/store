@@ -1,4 +1,5 @@
 import { MatButton } from '@angular/material/button';
+import { MatToolbar } from '@angular/material/toolbar';
 import { SplashScreen } from './libs/splashscreen/splashscreen';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfigService } from './services/config/config.service';
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
 	@ViewChild('close', { static: true }) private close: MatButton;
 	@ViewChild('filter', { static: true }) private filter: MatButton;
 	@ViewChild('search', { static: true }) private search: MatButton;
+	@ViewChild('toolbar', { static: true }) private toolbar: MatToolbar;
 
 	constructor(private config: ConfigService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, private settings: SettingsService, private registry: MatIconRegistry, private sanitizer: DomSanitizer, private localstorage: LocalstorageService) {
 		this.registry.addSvgIcon('arc', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/arc.svg'));
@@ -77,7 +79,9 @@ export class AppComponent implements OnInit {
 			this.authenticated = authenticated;
 			if (authenticated) {
 				this.drawer.open();
+				this.renderer.setStyle(this.toolbar._elementRef.nativeElement, 'display', 'flex');
 			} else {
+				this.renderer.setStyle(this.toolbar._elementRef.nativeElement, 'display', 'none');
 				this.drawer.close();
 			}
 		});

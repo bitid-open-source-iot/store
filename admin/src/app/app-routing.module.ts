@@ -7,6 +7,10 @@ import { AuthService } from './services/auth/auth.service';
 
 const routes: Routes = [
     {
+        path: 'home',
+        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+    },
+    {
         path: 'apis',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/apis/apis.module').then(m => m.ApisPageModule)
@@ -50,6 +54,10 @@ const routes: Routes = [
         path: 'departments',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/departments/departments.module').then(m => m.DepartmentsPageModule)
+    },
+    {
+        path: 'authenticate',
+        loadChildren: () => import('./pages/authenticate/authenticate.module').then(m => m.AuthenticatePageModule)
     },
     {
         path: 'collection-points',

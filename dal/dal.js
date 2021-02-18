@@ -1168,6 +1168,7 @@ var module = function () {
 					'reg': args.req.body.address.reg || '',
 					'street': args.req.body.address.street || '',
 					'suburb': args.req.body.address.suburb || '',
+					'country': args.req.body.address.country || '',
 					'cityTown': args.req.body.address.cityTown || '',
 					'postalCode': args.req.body.address.postalCode || ''
 				},
@@ -1388,6 +1389,9 @@ var module = function () {
 				};
 				if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null) {
 					update.$set['address.suburb'] = args.req.body.address.suburb;
+				};
+				if (typeof (args.req.body.address.country) != 'undefined' && args.req.body.address.country != null) {
+					update.$set['address.country'] = args.req.body.address.country;
 				};
 				if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null) {
 					update.$set['address.cityTown'] = args.req.body.address.cityTown;
