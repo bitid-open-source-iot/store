@@ -70,64 +70,52 @@ try {
                     res.sendFile(__dirname + '/store/dist/store/index.html');
                 });
 
-                var apis = require('./api/apis');
-                app.use('/store/apis', apis);
+                app.use('/store/apis', require('./api/apis'));
                 __logger.info('Loaded: ./api/store/apis');
 
-                var carts = require('./api/carts');
-                app.use('/store/carts', carts);
+                app.use('/store/carts', require('./api/carts'));
                 __logger.info('Loaded: ./api/store/carts');
 
-                var orders = require('./api/orders');
-                app.use('/store/orders', orders);
+                app.use('/store/config', require('./api/config'));
+                __logger.info('Loaded: ./api/store/config');
+
+                app.use('/store/orders', require('./api/orders'));
                 __logger.info('Loaded: ./api/store/orders');
 
-                var stores = require('./api/stores');
-                app.use('/store/stores', stores);
+                app.use('/store/stores', require('./api/stores'));
                 __logger.info('Loaded: ./api/store/stores');
 
-                var reports = require('./api/reports');
-                app.use('/store/reports', reports);
+                app.use('/store/reports', require('./api/reports'));
                 __logger.info('Loaded: ./api/store/orders');
 
-                var payfast = require('./api/payfast');
-                app.use('/store/payfast', payfast);
+                app.use('/store/payfast', require('./api/payfast'));
                 __logger.info('Loaded: ./api/store/payfast');
 
-                var reviews = require('./api/reviews');
-                app.use('/store/reviews', reviews);
+                app.use('/store/reviews', require('./api/reviews'));
                 __logger.info('Loaded: ./api/store/reviews');
 
-                var products = require('./api/products');
-                app.use('/store/products', products);
+                app.use('/store/products', require('./api/products'));
                 __logger.info('Loaded: ./api/store/products');
 
-                var warnings = require('./api/warnings');
-                app.use('/store/warnings', warnings);
+                app.use('/store/warnings', require('./api/warnings'));
                 __logger.info('Loaded: ./api/store/warnings');
 
-                var couriers = require('./api/couriers');
-                app.use('/store/couriers', couriers);
+                app.use('/store/couriers', require('./api/couriers'));
                 __logger.info('Loaded: ./api/store/couriers');
 
-                var suppliers = require('./api/suppliers');
-                app.use('/store/suppliers', suppliers);
+                app.use('/store/suppliers', require('./api/suppliers'));
                 __logger.info('Loaded: ./api/store/suppliers');
 
-                var wishlists = require('./api/wishlists');
-                app.use('/store/wishlists', wishlists);
+                app.use('/store/wishlists', require('./api/wishlists'));
                 __logger.info('Loaded: ./api/store/wishlists');
 
-                var addresses = require('./api/addresses');
-                app.use('/store/addresses', addresses);
+                app.use('/store/addresses', require('./api/addresses'));
                 __logger.info('Loaded: ./api/store/addresses');
 
-                var departments = require('./api/departments');
-                app.use('/store/departments', departments);
+                app.use('/store/departments', require('./api/departments'));
                 __logger.info('Loaded: ./api/store/departments');
 
-                var collectionpoints = require('./api/collectionpoints');
-                app.use('/store/collectionpoints', collectionpoints);
+                app.use('/store/collectionpoints', require('./api/collectionpoints'));
                 __logger.info('Loaded: ./api/store/collectionpoints');
 
                 app.use('/health-check', healthcheck);

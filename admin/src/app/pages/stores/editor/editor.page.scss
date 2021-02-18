@@ -1,0 +1,21 @@
+header {
+    width: 100%;
+    height: 60vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.logo {
+    top: -190px;
+    left: 0px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid #E0E0E0;
+    z-index: 10;
+    position: absolute;
+    border-radius: 5px;
+    background-color: #FAFAFA;
+}
+.container {
+    position: relative;
+}
