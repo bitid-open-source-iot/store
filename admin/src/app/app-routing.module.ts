@@ -11,11 +11,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
     },
     {
-        path: 'apis',
-        canActivate: [AuthService],
-        loadChildren: () => import('./pages/apis/apis.module').then(m => m.ApisPageModule)
-    },
-    {
         path: 'orders',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/orders/orders.module').then(m => m.OrdersPageModule)
