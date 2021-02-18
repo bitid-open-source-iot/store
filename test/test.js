@@ -55,6 +55,8 @@ describe('stores', function () {
                     result.should.have.property('role');
                     result.should.have.property('logo');
                     result.should.have.property('users');
+                    result.should.have.property('cover');
+                    result.should.have.property('private');
                     result.should.have.property('address');
                     result.should.have.property('contact');
                     result.should.have.property('payfast');
@@ -85,6 +87,8 @@ describe('stores', function () {
                     result[0].should.have.property('role');
                     result[0].should.have.property('logo');
                     result[0].should.have.property('users');
+                    result[0].should.have.property('cover');
+                    result[0].should.have.property('private');
                     result[0].should.have.property('address');
                     result[0].should.have.property('contact');
                     result[0].should.have.property('payfast');
@@ -2576,6 +2580,8 @@ var tools = {
                         'role',
                         'logo',
                         'users',
+                        'cover',
+                        'private',
                         'contact',
                         'payfast',
                         'storeId',
@@ -2613,6 +2619,8 @@ var tools = {
                     },
                     'dns': ['bitid.com'],
                     'logo': 'https://www.bitid.co.za/assets/icons/icon-96x96.png',
+                    'cover': 'https://www.bitid.co.za/assets/icons/icon-96x96.png',
+                    'private': false,
                     'description': 'My Store',
                     'organizationOnly': 0
                 })
@@ -2629,6 +2637,8 @@ var tools = {
                         'role',
                         'logo',
                         'users',
+                        'cover',
+                        'private',
                         'contact',
                         'payfast',
                         'storeId',
