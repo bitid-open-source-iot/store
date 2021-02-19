@@ -1,11 +1,10 @@
 import { Store } from 'src/app/classes/store';
-import { Courier } from 'src/app/classes/courier';
+import { Department } from 'src/app/classes/department';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
-import { CouriersService } from 'src/app/services/couriers/couriers.service';
 import { FormErrorService } from 'src/app/services/form-error/form-error.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { DepartmentsService } from 'src/app/services/departments/departments.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -18,23 +17,20 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export class DepartmentsEditorPage implements OnInit, OnDestroy {
 
-	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: CouriersService, private buttons: ButtonsService, private formerror: FormErrorService) { }
+	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: DepartmentsService, private buttons: ButtonsService, private formerror: FormErrorService) { }
 
 	public form: FormGroup = new FormGroup({
 		storeId: new FormControl(null, [Validators.required]),
-		description: new FormControl(null, [Validators.required]),
-		organizationOnly: new FormControl(null, [Validators.required])
+		description: new FormControl(null, [Validators.required])
 	});
 	public mode: string;
 	public errors: any = {
 		storeId: '',
-		description: '',
-		organizationOnly: ''
+		description: ''
 	};
-	public options: MatTableDataSource<any> = new MatTableDataSource<any>();
-	public courier: Courier = new Courier();
 	public loading: boolean;
-	public courierId: string;
+	public department: Department = new Department();
+	public departmentId: string;
 	private subscriptions: any = {};
 
 	private async get() {
@@ -44,25 +40,23 @@ export class DepartmentsEditorPage implements OnInit, OnDestroy {
 			filter: [
 				'role',
 				'storeId',
-				'description',
-				'organizationOnly'
+				'description'
 			],
-			courierId: this.courierId
+			departmentId: this.departmentId
 		});
 
 		if (response.ok) {
-			this.courier = new Courier(response.result);
-			if (this.courier.role > 2) {
-				this.form.controls.storeId.setValue(this.courier.storeId);
-				this.form.controls.description.setValue(this.courier.description);
-				this.form.controls.organizationOnly.setValue(this.courier.organizationOnly);
+			this.department = new Department(response.result);
+			if (this.department.role > 2) {
+				this.form.controls.storeId.setValue(this.department.storeId);
+				this.form.controls.description.setValue(this.department.description);
 			} else {
-				this.toast.error('Your role is not high enough to copy/edit this courier!');
-				this.router.navigate(['/couriers']);
+				this.toast.error('Your role is not high enough to copy/edit this department!');
+				this.router.navigate(['/departments']);
 			}
 		} else {
 			this.toast.error(response.error.message);
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/departments']);
 		}
 
 		this.loading = false;
@@ -97,27 +91,22 @@ export class DepartmentsEditorPage implements OnInit, OnDestroy {
 		let mode = this.mode;
 		if (mode == 'copy') {
 			mode = 'add';
-			delete this.courierId;
+			delete this.departmentId;
 		}
 
 		const response = await this.service[mode]({
 			storeId: this.form.value.storeId,
-			courierId: this.courierId,
 			description: this.form.value.description,
-			organizationOnly: this.form.value.organizationOnly
+			departmentId: this.departmentId
 		});
 
 		if (response.ok) {
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/departments']);
 		} else {
 			this.toast.error(response.error.message);
 		}
 
 		this.loading = false;
-	}
-
-	public upload(key, value) {
-		this.form.controls[key].setValue(value);
 	}
 
 	ngOnInit(): void {
@@ -131,15 +120,16 @@ export class DepartmentsEditorPage implements OnInit, OnDestroy {
 		});
 
 		this.subscriptions.close = this.buttons.close.click.subscribe(event => {
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/departments']);
 		});
 
 		const params = this.route.snapshot.queryParams;
 		this.mode = params.mode;
-		this.courierId = params.courierId;
+		this.departmentId = params.departmentId;
 
 		(async () => {
 			if (this.mode != 'add') {
+				this.form.controls.storeId.disable();
 				await this.get();
 			}
 			await this.load();

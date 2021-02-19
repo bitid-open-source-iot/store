@@ -25,24 +25,12 @@ export class DepartmentsService {
 		return await this.api.post(environment.store, '/store/departments/list', params);
 	}
 
-	public async share(params) {
-		return await this.api.post(environment.store, '/store/departments/share', params);
-	}
-
 	public async update(params) {
 		return await this.api.post(environment.store, '/store/departments/update', params);
 	}
 
 	public async delete(params) {
 		return await this.api.post(environment.store, '/store/departments/delete', params);
-	}
-
-	public async unsubscribe(params) {
-		return await this.api.post(environment.store, '/store/departments/unsubscribe', params);
-	}
-
-	public async updatesubscriber(params) {
-		return await this.api.post(environment.store, '/store/departments/updatesubscriber', params);
 	}
 
 }

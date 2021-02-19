@@ -69,53 +69,6 @@ export class CouriersPage implements OnInit, OnDestroy {
 					disabled: [0, 1]
 				},
 				{
-					icon: 'people',
-					title: 'Manage Subscribers',
-					handler: () => {
-						this.router.navigate(['/subscribers'], {
-							queryParams: {
-								id: courier.courierId,
-								type: 'courier'
-							}
-						});
-					},
-					disabled: [0, 1, 2, 3]
-				},
-				{
-					icon: 'remove',
-					title: 'Unubscribe',
-					danger: true,
-					handler: () => {
-						this.confirm.show({
-							message: '',
-							handler: async () => {
-								this.loading = true;
-
-								const response = await this.service.unsubscribe({
-									email: this.localstorage.get('email'),
-									courierId: courier.courierId
-								});
-
-								if (response.ok) {
-									for (let i = 0; i < this.couriers.data.length; i++) {
-										if (this.couriers.data[i].courierId == courier.courierId) {
-											this.couriers.data.splice(i, 1);
-											break;
-										}
-									}
-									this.couriers.data = this.couriers.data.map(o => new Courier(o));
-									this.toast.success('You were unsubscribed!');
-								} else {
-									this.toast.error(response.error.message);
-								}
-
-								this.loading = false;
-							}
-						});
-					},
-					disabled: [0, 5]
-				},
-				{
 					icon: 'delete',
 					title: 'Delete',
 					danger: true,

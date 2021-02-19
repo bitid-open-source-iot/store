@@ -12,7 +12,6 @@ export class Courier {
     public account?: string;
     public courierId?: string;
     public description?: string;
-    public organizationOnly?: number;
 
     constructor(args?: COURIER) {
         if (typeof (args) != 'undefined' && args != null) {
@@ -21,9 +20,6 @@ export class Courier {
             }
             if (typeof (args.icon) != 'undefined' && args.icon != null) {
                 this.icon = args.icon;
-            }
-            if (typeof (args.users) != 'undefined' && args.users != null) {
-                this.users = args.users.map(o => new User(o));
             }
             if (typeof (args.phone) != 'undefined' && args.phone != null) {
                 this.phone = args.phone;
@@ -46,9 +42,6 @@ export class Courier {
             if (typeof (args.description) != 'undefined' && args.description != null) {
                 this.description = args.description;
             }
-            if (typeof (args.organizationOnly) != 'undefined' && args.organizationOnly != null) {
-                this.organizationOnly = args.organizationOnly;
-            }
         }
     }
 
@@ -57,7 +50,6 @@ export class Courier {
 interface COURIER {
     role?: number;
     icon?: string;
-    users?: User[];
     phone?: string;
     email?: string;
     storeId?: string;
@@ -65,5 +57,4 @@ interface COURIER {
     account?: string;
     courierId?: string;
     description?: string;
-    organizationOnly?: number;
 }

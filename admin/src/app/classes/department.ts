@@ -3,19 +3,14 @@ import { User } from "./user";
 export class Department {
 
     public role?: number;
-    public users?: User[];
     public storeId?: string;
     public description?: string;
     public departmentId?: string;
-    public organizationOnly?: number;
 
-    constructor(args: DEPARTMENT) {
+    constructor(args?: DEPARTMENT) {
         if (typeof (args) != 'undefined' && args != null) {
             if (typeof (args.role) != 'undefined' && args.role != null) {
                 this.role = args.role;
-            }
-            if (typeof (args.users) != 'undefined' && args.users != null) {
-                this.users = args.users.map(o => new User(o));
             }
             if (typeof (args.storeId) != 'undefined' && args.storeId != null) {
                 this.storeId = args.storeId;
@@ -26,9 +21,6 @@ export class Department {
             if (typeof (args.departmentId) != 'undefined' && args.departmentId != null) {
                 this.departmentId = args.departmentId;
             }
-            if (typeof (args.organizationOnly) != 'undefined' && args.organizationOnly != null) {
-                this.organizationOnly = args.organizationOnly;
-            }
         }
     }
 
@@ -36,9 +28,7 @@ export class Department {
 
 interface DEPARTMENT {
     role?: number;
-    users?: User[];
     storeId?: string;
     description?: string;
     departmentId?: string;
-    organizationOnly?: number;
 }

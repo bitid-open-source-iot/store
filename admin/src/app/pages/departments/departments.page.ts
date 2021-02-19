@@ -69,53 +69,6 @@ export class DepartmentsPage implements OnInit, OnDestroy {
 					disabled: [0, 1]
 				},
 				{
-					icon: 'people',
-					title: 'Manage Subscribers',
-					handler: () => {
-						this.router.navigate(['/subscribers'], {
-							queryParams: {
-								id: department.departmentId,
-								type: 'department'
-							}
-						});
-					},
-					disabled: [0, 1, 2, 3]
-				},
-				{
-					icon: 'remove',
-					title: 'Unubscribe',
-					danger: true,
-					handler: () => {
-						this.confirm.show({
-							message: '',
-							handler: async () => {
-								this.loading = true;
-
-								const response = await this.service.unsubscribe({
-									email: this.localstorage.get('email'),
-									departmentId: department.departmentId
-								});
-
-								if (response.ok) {
-									for (let i = 0; i < this.departments.data.length; i++) {
-										if (this.departments.data[i].departmentId == department.departmentId) {
-											this.departments.data.splice(i, 1);
-											break;
-										}
-									}
-									this.departments.data = this.departments.data.map(o => new Department(o));
-									this.toast.success('You were unsubscribed!');
-								} else {
-									this.toast.error(response.error.message);
-								}
-
-								this.loading = false;
-							}
-						});
-					},
-					disabled: [0, 5]
-				},
-				{
 					icon: 'delete',
 					title: 'Delete',
 					danger: true,

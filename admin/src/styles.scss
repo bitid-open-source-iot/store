@@ -246,13 +246,22 @@ body.dark-mode {
         border-bottom: 1px solid #212121 !important;
     }
 }
+mat-progress-bar {
+    top: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+    z-index: 100 !important;
+    position: absolute !important;
+}
 home-page,
 stores-page,
 couriers-page,
+suppliers-page,
 departments-page,
 authenticate-page,
 stores-editor-page,
 couriers-editor-page,
+suppliers-editor-page,
 departments-editor-page {
     height: calc(100vh - 56px);
     display: flex;

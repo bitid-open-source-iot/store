@@ -3,40 +3,6 @@
 
     <div class="container">
         <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
-            <section>
-                <mat-form-field appearance="outline">
-                    <mat-label>
-                        Description
-                    </mat-label>
-
-                    <input matInput type="text" name="description" placeholder="description"
-                        formControlName="description" required>
-
-                    <mat-error *ngIf="errors.description">
-                        {{ errors.description }}
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>
-                        Sharing Rules
-                    </mat-label>
-
-                    <mat-select name="organizationOnly" formControlName="organizationOnly" required>
-                        <mat-option [value]="0">
-                            Share to anyone
-                        </mat-option>
-                        <mat-option [value]="1">
-                            In organization only
-                        </mat-option>
-                    </mat-select>
-
-                    <mat-error *ngIf="errors.organizationOnly">
-                        {{ errors.organizationOnly }}
-                    </mat-error>
-                </mat-form-field>
-            </section>
-
             <mat-form-field appearance="outline">
                 <mat-label>
                     Store
@@ -55,13 +21,14 @@
 
             <mat-form-field appearance="outline">
                 <mat-label>
-                    Email
+                    Description
                 </mat-label>
 
-                <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
+                <input matInput type="text" name="description" placeholder="description"
+                    formControlName="description" required>
 
-                <mat-error *ngIf="errors.email">
-                    {{ errors.email }}
+                <mat-error *ngIf="errors.description">
+                    {{ errors.description }}
                 </mat-error>
             </mat-form-field>
 

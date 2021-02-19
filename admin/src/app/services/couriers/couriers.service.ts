@@ -25,24 +25,12 @@ export class CouriersService {
         return await this.api.post(environment.store, '/store/couriers/list', params);
     }
 
-    public async share(params) {
-        return await this.api.post(environment.store, '/store/couriers/share', params);
-    }
-
     public async update(params) {
         return await this.api.post(environment.store, '/store/couriers/update', params);
     }
 
     public async delete(params) {
         return await this.api.post(environment.store, '/store/couriers/delete', params);
-    }
-
-    public async unsubscribe(params) {
-        return await this.api.post(environment.store, '/store/couriers/unsubscribe', params);
-    }
-
-    public async updatesubscriber(params) {
-        return await this.api.post(environment.store, '/store/couriers/updatesubscriber', params);
     }
 
 }

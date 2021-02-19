@@ -1,46 +1,56 @@
 import { Store } from 'src/app/classes/store';
-import { Courier } from 'src/app/classes/courier';
+import { Supplier } from 'src/app/classes/supplier';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
-import { CouriersService } from 'src/app/services/couriers/couriers.service';
+import { SuppliersService } from 'src/app/services/suppliers/suppliers.service';
 import { FormErrorService } from 'src/app/services/form-error/form-error.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-	selector: 'couriers-editor-page',
+	selector: 'suppliers-editor-page',
 	styleUrls: ['./editor.page.scss'],
 	templateUrl: './editor.page.html'
 })
 
-export class CouriersEditorPage implements OnInit, OnDestroy {
+export class SuppliersEditorPage implements OnInit, OnDestroy {
 
-	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: CouriersService, private buttons: ButtonsService, private formerror: FormErrorService) { }
+	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: SuppliersService, private buttons: ButtonsService, private formerror: FormErrorService) { }
 
 	public form: FormGroup = new FormGroup({
-		icon: new FormControl(null, [Validators.required]),
+		address: new FormGroup({
+			street: new FormControl(null, [Validators.required]),
+			suburb: new FormControl(null, [Validators.required]),
+			country: new FormControl(null, [Validators.required]),
+			cityTown: new FormControl(null, [Validators.required]),
+			postalCode: new FormControl(null, [Validators.required]),
+			additionalInfo: new FormControl(null)
+		}),
 		phone: new FormControl(null, [Validators.required]),
 		email: new FormControl(null, [Validators.required]),
 		storeId: new FormControl(null, [Validators.required]),
-		account: new FormControl(null, [Validators.required]),
 		description: new FormControl(null, [Validators.required])
 	});
 	public mode: string;
 	public errors: any = {
-		icon: '',
+		address: {
+			street: '',
+			suburb: '',
+			country: '',
+			cityTown: '',
+			postalCode: '',
+			additionalInfo: ''
+		},
 		phone: '',
 		email: '',
 		storeId: '',
-		account: '',
 		description: ''
 	};
-	public options: MatTableDataSource<any> = new MatTableDataSource<any>();
-	public courier: Courier = new Courier();
 	public loading: boolean;
-	public courierId: string;
+	public supplier: Supplier = new Supplier();
+	public supplierId: string;
 	private subscriptions: any = {};
 
 	private async get() {
@@ -49,33 +59,37 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 		const response = await this.service.get({
 			filter: [
 				'role',
-				'icon',
 				'phone',
 				'email',
+				'address',
 				'storeId',
-				'options',
-				'account',
+				'supplierId',
 				'description'
 			],
-			courierId: this.courierId
+			supplierId: this.supplierId
 		});
 
 		if (response.ok) {
-			this.courier = new Courier(response.result);
-			if (this.courier.role > 2) {
-				this.form.controls.icon.setValue(this.courier.icon);
-				this.form.controls.phone.setValue(this.courier.phone);
-				this.form.controls.email.setValue(this.courier.email);
-				this.form.controls.storeId.setValue(this.courier.storeId);
-				this.form.controls.account.setValue(this.courier.account);
-				this.form.controls.description.setValue(this.courier.description);
+			this.supplier = new Supplier(response.result);
+			if (this.supplier.role > 2) {
+				(this.form.controls.address as FormGroup).controls.street.setValue(this.supplier.address.street);
+				(this.form.controls.address as FormGroup).controls.suburb.setValue(this.supplier.address.suburb);
+				(this.form.controls.address as FormGroup).controls.country.setValue(this.supplier.address.country);
+				(this.form.controls.address as FormGroup).controls.cityTown.setValue(this.supplier.address.cityTown);
+				(this.form.controls.address as FormGroup).controls.postalCode.setValue(this.supplier.address.postalCode);
+				(this.form.controls.address as FormGroup).controls.additionalInfo.setValue(this.supplier.address.additionalInfo);
+
+				this.form.controls.phone.setValue(this.supplier.phone);
+				this.form.controls.email.setValue(this.supplier.email);
+				this.form.controls.storeId.setValue(this.supplier.storeId);
+				this.form.controls.description.setValue(this.supplier.description);
 			} else {
-				this.toast.error('Your role is not high enough to copy/edit this courier!');
-				this.router.navigate(['/couriers']);
+				this.toast.error('Your role is not high enough to copy/edit this supplier!');
+				this.router.navigate(['/suppliers']);
 			}
 		} else {
 			this.toast.error(response.error.message);
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/suppliers']);
 		}
 
 		this.loading = false;
@@ -110,31 +124,32 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 		let mode = this.mode;
 		if (mode == 'copy') {
 			mode = 'add';
-			delete this.courierId;
+			delete this.supplierId;
 		}
 
 		const response = await this.service[mode]({
-			icon: this.form.value.icon,
+			address: {
+				street: this.form.value.address.street,
+				suburb: this.form.value.address.suburb,
+				country: this.form.value.address.country,
+				cityTown: this.form.value.address.cityTown,
+				postalCode: this.form.value.address.postalCode,
+				additionalInfo: this.form.value.address.additionalInfo
+			},
 			phone: this.form.value.phone,
 			email: this.form.value.email,
-			options: this.options.data,
 			storeId: this.form.value.storeId,
-			account: this.form.value.account,
-			courierId: this.courierId,
-			description: this.form.value.description
+			supplierId: this.supplierId,
+			description: this.form.value.description,
 		});
 
 		if (response.ok) {
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/suppliers']);
 		} else {
 			this.toast.error(response.error.message);
 		}
 
 		this.loading = false;
-	}
-
-	public upload(key, value) {
-		this.form.controls[key].setValue(value);
 	}
 
 	ngOnInit(): void {
@@ -148,12 +163,12 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 		});
 
 		this.subscriptions.close = this.buttons.close.click.subscribe(event => {
-			this.router.navigate(['/couriers']);
+			this.router.navigate(['/suppliers']);
 		});
 
 		const params = this.route.snapshot.queryParams;
 		this.mode = params.mode;
-		this.courierId = params.courierId;
+		this.supplierId = params.supplierId;
 
 		(async () => {
 			if (this.mode != 'add') {
