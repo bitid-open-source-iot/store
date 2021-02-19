@@ -248,7 +248,12 @@ body.dark-mode {
 }
 home-page,
 stores-page,
-stores-editor-page {
+couriers-page,
+departments-page,
+authenticate-page,
+stores-editor-page,
+couriers-editor-page,
+departments-editor-page {
     height: calc(100vh - 56px);
     display: flex;
     position: relative;

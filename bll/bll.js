@@ -23,9 +23,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.apis.add, null)
+            myModule.apis.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -40,8 +38,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.get, null)
+            myModule.apis.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -57,25 +54,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.list, null)
+            myModule.apis.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -90,8 +70,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.update, null)
+            myModule.apis.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -106,40 +85,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.apis.updatesubscriber, null)
+            myModule.apis.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -937,8 +883,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reports.sales, null)
+            myModule.reports.sales(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -999,8 +944,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.add, null)
+            myModule.reviews.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1015,8 +959,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.get, null)
+            myModule.reviews.get(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1031,8 +974,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.list, null)
+            myModule.reviews.list(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1047,8 +989,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.update, null)
+            myModule.reviews.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1063,8 +1004,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.delete, null)
+            myModule.reviews.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1079,8 +1019,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.reject, null)
+            myModule.reviews.reject(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1095,8 +1034,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.reviews.approve, null)
+            myModule.reviews.approve(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1113,9 +1051,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.products.add, null)
+            myModule.products.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1130,8 +1066,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.get, null)
+            myModule.products.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -1147,25 +1082,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.list, null)
+            myModule.products.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1180,8 +1098,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.update, null)
+            myModule.products.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1196,40 +1113,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.products.updatesubscriber, null)
+            myModule.products.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1246,9 +1130,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.warnings.add, null)
+            myModule.warnings.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1263,8 +1145,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.get, null)
+            myModule.warnings.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -1280,25 +1161,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.list, null)
+            myModule.warnings.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1313,8 +1177,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.update, null)
+            myModule.warnings.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1329,40 +1192,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.warnings.updatesubscriber, null)
+            myModule.warnings.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1379,9 +1209,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.couriers.add, null)
+            myModule.couriers.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1396,8 +1224,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.get, null)
+            myModule.couriers.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -1413,25 +1240,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.list, null)
+            myModule.couriers.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1446,8 +1256,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.update, null)
+            myModule.couriers.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1462,40 +1271,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.couriers.updatesubscriber, null)
+            myModule.couriers.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1512,9 +1288,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.suppliers.add, null)
+            myModule.suppliers.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1529,8 +1303,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.get, null)
+            myModule.suppliers.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -1546,25 +1319,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.list, null)
+            myModule.suppliers.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1579,8 +1335,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.update, null)
+            myModule.suppliers.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1595,40 +1350,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.suppliers.updatesubscriber, null)
+            myModule.suppliers.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1838,9 +1560,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.departments.add, null)
+            myModule.departments.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1855,8 +1575,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.get, null)
+            myModule.departments.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -1872,25 +1591,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.list, null)
+            myModule.departments.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1905,8 +1607,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.update, null)
+            myModule.departments.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1921,40 +1622,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.departments.updatesubscriber, null)
+            myModule.departments.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1971,9 +1639,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            tools.insertOwnerIfNoneExists(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.collectionpoints.add, null)
+            myModule.collectionpoints.add(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -1988,8 +1654,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.get, null)
+            myModule.collectionpoints.get(args)
                 .then(tools.setRoleObject, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
@@ -2005,25 +1670,8 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.list, null)
+            myModule.collectionpoints.list(args)
                 .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        share: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.share, null)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -2038,8 +1686,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.update, null)
+            myModule.collectionpoints.update(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {
@@ -2054,40 +1701,7 @@ var module = function () {
             };
 
             var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        unsubscribe: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.unsubscribe, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        updatesubscriber: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.collectionpoints.updatesubscriber, null)
+            myModule.collectionpoints.delete(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {

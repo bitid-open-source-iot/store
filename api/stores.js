@@ -45,7 +45,7 @@ router.post('/unsubscribe', (req, res) => {
     myModule.stores.unsubscribe(req, res);
 });
 
-router.post('/updatesubscriber', (req, res) => {
+router.post('/update-subscriber', (req, res) => {
     var myModule = new bll.module();
     myModule.stores.updatesubscriber(req, res);
 });

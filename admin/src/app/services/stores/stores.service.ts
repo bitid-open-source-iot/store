@@ -1,3 +1,4 @@
+import { Store } from 'src/app/classes/store';
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
@@ -7,6 +8,8 @@ import { environment } from 'src/environments/environment';
 })
 
 export class StoresService {
+
+	public data: Store[] = [];
 
 	constructor(private api: ApiService) { }
 

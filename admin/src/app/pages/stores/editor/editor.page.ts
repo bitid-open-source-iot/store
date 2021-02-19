@@ -73,21 +73,21 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 	public storeId: string;
 	public loading: boolean;
 	public keycodes: number[] = [ENTER, COMMA];
-	private subscriptions: any = {}
+	private subscriptions: any = {};
 
 	public add(event) {
-		let value: string = event.value.trim();
-		if (typeof(value) != 'undefined' && value != null && value != '') {
-			let domains: string[] = this.form.value.dns;
+		const value: string = event.value.trim();
+		if (typeof (value) != 'undefined' && value != null && value != '') {
+			const domains: string[] = this.form.value.dns;
 			domains.push(event.value.trim());
 			event.input.value = '';
 			this.form.controls.dns.setValue(domains);
-		};
-	};
-	
+		}
+	}
+
 	public remove(url) {
 		this.form.controls.dns.setValue(this.form.value.dns.filter(o => o != url));
-	};
+	}
 
 	private async get() {
 		this.loading = true;
@@ -141,7 +141,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
-	};
+	}
 
 	public async submit() {
 		this.loading = true;
@@ -150,7 +150,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		if (mode == 'copy') {
 			mode = 'add';
 			delete this.storeId;
-		};
+		}
 
 		const response = await this.service[mode]({
 			address: {
@@ -183,14 +183,14 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			this.router.navigate(['/stores']);
 		} else {
 			this.toast.error(response.error.message);
-		};
+		}
 
 		this.loading = false;
-	};
+	}
 
 	public upload(key, value) {
 		this.form.controls[key].setValue(value);
-	};
+	}
 
 	ngOnInit(): void {
 		this.buttons.hide('add');
@@ -212,7 +212,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 
 		if (this.mode != 'add') {
 			this.get();
-		};
+		}
 	}
 
 	ngOnDestroy(): void {

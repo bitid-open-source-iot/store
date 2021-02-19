@@ -10,12 +10,12 @@ router.post('/add', (req, res) => {
 	myModule.reviews.add(req, res);
 });
 
-router.put('/get', (req, res) => {
+router.post('/get', (req, res) => {
 	var myModule = new bll.module();
 	myModule.reviews.get(req, res);
 });
 
-router.put('/list', (req, res) => {
+router.post('/list', (req, res) => {
 	var myModule = new bll.module();
 	myModule.reviews.list(req, res);
 });

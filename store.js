@@ -8,6 +8,7 @@ const express = require('express');
 const responder = require('./lib/responder');
 const bodyParser = require('body-parser');
 const healthcheck = require('@bitid/health-check');
+const ErrorResponse = require('./lib/error-response');
 
 global.__base = __dirname + '/';
 global.__logger = require('./lib/logger');
@@ -41,7 +42,7 @@ try {
                     'extended': true
                 }));
                 app.use(bodyParser.json({
-                    "limit": '100mb'
+                    'limit': '100mb'
                 }));
 
                 if (args.settings.authentication) {
@@ -115,19 +116,18 @@ try {
                 app.use('/store/departments', require('./api/departments'));
                 __logger.info('Loaded: ./api/store/departments');
 
-                app.use('/store/collectionpoints', require('./api/collectionpoints'));
-                __logger.info('Loaded: ./api/store/collectionpoints');
+                app.use('/store/collection-points', require('./api/collection-points'));
+                __logger.info('Loaded: ./api/store/collection-points');
 
                 app.use('/health-check', healthcheck);
                 __logger.info('Loaded: ./health-check');
 
-                app.use((err, req, res, next) => {
-                    portal.errorResponse.error.code = 500;
-                    portal.errorResponse.error.message = 'Something broke';
-                    portal.errorResponse.error.errors[0].code = 500;
-                    portal.errorResponse.error.errors[0].message = 'Something broke';
-                    portal.errorResponse.hiddenErrors.push(err.stack);
-                    __responder.error(req, res, portal.errorResponse);
+                app.use((error, req, res, next) => {
+                    var err = new ErrorResponse();
+                    err.error.errors[0].code = 503;
+                    err.error.errors[0].reason = error.message;
+                    err.error.errors[0].message = error.message;
+                    __responder.error(req, res, err);
                 });
 
                 var server = http.createServer(app);

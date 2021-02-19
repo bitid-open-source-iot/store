@@ -10,27 +10,50 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'url': args.req.body.url,
-				'body': args.req.body.body || {},
-				'method': args.req.body.method,
-				'headers': args.req.body.headers || {},
-				'trigger': args.req.body.trigger,
-				'storeId': ObjectId(args.req.body.storeId),
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblApis'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'url': args.req.body.url,
+						'body': args.req.body.body || {},
+						'method': args.req.body.method,
+						'headers': args.req.body.headers || {},
+						'trigger': args.req.body.trigger,
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblApis'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -38,6 +61,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -47,9 +71,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -58,20 +82,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'apiId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblApis'
 			})
 				.then(result => {
@@ -81,6 +127,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -90,17 +137,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.apiId) != 'undefined') {
 				if (Array.isArray(args.req.body.apiId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.apiId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.apiId) == 'string') {
-					params._id = ObjectId(args.req.body.apiId);
+					match._id = ObjectId(args.req.body.apiId);
 				};
 			};
 
@@ -110,66 +161,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'apiId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblApis'
 			})
 				.then(result => {
@@ -179,6 +206,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -188,176 +216,70 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				}
-			};
-			if (typeof (args.req.body.url) != 'undefined') {
-				update.$set.url = args.req.body.url;
-			};
-			if (typeof (args.req.body.body) != 'undefined') {
-				update.$set.body = args.req.body.body;
-			};
-			if (typeof (args.req.body.method) != 'undefined') {
-				update.$set.method = args.req.body.method;
-			};
-			if (typeof (args.req.body.headers) != 'undefined') {
-				update.$set.headers = args.req.body.headers;
-			};
-			if (typeof (args.req.body.trigger) != 'undefined') {
-				update.$set.trigger = args.req.body.trigger;
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
-
-			db.call({
-				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.apiId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblApis'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.apiId),
-						'storeId': ObjectId(args.req.body.storeId)
+						'_id': ObjectId(args.req.body.apiId)
 					};
 					var update = {
 						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
+							'serverDate': new Date()
 						}
+					};
+					if (typeof (args.req.body.url) != 'undefined') {
+						update.$set.url = args.req.body.url;
+					};
+					if (typeof (args.req.body.body) != 'undefined') {
+						update.$set.body = args.req.body.body;
+					};
+					if (typeof (args.req.body.method) != 'undefined') {
+						update.$set.method = args.req.body.method;
+					};
+					if (typeof (args.req.body.headers) != 'undefined') {
+						update.$set.headers = args.req.body.headers;
+					};
+					if (typeof (args.req.body.trigger) != 'undefined') {
+						update.$set.trigger = args.req.body.trigger;
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
 					};
 
 					deferred.resolve({
@@ -377,6 +299,76 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblApis'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.apiId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblApis'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -604,7 +596,7 @@ var module = function () {
 				params._id = {
 					$in: args.req.body.cartId.map(id => ObjectId(id))
 				};
-			} else if (typeof (args.req.body.cartId) == "string") {
+			} else if (typeof (args.req.body.cartId) == 'string') {
 				params._id = ObjectId(args.req.body.cartId);
 			};
 
@@ -637,7 +629,7 @@ var module = function () {
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
-			if (typeof (args.req.body.status) != "undefined") {
+			if (typeof (args.req.body.status) != 'undefined') {
 				params.status = args.req.body.status;
 			};
 
@@ -1961,17 +1953,17 @@ var module = function () {
 					var params = [
 						{
 							$match: {
-								"status": "approved",
-								"productId": result[0].productId
+								'status': 'approved',
+								'productId': result[0].productId
 							}
 						},
 						{
 							$group: {
-								"_id": "$productId",
-								"max": {
-									$sum: "$score"
+								'_id': '$productId',
+								'max': {
+									$sum: '$score'
 								},
-								"count": {
+								'count': {
 									$sum: 1
 								}
 							}
@@ -1991,7 +1983,7 @@ var module = function () {
 					var deferred = Q.defer();
 
 					var params = {
-						"_id": ObjectId(result[0]._id)
+						'_id': ObjectId(result[0]._id)
 					};
 					var update = {
 						$set: {
@@ -2086,6 +2078,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2098,37 +2091,60 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'cost': args.req.body.cost || 0,
-				'type': args.req.body.type,
-				'info': args.req.body.info || [],
-				'links': args.req.body.links || [],
-				'score': 0,
-				'title': args.req.body.title,
-				'price': args.req.body.price,
-				'images': args.req.body.images || [],
-				'reviews': 0,
-				'storeId': ObjectId(args.req.body.storeId),
-				'visible': args.req.body.visible,
-				'returned': 0,
-				'purchased': 0,
-				'promotion': args.req.body.promotion || { 'price': 0, 'enabled': false },
-				'supplierId': ObjectId(args.req.body.supplierId),
-				'serverDate': new Date(),
-				'departments': args.req.body.departments || [],
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblProducts'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'cost': args.req.body.cost || 0,
+						'type': args.req.body.type,
+						'info': args.req.body.info || [],
+						'links': args.req.body.links || [],
+						'score': 0,
+						'title': args.req.body.title,
+						'price': args.req.body.price,
+						'images': args.req.body.images || [],
+						'reviews': 0,
+						'storeId': ObjectId(args.req.body.storeId),
+						'visible': args.req.body.visible,
+						'returned': 0,
+						'purchased': 0,
+						'promotion': args.req.body.promotion || { 'price': 0, 'enabled': false },
+						'supplierId': ObjectId(args.req.body.supplierId),
+						'serverDate': new Date(),
+						'departments': args.req.body.departments || [],
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblProducts'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -2136,6 +2152,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2145,9 +2162,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -2156,20 +2173,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'productId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblProducts'
 			})
 				.then(result => {
@@ -2179,6 +2218,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2188,21 +2228,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
-			if (typeof (args.req.body.visible) != 'undefined') {
-				params.visible = args.req.body.visible;
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.productId) != 'undefined') {
 				if (Array.isArray(args.req.body.productId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.productId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.productId) == 'string') {
-					params._id = ObjectId(args.req.body.productId);
+					match._id = ObjectId(args.req.body.productId);
 				};
 			};
 
@@ -2212,80 +2252,56 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'productId') {
 						filter['_id'] = 1;
-					} else if (f == 'image') {
-						filter['images'] = {
-							$elemMatch: {
-								'main': true
-							}
-						};
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblProducts'
-			})
-				.then(result => {
-					args.result = result.map(item => {
-						if (Array.isArray(item.images)) {
-							if (item.images.length > 0) {
-								item.image = item.images[0].src;
-								delete item.images;
-							};
-						};
-						return item;
-					});
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+						image: '$images'
 					}
+				},
+				{
+					$unwind: '$image'
+				},
+				{
+					$match: {
+						'images.main': true
+					}
+				},
+				{
+					$addFields: {
+						image: '$image.src' 
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblProducts'
 			})
 				.then(result => {
@@ -2295,6 +2311,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2304,76 +2321,105 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			var update = {
-				$set: {
-					'serverDate': new Date()
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
 				}
-			};
-			if (typeof (args.req.body.cost) != 'undefined') {
-				update.$set.cost = args.req.body.cost;
-			};
-			if (typeof (args.req.body.info) != 'undefined') {
-				update.$set.info = args.req.body.info;
-			};
-			if (typeof (args.req.body.type) != 'undefined') {
-				update.$set.type = args.req.body.type;
-			};
-			if (typeof (args.req.body.links) != 'undefined') {
-				update.$set.links = args.req.body.links;
-			};
-			if (typeof (args.req.body.title) != 'undefined') {
-				update.$set.title = args.req.body.title;
-			};
-			if (typeof (args.req.body.price) != 'undefined') {
-				update.$set.price = args.req.body.price;
-			};
-			if (typeof (args.req.body.images) != 'undefined') {
-				update.$set.images = args.req.body.images;
-			};
-			if (typeof (args.req.body.visible) != 'undefined') {
-				update.$set.visible = args.req.body.visible;
-			};
-			if (typeof (args.req.body.promotion) != 'undefined') {
-				if (typeof (args.req.body.promotion.price) != 'undefined') {
-					update.$set['promotion.price'] = args.req.body.promotion.price;
-				};
-				if (typeof (args.req.body.promotion.enabled) != 'undefined') {
-					update.$set['promotion.enabled'] = args.req.body.promotion.enabled;
-				};
-			};
-			if (typeof (args.req.body.supplierId) != 'undefined') {
-				update.$set.supplierId = ObjectId(args.req.body.supplierId);
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.departments) != 'undefined') {
-				update.$set.departments = args.req.body.departments.map(id => ObjectId(id));
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblProducts'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.productId)
+					};
+					var update = {
+						$set: {
+							'serverDate': new Date()
+						}
+					};
+					if (typeof (args.req.body.cost) != 'undefined') {
+						update.$set.cost = args.req.body.cost;
+					};
+					if (typeof (args.req.body.info) != 'undefined') {
+						update.$set.info = args.req.body.info;
+					};
+					if (typeof (args.req.body.type) != 'undefined') {
+						update.$set.type = args.req.body.type;
+					};
+					if (typeof (args.req.body.links) != 'undefined') {
+						update.$set.links = args.req.body.links;
+					};
+					if (typeof (args.req.body.title) != 'undefined') {
+						update.$set.title = args.req.body.title;
+					};
+					if (typeof (args.req.body.price) != 'undefined') {
+						update.$set.price = args.req.body.price;
+					};
+					if (typeof (args.req.body.images) != 'undefined') {
+						update.$set.images = args.req.body.images;
+					};
+					if (typeof (args.req.body.visible) != 'undefined') {
+						update.$set.visible = args.req.body.visible;
+					};
+					if (typeof (args.req.body.promotion) != 'undefined') {
+						if (typeof (args.req.body.promotion.price) != 'undefined') {
+							update.$set['promotion.price'] = args.req.body.promotion.price;
+						};
+						if (typeof (args.req.body.promotion.enabled) != 'undefined') {
+							update.$set['promotion.enabled'] = args.req.body.promotion.enabled;
+						};
+					};
+					if (typeof (args.req.body.supplierId) != 'undefined') {
+						update.$set.supplierId = ObjectId(args.req.body.supplierId);
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
+					};
+					if (typeof (args.req.body.departments) != 'undefined') {
+						update.$set.departments = args.req.body.departments.map(id => ObjectId(id));
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblProducts'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
@@ -2381,6 +2427,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2390,120 +2437,52 @@ var module = function () {
 		delete: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblProducts'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblProducts'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.productId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblProducts'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.productId),
-						'storeId': ObjectId(args.req.body.storeId)
-					};
-					var update = {
-						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
-						}
+						'_id': ObjectId(args.req.body.productId)
 					};
 
 					deferred.resolve({
 						'params': params,
-						'update': update,
-						'operation': 'update',
+						'operation': 'remove',
 						'collection': 'tblProducts'
 					})
 
@@ -2517,6 +2496,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2529,22 +2509,45 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'storeId': ObjectId(args.req.body.storeId),
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblWarnings'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblWarnings'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -2552,6 +2555,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2561,9 +2565,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -2572,20 +2576,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'warningId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblWarnings'
 			})
 				.then(result => {
@@ -2595,6 +2621,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2604,17 +2631,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.warningId) != 'undefined') {
 				if (Array.isArray(args.req.body.warningId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.warningId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.warningId) == 'string') {
-					params._id = ObjectId(args.req.body.warningId);
+					match._id = ObjectId(args.req.body.warningId);
 				};
 			};
 
@@ -2624,66 +2655,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'warningId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblWarnings'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblWarnings'
 			})
 				.then(result => {
@@ -2693,6 +2700,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2702,38 +2710,67 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
-
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
 				}
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblWarnings'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.warningId)
+					};
+					var update = {
+						$set: {
+							'serverDate': new Date()
+						}
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblWarnings'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
@@ -2741,6 +2778,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2750,120 +2788,52 @@ var module = function () {
 		delete: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblWarnings'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblWarnings'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.warningId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblWarnings'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.warningId),
-						'storeId': ObjectId(args.req.body.storeId)
-					};
-					var update = {
-						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
-						}
+						'_id': ObjectId(args.req.body.warningId)
 					};
 
 					deferred.resolve({
 						'params': params,
-						'update': update,
-						'operation': 'update',
+						'operation': 'remove',
 						'collection': 'tblWarnings'
 					})
 
@@ -2877,6 +2847,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2888,34 +2859,57 @@ var module = function () {
 		add: (args) => {
 			var deferred = Q.defer();
 
-			args.req.body.options.map(option => {
-				if (option.optionId.length == 24) {
-					option.optionId = ObjectId(option.optionId);
-				};
-			});
-
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'icon': args.req.body.icon,
-				'phone': args.req.body.phone,
-				'email': args.req.body.email,
-				'options': args.req.body.options,
-				'storeId': ObjectId(args.req.body.storeId),
-				'account': args.req.body.account,
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblCouriers'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					args.req.body.options.map(option => {
+						if (option.optionId.length == 24) {
+							option.optionId = ObjectId(option.optionId);
+						};
+					});
+
+					var params = {
+						'icon': args.req.body.icon,
+						'phone': args.req.body.phone,
+						'email': args.req.body.email,
+						'options': args.req.body.options,
+						'storeId': ObjectId(args.req.body.storeId),
+						'account': args.req.body.account,
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblCouriers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -2923,6 +2917,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2932,13 +2927,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			if (typeof (args.req.body.enabled) != 'undefined') {
-				params.enabled = args.req.body.enabled;
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -2947,20 +2938,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'courierId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblCouriers'
 			})
 				.then(result => {
@@ -2970,6 +2983,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -2979,17 +2993,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.courierId) != 'undefined') {
 				if (Array.isArray(args.req.body.courierId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.courierId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.courierId) == 'string') {
-					params._id = ObjectId(args.req.body.courierId);
+					match._id = ObjectId(args.req.body.courierId);
 				};
 			};
 
@@ -2999,66 +3017,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'courierId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblCouriers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblCouriers'
 			})
 				.then(result => {
@@ -3068,6 +3062,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3077,181 +3072,75 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				}
-			};
-			if (typeof (args.req.body.icon) != 'undefined') {
-				update.$set.icon = args.req.body.icon;
-			};
-			if (typeof (args.req.body.phone) != 'undefined') {
-				update.$set.phone = args.req.body.phone;
-			};
-			if (typeof (args.req.body.email) != 'undefined') {
-				update.$set.email = args.req.body.email;
-			};
-			if (Array.isArray(args.req.body.options)) {
-				args.req.body.options.map(option => {
-					if (option.optionId.length == 24) {
-						option.optionId = ObjectId(option.optionId);
-					};
-				});
-				update.$set.options = args.req.body.options;
-			};
-			if (typeof (args.req.body.account) != 'undefined') {
-				update.$set.account = args.req.body.account;
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
-
-			db.call({
-				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblCouriers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblCouriers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblCouriers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.courierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblCouriers'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.courierId),
-						'storeId': ObjectId(args.req.body.storeId)
+						'_id': ObjectId(args.req.body.courierId)
 					};
 					var update = {
 						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
+							'serverDate': new Date()
 						}
+					};
+					if (typeof (args.req.body.icon) != 'undefined') {
+						update.$set.icon = args.req.body.icon;
+					};
+					if (typeof (args.req.body.phone) != 'undefined') {
+						update.$set.phone = args.req.body.phone;
+					};
+					if (typeof (args.req.body.email) != 'undefined') {
+						update.$set.email = args.req.body.email;
+					};
+					if (Array.isArray(args.req.body.options)) {
+						args.req.body.options.map(option => {
+							if (option.optionId.length == 24) {
+								option.optionId = ObjectId(option.optionId);
+							};
+						});
+						update.$set.options = args.req.body.options;
+					};
+					if (typeof (args.req.body.account) != 'undefined') {
+						update.$set.account = args.req.body.account;
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
 					};
 
 					deferred.resolve({
@@ -3271,6 +3160,76 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblCouriers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.courierId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblCouriers'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3283,49 +3242,55 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'address': {
-					'street': null,
-					'suburb': null,
-					'cityTown': null,
-					'postalCode': null,
-					'additionalInfo': null
-				},
-				'phone': args.req.body.phone,
-				'email': args.req.body.email,
-				'storeId': ObjectId(args.req.body.storeId),
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
 			};
 
-			if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
-				if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
-					params.address.street = args.req.body.address.street;
-				};
-				if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
-					params.address.suburb = args.req.body.address.suburb;
-				};
-				if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
-					params.address.cityTown = args.req.body.address.cityTown;
-				};
-				if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
-					params.address.postalCode = args.req.body.address.postalCode;
-				};
-				if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
-					params.address.additionalInfo = args.req.body.address.additionalInfo;
-				};
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblSuppliers'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'address': {
+							'street': args.req.body.address.street,
+							'suburb': args.req.body.address.suburb,
+							'country': args.req.body.address.country,
+							'cityTown': args.req.body.address.cityTown,
+							'postalCode': args.req.body.address.postalCode,
+							'additionalInfo': args.req.body.address.additionalInfo
+						},
+						'phone': args.req.body.phone,
+						'email': args.req.body.email,
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblSuppliers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -3333,6 +3298,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3342,33 +3308,53 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
 			if (typeof (args.req.body.filter) != 'undefined') {
-				var filter = {
-					'_id': 0
-				};
+				filter._id = 0;
 				args.req.body.filter.map(f => {
 					if (f == 'supplierId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblSuppliers'
 			})
 				.then(result => {
@@ -3378,6 +3364,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3387,88 +3374,66 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.supplierId) != 'undefined') {
 				if (Array.isArray(args.req.body.supplierId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.supplierId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.supplierId) == 'string') {
-					params._id = ObjectId(args.req.body.supplierId);
+					match._id = ObjectId(args.req.body.supplierId);
 				};
 			};
 
 			var filter = {};
 			if (typeof (args.req.body.filter) != 'undefined') {
-				var filter = {
-					'_id': 0
-				};
+				filter._id = 0;
 				args.req.body.filter.map(f => {
 					if (f == 'supplierId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblSuppliers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblSuppliers'
 			})
 				.then(result => {
@@ -3478,6 +3443,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3487,60 +3453,90 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
 				}
-			};
-			if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
-				if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
-					update.$set['address.street'] = args.req.body.address.street;
-				};
-				if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
-					update.$set['address.suburb'] = args.req.body.address.suburb;
-				};
-				if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
-					update.$set['address.cityTown'] = args.req.body.address.cityTown;
-				};
-				if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
-					update.$set['address.postalCode'] = args.req.body.address.postalCode;
-				};
-				if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
-					update.$set['address.additionalInfo'] = args.req.body.address.additionalInfo;
-				};
-			};
-			if (typeof (args.req.body.phone) != 'undefined' && args.req.body.phone != null && args.req.body.phone != '') {
-				update.$set.phone = args.req.body.phone;
-			};
-			if (typeof (args.req.body.email) != 'undefined' && args.req.body.email != null && args.req.body.email != '') {
-				update.$set.email = args.req.body.email;
-			};
-			if (typeof (args.req.body.description) != 'undefined' && args.req.body.description != null && args.req.body.description != '') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined' && args.req.body.organizationOnly != null && args.req.body.organizationOnly != '') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblSuppliers'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.supplierId)
+					};
+					var update = {
+						$set: {
+							'serverDate': new Date()
+						}
+					};
+					if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
+						if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
+							update.$set['address.street'] = args.req.body.address.street;
+						};
+						if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
+							update.$set['address.suburb'] = args.req.body.address.suburb;
+						};
+						if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
+							update.$set['address.cityTown'] = args.req.body.address.cityTown;
+						};
+						if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
+							update.$set['address.postalCode'] = args.req.body.address.postalCode;
+						};
+						if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
+							update.$set['address.additionalInfo'] = args.req.body.address.additionalInfo;
+						};
+					};
+					if (typeof (args.req.body.phone) != 'undefined' && args.req.body.phone != null && args.req.body.phone != '') {
+						update.$set.phone = args.req.body.phone;
+					};
+					if (typeof (args.req.body.email) != 'undefined' && args.req.body.email != null && args.req.body.email != '') {
+						update.$set.email = args.req.body.email;
+					};
+					if (typeof (args.req.body.description) != 'undefined' && args.req.body.description != null && args.req.body.description != '') {
+						update.$set.description = args.req.body.description;
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblSuppliers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
@@ -3548,6 +3544,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -3557,120 +3554,52 @@ var module = function () {
 		delete: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblSuppliers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblSuppliers'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.supplierId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblSuppliers'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.supplierId),
-						'storeId': ObjectId(args.req.body.storeId)
-					};
-					var update = {
-						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
-						}
+						'_id': ObjectId(args.req.body.supplierId)
 					};
 
 					deferred.resolve({
 						'params': params,
-						'update': update,
-						'operation': 'update',
+						'operation': 'remove',
 						'collection': 'tblSuppliers'
 					})
 
@@ -3684,6 +3613,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4057,22 +3987,45 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'storeId': ObjectId(args.req.body.storeId),
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblDepartments'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblDepartments'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -4080,6 +4033,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4089,9 +4043,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.departmentId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -4100,20 +4054,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'departmentId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblDepartments'
 			})
 				.then(result => {
@@ -4123,6 +4099,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4132,17 +4109,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.departmentId) != 'undefined') {
 				if (Array.isArray(args.req.body.departmentId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.departmentId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.departmentId) == 'string') {
-					params._id = ObjectId(args.req.body.departmentId);
+					match._id = ObjectId(args.req.body.departmentId);
 				};
 			};
 
@@ -4152,66 +4133,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'departmentId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblDepartments'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.departmentId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblDepartments'
 			})
 				.then(result => {
@@ -4221,6 +4178,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4230,161 +4188,55 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.departmentId)
-			};
-			var update = {
-				$set: {
-					'storeId': ObjectId(args.req.body.storeId),
-					'serverDate': new Date()
-				}
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set.description = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
-
-			db.call({
-				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblDepartments'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.departmentId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblDepartments'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.departmentId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblDepartments'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.departmentId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblDepartments'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.departmentId),
-						'storeId': ObjectId(args.req.body.storeId)
+						'_id': ObjectId(args.req.body.departmentId)
 					};
 					var update = {
 						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
+							'serverDate': new Date()
 						}
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
 					};
 
 					deferred.resolve({
@@ -4404,6 +4256,76 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblDepartments'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.departmentId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblDepartments'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4454,47 +4376,53 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid': {
-					'auth': {
-						'users': args.req.body.users,
-						'organizationOnly': args.req.body.organizationOnly || 0
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
 					}
 				},
-				'address': {
-					'street': null,
-					'suburb': null,
-					'cityTown': null,
-					'postalCode': null,
-					'additionalInfo': null
-				},
-				'storeId': ObjectId(args.req.body.storeId),
-				'serverDate': new Date(),
-				'description': args.req.body.description
+				'_id': ObjectId(args.req.body.storeId)
 			};
 
-			if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
-				if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
-					params.address.street = args.req.body.address.street;
-				};
-				if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
-					params.address.suburb = args.req.body.address.suburb;
-				};
-				if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
-					params.address.cityTown = args.req.body.address.cityTown;
-				};
-				if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
-					params.address.postalCode = args.req.body.address.postalCode;
-				};
-				if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
-					params.address.additionalInfo = args.req.body.address.additionalInfo;
-				};
+			var filter = {
+				'_id': 1
 			};
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblCollectionPoints'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'address': {
+							'street': args.req.body.address.street,
+							'suburb': args.req.body.address.suburb,
+							'country': args.req.body.address.country,
+							'cityTown': args.req.body.address.cityTown,
+							'postalCode': args.req.body.address.postalCode,
+							'additionalInfo': args.req.body.address.additionalInfo
+						},
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblCollectionPoints'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
@@ -4502,6 +4430,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4511,9 +4440,9 @@ var module = function () {
 		get: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
+			var match = {
 				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -4522,20 +4451,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'collectionpointId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblCollectionPoints'
 			})
 				.then(result => {
@@ -4545,6 +4496,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4554,17 +4506,21 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'storeId': ObjectId(args.req.body.storeId)
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
 			};
 
 			if (typeof (args.req.body.collectionpointId) != 'undefined') {
 				if (Array.isArray(args.req.body.collectionpointId)) {
-					params._id = {
+					match._id = {
 						$in: args.req.body.collectionpointId.map(id => ObjectId(id))
 					};
 				} else if (typeof (args.req.body.collectionpointId) == 'string') {
-					params._id = ObjectId(args.req.body.collectionpointId);
+					match._id = ObjectId(args.req.body.collectionpointId);
 				};
 			};
 
@@ -4574,66 +4530,42 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'collectionpointId') {
 						filter['_id'] = 1;
-					} else if (f == 'role' || f == 'users') {
+					} else if (f == 'role') {
 						filter['bitid.auth.users'] = 1;
-					} else if (f == 'organizationOnly') {
-						filter['bitid.auth.organizationOnly'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblCollectionPoints'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		share: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+				{
+					$unwind: '$stores'
 				},
-				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$push: {
-					'bitid.auth.users': {
-						'role': args.req.body.role,
-						'email': args.req.body.email
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
 					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
+				'operation': 'aggregate',
 				'collection': 'tblCollectionPoints'
 			})
 				.then(result => {
@@ -4643,6 +4575,7 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 
@@ -4652,178 +4585,75 @@ var module = function () {
 		update: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2,
-							$lte: 5
-						},
-						'email': args.req.body.header.email
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
 					}
 				},
-				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				}
-			};
-			if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
-				if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
-					update.$set['address.street'] = args.req.body.address.street;
-				};
-				if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
-					update.$set['address.suburb'] = args.req.body.address.suburb;
-				};
-				if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
-					update.$set['address.cityTown'] = args.req.body.address.cityTown;
-				};
-				if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
-					update.$set['address.postalCode'] = args.req.body.address.postalCode;
-				};
-				if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
-					update.$set['address.additionalInfo'] = args.req.body.address.additionalInfo;
-				};
-			};
-			if (typeof (args.req.body.description) != 'undefined') {
-				update.$set['description'] = args.req.body.description;
-			};
-			if (typeof (args.req.body.organizationOnly) != 'undefined') {
-				update.$set['bitid.auth.organizationOnly'] = args.req.body.organizationOnly;
-			};
-
-			db.call({
-				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblCollectionPoints'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': 5,
-						'email': args.req.body.header.email
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
 					}
 				},
-				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblCollectionPoints'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		unsubscribe: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				},
-				$pull: {
-					'bitid.auth.users': {
-						'email': args.req.body.email
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
 					}
 				}
-			};
+			];
 
 			db.call({
 				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblCollectionPoints'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		updatesubscriber: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 4
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.collectionpointId),
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblCollectionPoints'
 			})
 				.then(result => {
 					var deferred = Q.defer();
 
 					var params = {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'email': args.req.body.email
-							}
-						},
-						'_id': ObjectId(args.req.body.collectionpointId),
-						'storeId': ObjectId(args.req.body.storeId)
+						'_id': ObjectId(args.req.body.collectionpointId)
 					};
 					var update = {
 						$set: {
-							'bitid.auth.users.$.role': args.req.body.role
+							'serverDate': new Date()
 						}
+					};
+					if (typeof (args.req.body.address) != 'undefined' && args.req.body.address != null && args.req.body.address != '') {
+						if (typeof (args.req.body.address.street) != 'undefined' && args.req.body.address.street != null && args.req.body.address.street != '') {
+							update.$set['address.street'] = args.req.body.address.street;
+						};
+						if (typeof (args.req.body.address.suburb) != 'undefined' && args.req.body.address.suburb != null && args.req.body.address.suburb != '') {
+							update.$set['address.suburb'] = args.req.body.address.suburb;
+						};
+						if (typeof (args.req.body.address.country) != 'undefined' && args.req.body.address.country != null && args.req.body.address.country != '') {
+							update.$set['address.country'] = args.req.body.address.country;
+						};
+						if (typeof (args.req.body.address.cityTown) != 'undefined' && args.req.body.address.cityTown != null && args.req.body.address.cityTown != '') {
+							update.$set['address.cityTown'] = args.req.body.address.cityTown;
+						};
+						if (typeof (args.req.body.address.postalCode) != 'undefined' && args.req.body.address.postalCode != null && args.req.body.address.postalCode != '') {
+							update.$set['address.postalCode'] = args.req.body.address.postalCode;
+						};
+						if (typeof (args.req.body.address.additionalInfo) != 'undefined' && args.req.body.address.additionalInfo != null && args.req.body.address.additionalInfo != '') {
+							update.$set['address.additionalInfo'] = args.req.body.address.additionalInfo;
+						};
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set['description'] = args.req.body.description;
 					};
 
 					deferred.resolve({
@@ -4843,6 +4673,76 @@ var module = function () {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;
 					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblCollectionPoints'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.collectionpointId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblCollectionPoints'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
 					deferred.reject(err);
 				});
 

@@ -21,7 +21,8 @@
                         Description
                     </mat-label>
 
-                    <input matInput type="text" name="description" placeholder="description" formControlName="description" required>
+                    <input matInput type="text" name="description" placeholder="description"
+                        formControlName="description" required>
 
                     <mat-error *ngIf="errors.description">
                         {{ errors.description }}
@@ -52,17 +53,19 @@
                 <mat-label>
                     DNS
                 </mat-label>
-    
+
                 <mat-chip-list #dnslist aria-label="dns">
-                  <mat-chip *ngFor="let key of form.value.dns" (removed)="remove(key)">
+                    <mat-chip *ngFor="let key of form.value.dns" (removed)="remove(key)">
                         {{ key }}
-                        
+
                         <mat-icon matChipRemove>
                             cancel
                         </mat-icon>
-                  </mat-chip>
-    
-                  <input placeholder="New url..." [matChipInputFor]="dnslist" [matChipInputSeparatorKeyCodes]="keycodes" [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
+                    </mat-chip>
+
+                    <input placeholder="New url..." [matChipInputFor]="dnslist"
+                        [matChipInputSeparatorKeyCodes]="keycodes" [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="add($event)">
                 </mat-chip-list>
             </mat-form-field>
 
@@ -137,7 +140,8 @@
                     Postal Code
                 </mat-label>
 
-                <input matInput type="text" name="postalCode" placeholder="postal code" formControlName="postalCode" required>
+                <input matInput type="text" name="postalCode" placeholder="postal code" formControlName="postalCode"
+                    required>
 
                 <mat-error *ngIf="errors.address.postalCode">
                     {{ errors.address.postalCode }}
@@ -165,9 +169,9 @@
                     <mat-label>
                         Email
                     </mat-label>
-    
+
                     <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
-    
+
                     <mat-error *ngIf="errors.contact.email">
                         {{ errors.contact.email }}
                     </mat-error>
@@ -177,9 +181,9 @@
                     <mat-label>
                         Number
                     </mat-label>
-    
+
                     <input matInput type="tel" name="number" placeholder="number" formControlName="number" required>
-    
+
                     <mat-error *ngIf="errors.contact.number">
                         {{ errors.contact.number }}
                     </mat-error>
@@ -191,9 +195,9 @@
                     <mat-label>
                         Website
                     </mat-label>
-    
+
                     <input matInput type="url" name="website" placeholder="website" formControlName="website" required>
-    
+
                     <mat-error *ngIf="errors.contact.website">
                         {{ errors.contact.website }}
                     </mat-error>
@@ -209,9 +213,10 @@
                     <mat-label>
                         Merchant ID
                     </mat-label>
-    
-                    <input matInput type="text" name="merchantId" placeholder="merchant id" formControlName="merchantId" required>
-    
+
+                    <input matInput type="text" name="merchantId" placeholder="merchant id" formControlName="merchantId"
+                        required>
+
                     <mat-error *ngIf="errors.payfast.merchantId">
                         {{ errors.payfast.merchantId }}
                     </mat-error>
@@ -221,9 +226,10 @@
                     <mat-label>
                         Merchant Key
                     </mat-label>
-    
-                    <input matInput type="text" name="merchantKey" placeholder="merchant key" formControlName="merchantKey" required>
-    
+
+                    <input matInput type="text" name="merchantKey" placeholder="merchant key"
+                        formControlName="merchantKey" required>
+
                     <mat-error *ngIf="errors.payfast.merchantKey">
                         {{ errors.payfast.merchantKey }}
                     </mat-error>

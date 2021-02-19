@@ -1,0 +1,107 @@
+<mat-content>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+    <div class="container">
+        <div class="logo" upload [upload-src]="form.value.icon" (upload-change)="upload('icon', $event)" matRipple>
+            <mat-icon>
+                upload
+            </mat-icon>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <section>
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Description
+                    </mat-label>
+
+                    <input matInput type="text" name="description" placeholder="description"
+                        formControlName="description" required>
+
+                    <mat-error *ngIf="errors.description">
+                        {{ errors.description }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Sharing Rules
+                    </mat-label>
+
+                    <mat-select name="organizationOnly" formControlName="organizationOnly" required>
+                        <mat-option [value]="0">
+                            Share to anyone
+                        </mat-option>
+                        <mat-option [value]="1">
+                            In organization only
+                        </mat-option>
+                    </mat-select>
+
+                    <mat-error *ngIf="errors.organizationOnly">
+                        {{ errors.organizationOnly }}
+                    </mat-error>
+                </mat-form-field>
+            </section>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Store
+                </mat-label>
+
+                <mat-select name="storeId" formControlName="storeId" required>
+                    <mat-option *ngFor="let store of stores.data" [value]="store.storeId">
+                        {{ store.description }}
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.storeId">
+                    {{ errors.storeId }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Email
+                </mat-label>
+
+                <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
+
+                <mat-error *ngIf="errors.email">
+                    {{ errors.email }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Phone
+                </mat-label>
+
+                <input matInput type="tel" name="phone" placeholder="phone" formControlName="phone" required>
+
+                <mat-error *ngIf="errors.phone">
+                    {{ errors.phone }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Account
+                </mat-label>
+
+                <input matInput type="text" name="account" placeholder="account" formControlName="account" required>
+
+                <mat-error *ngIf="errors.account">
+                    {{ errors.account }}
+                </mat-error>
+            </mat-form-field>
+
+            <button #button type="submit" style="display: none;"></button>
+        </form>
+    </div>
+</mat-content>
+
+<mat-footer>
+    <button type="button" color="primary" mat-flat-button (click)="button.click()">
+        submit
+    </button>
+</mat-footer>

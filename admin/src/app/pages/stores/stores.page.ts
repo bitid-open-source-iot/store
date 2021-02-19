@@ -25,7 +25,7 @@ export class StoresPage implements OnInit, OnDestroy {
 	public stores: MatTableDataSource<Store> = new MatTableDataSource<Store>();
 	public columns: string[] = ['logo', 'description', 'options'];
 	public loading: boolean;
-	private subscriptions: any = {}
+	private subscriptions: any = {};
 
 	private async list() {
 		this.loading = true;
@@ -49,7 +49,7 @@ export class StoresPage implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
-	};
+	}
 
 	public async options(store: Store) {
 		this.sheet.show({
@@ -102,8 +102,8 @@ export class StoresPage implements OnInit, OnDestroy {
 										if (this.stores.data[i].storeId == store.storeId) {
 											this.stores.data.splice(i, 1);
 											break;
-										};
-									};
+										}
+									}
 									this.stores.data = this.stores.data.map(o => new Store(o));
 									this.toast.success('You were unsubscribed!');
 								} else {
@@ -135,8 +135,8 @@ export class StoresPage implements OnInit, OnDestroy {
 										if (this.stores.data[i].storeId == store.storeId) {
 											this.stores.data.splice(i, 1);
 											break;
-										};
-									};
+										}
+									}
 									this.stores.data = this.stores.data.map(o => new Store(o));
 									this.toast.success('Store was removed!');
 								} else {
@@ -151,7 +151,7 @@ export class StoresPage implements OnInit, OnDestroy {
 				}
 			]
 		});
-	};
+	}
 
 	ngOnInit(): void {
 		this.buttons.show('add');

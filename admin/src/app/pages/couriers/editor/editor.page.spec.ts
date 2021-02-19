@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateDialog } from './update.dialog';
+import { CouriersEditorPage } from './editor.page';
 
-describe('UpdateDialog', () => {
-  let component: UpdateDialog;
-  let fixture: ComponentFixture<UpdateDialog>;
+describe('CouriersEditorPage', () => {
+  let component: CouriersEditorPage;
+  let fixture: ComponentFixture<CouriersEditorPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UpdateDialog]
+      declarations: [CouriersEditorPage]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UpdateDialog);
+    fixture = TestBed.createComponent(CouriersEditorPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

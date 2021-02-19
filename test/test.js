@@ -1,11 +1,11 @@
 const Q = require('q');
 const chai = require('chai');
 const fetch = require('node-fetch');
+const subset = require('chai-subset');
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 const should = require('chai').should();
 const config = require('./config.json');
-const subset = require('chai-subset');
 
 chai.use(subset);
 
@@ -23,7 +23,7 @@ var wishlistId = null;
 var departmentId = null;
 var collectionpointId = null;
 
-describe('stores', function () {
+describe('Stores', function () {
     it('/store/stores/add', function (done) {
         this.timeout(5000);
 
@@ -151,7 +151,7 @@ describe('stores', function () {
             });
     });
 
-    it('/store/stores/updatesubscriber', function (done) {
+    it('/store/stores/update-subscriber', function (done) {
         this.timeout(5000);
 
         tools.api.stores.updatesubscriber()
@@ -219,7 +219,7 @@ describe('stores', function () {
     });
 });
 
-describe('apis', function () {
+describe('Apis', function () {
     it('/store/apis/add', function (done) {
         this.timeout(5000);
 
@@ -257,7 +257,6 @@ describe('apis', function () {
                     result.should.have.property('storeId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -287,7 +286,6 @@ describe('apis', function () {
                     result[0].should.have.property('storeId');
                     result[0].should.have.property('serverDate');
                     result[0].should.have.property('description');
-                    result[0].should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -323,74 +321,11 @@ describe('apis', function () {
                 };
             });
     });
-
-    it('/store/apis/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/apis/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/apis/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('couriers', function () {
+describe('Couriers', function () {
     it('/store/couriers/add', function (done) {
-        this.timeout(5000);
+        this.timeout(50000);
 
         tools.api.couriers.add()
             .then((result) => {
@@ -411,21 +346,20 @@ describe('couriers', function () {
     });
 
     it('/store/couriers/get', function (done) {
-        this.timeout(5000);
+        this.timeout(50000);
 
         tools.api.couriers.get()
             .then((result) => {
                 try {
                     result.should.have.property('role');
+                    result.should.have.property('icon');
                     result.should.have.property('email');
                     result.should.have.property('phone');
-                    result.should.have.property('users');
                     result.should.have.property('account');
                     result.should.have.property('storeId');
                     result.should.have.property('courierId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -440,12 +374,13 @@ describe('couriers', function () {
     });
 
     it('/store/couriers/list', function (done) {
-        this.timeout(5000);
+        this.timeout(50000);
 
         tools.api.couriers.list()
             .then((result) => {
                 try {
                     result[0].should.have.property('role');
+                    result[0].should.have.property('icon');
                     result[0].should.have.property('email');
                     result[0].should.have.property('phone');
                     result[0].should.have.property('storeId');
@@ -467,7 +402,7 @@ describe('couriers', function () {
     });
 
     it('/store/couriers/update', function (done) {
-        this.timeout(5000);
+        this.timeout(50000);
 
         tools.api.couriers.update()
             .then((result) => {
@@ -486,72 +421,9 @@ describe('couriers', function () {
                 };
             });
     });
-
-    it('/store/couriers/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.couriers.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/couriers/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.couriers.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/couriers/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.couriers.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('suppliers', function () {
+describe('Suppliers', function () {
     it('/store/suppliers/add', function (done) {
         this.timeout(5000);
 
@@ -580,7 +452,6 @@ describe('suppliers', function () {
             .then((result) => {
                 try {
                     result.should.have.property('role');
-                    result.should.have.property('users');
                     result.should.have.property('phone');
                     result.should.have.property('email');
                     result.should.have.property('address');
@@ -588,7 +459,6 @@ describe('suppliers', function () {
                     result.should.have.property('supplierId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -609,7 +479,6 @@ describe('suppliers', function () {
             .then((result) => {
                 try {
                     result[0].should.have.property('role');
-                    result[0].should.have.property('users');
                     result[0].should.have.property('phone');
                     result[0].should.have.property('email');
                     result[0].should.have.property('address');
@@ -617,7 +486,6 @@ describe('suppliers', function () {
                     result[0].should.have.property('supplierId');
                     result[0].should.have.property('serverDate');
                     result[0].should.have.property('description');
-                    result[0].should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -651,72 +519,9 @@ describe('suppliers', function () {
                 };
             });
     });
-
-    it('/store/suppliers/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.suppliers.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/suppliers/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.suppliers.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/suppliers/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.suppliers.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('addresses', function () {
+describe('Addresses', function () {
     it('/store/addresses/add', function (done) {
         this.timeout(5000);
 
@@ -824,7 +629,7 @@ describe('addresses', function () {
     });
 });
 
-describe('departments', function () {
+describe('Departments', function () {
     it('/store/departments/add', function (done) {
         this.timeout(5000);
 
@@ -853,12 +658,10 @@ describe('departments', function () {
             .then((result) => {
                 try {
                     result.should.have.property('role');
-                    result.should.have.property('users');
                     result.should.have.property('storeId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
                     result.should.have.property('departmentId');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -916,73 +719,10 @@ describe('departments', function () {
                 };
             });
     });
-
-    it('/store/departments/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.departments.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/departments/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.departments.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/departments/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.departments.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('collectionpoints', function () {
-    it('/store/collectionpoints/add', function (done) {
+describe('Collection Points', function () {
+    it('/store/collection-points/add', function (done) {
         this.timeout(5000);
 
         tools.api.collectionpoints.add()
@@ -1003,19 +743,17 @@ describe('collectionpoints', function () {
             });
     });
 
-    it('/store/collectionpoints/get', function (done) {
+    it('/store/collection-points/get', function (done) {
         this.timeout(5000);
 
         tools.api.collectionpoints.get()
             .then((result) => {
                 try {
                     result.should.have.property('role');
-                    result.should.have.property('users');
                     result.should.have.property('storeId');
                     result.should.have.property('address');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     result.should.have.property('collectionpointId');
                     done();
                 } catch (e) {
@@ -1030,19 +768,17 @@ describe('collectionpoints', function () {
             });
     });
 
-    it('/store/collectionpoints/list', function (done) {
+    it('/store/collection-points/list', function (done) {
         this.timeout(5000);
 
         tools.api.collectionpoints.list()
             .then((result) => {
                 try {
                     result[0].should.have.property('role');
-                    result[0].should.have.property('users');
                     result[0].should.have.property('storeId');
                     result[0].should.have.property('address');
                     result[0].should.have.property('serverDate');
                     result[0].should.have.property('description');
-                    result[0].should.have.property('organizationOnly');
                     result[0].should.have.property('collectionpointId');
                     done();
                 } catch (e) {
@@ -1057,7 +793,7 @@ describe('collectionpoints', function () {
             });
     });
 
-    it('/store/collectionpoints/update', function (done) {
+    it('/store/collection-points/update', function (done) {
         this.timeout(5000);
 
         tools.api.collectionpoints.update()
@@ -1077,72 +813,9 @@ describe('collectionpoints', function () {
                 };
             });
     });
-
-    it('/store/collectionpoints/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.collectionpoints.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/collectionpoints/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.collectionpoints.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/collectionpoints/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.collectionpoints.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('products', function () {
+describe('Products', function () {
     it('/store/products/add', function (done) {
         this.timeout(5000);
 
@@ -1174,7 +847,6 @@ describe('products', function () {
                     result.should.have.property('role');
                     result.should.have.property('info');
                     result.should.have.property('type');
-                    result.should.have.property('users');
                     result.should.have.property('score');
                     result.should.have.property('title');
                     result.should.have.property('price');
@@ -1187,7 +859,6 @@ describe('products', function () {
                     result.should.have.property('serverDate');
                     result.should.have.property('departments');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -1256,72 +927,9 @@ describe('products', function () {
                 };
             });
     });
-
-    it('/store/products/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.products.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/products/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.products.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/products/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.products.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('warnings', function () {
+describe('Warnings', function () {
     it('/store/warnings/add', function (done) {
         this.timeout(5000);
 
@@ -1354,7 +962,6 @@ describe('warnings', function () {
                     result.should.have.property('warningId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
-                    result.should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -1379,7 +986,6 @@ describe('warnings', function () {
                     result[0].should.have.property('warningId');
                     result[0].should.have.property('serverDate');
                     result[0].should.have.property('description');
-                    result[0].should.have.property('organizationOnly');
                     done();
                 } catch (e) {
                     done(e);
@@ -1413,72 +1019,9 @@ describe('warnings', function () {
                 };
             });
     });
-
-    it('/store/warnings/share', function (done) {
-        this.timeout(5000);
-
-        tools.api.warnings.share()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/warnings/updatesubscriber', function (done) {
-        this.timeout(5000);
-
-        tools.api.warnings.updatesubscriber()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/warnings/unsubscribe', function (done) {
-        this.timeout(5000);
-
-        tools.api.warnings.unsubscribe()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
 });
 
-describe('carts', function () {
+describe('Carts', function () {
     it('/store/carts/add', function (done) {
         this.timeout(5000);
 
@@ -1572,7 +1115,7 @@ describe('carts', function () {
     });
 });
 
-describe('reviews', function () {
+describe('Reviews', function () {
     it('/store/reviews/add', function (done) {
         this.timeout(5000);
 
@@ -1752,7 +1295,7 @@ describe('reviews', function () {
     });
 });
 
-describe('wishlists', function () {
+describe('Wishlists', function () {
     it('/store/wishlists/add', function (done) {
         this.timeout(5000);
 
@@ -1820,7 +1363,7 @@ describe('wishlists', function () {
     });
 });
 
-describe('orders', function () {
+describe('Orders', function () {
     it('/store/orders/initialize', function (done) {
         this.timeout(5000);
 
@@ -1948,7 +1491,7 @@ describe('orders', function () {
     });
 });
 
-describe('payfast', function () {
+describe('Payfast', function () {
     it('/store/payfast/payment', function (done) {
         this.timeout(50000);
 
@@ -1971,7 +1514,7 @@ describe('payfast', function () {
     });
 });
 
-describe('reports', function () {
+describe('Reports', function () {
     it('/store/reports/sales', function (done) {
         this.timeout(50000);
 
@@ -2083,7 +1626,7 @@ describe('Remove Added Items', function () {
             });
     });
 
-    it('/store/collectionpoints/delete', function (done) {
+    it('/store/collection-points/delete', function (done) {
         this.timeout(5000);
 
         tools.api.collectionpoints.delete()
@@ -2258,30 +1801,6 @@ describe('Health Check', function () {
 var tools = {
     api: {
         apis: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/get', {
-                    'filter': [
-                        'url',
-                        'role',
-                        'body',
-                        'apiId',
-                        'method',
-                        'trigger',
-                        'headers',
-                        'storeId',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'apiId': apiId,
-                    'storeId': storeId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -2299,10 +1818,32 @@ var tools = {
 
                 return deferred.promise;
             },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/apis/get', {
+                    'filter': [
+                        'url',
+                        'role',
+                        'body',
+                        'apiId',
+                        'method',
+                        'trigger',
+                        'headers',
+                        'storeId',
+                        'serverDate',
+                        'description'
+                    ],
+                    'apiId': apiId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
             list: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/apis/list', {
+                tools.post('/store/apis/list', {
                     'filter': [
                         'url',
                         'role',
@@ -2316,21 +1857,7 @@ var tools = {
                         'description',
                         'organizationOnly'
                     ],
-                    'apiId': apiId,
-                    'storeId': storeId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            share: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'apiId': apiId,
-                    'storeId': storeId
+                    'apiId': apiId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -2341,7 +1868,6 @@ var tools = {
 
                 tools.post('/store/apis/update', {
                     'apiId': apiId,
-                    'storeId': storeId,
                     'description': 'API 1'
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -2352,33 +1878,7 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/apis/delete', {
-                    'apiId': apiId,
-                    'storeId': storeId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'apiId': apiId,
-                    'storeId': storeId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/updatesubscriber', {
-                    'role': 2,
-                    'apiId': apiId,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                    'apiId': apiId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -2571,31 +2071,6 @@ var tools = {
             }
         },
         stores: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/stores/get', {
-                    'filter': [
-                        'dns',
-                        'role',
-                        'logo',
-                        'users',
-                        'cover',
-                        'private',
-                        'contact',
-                        'payfast',
-                        'storeId',
-                        'address',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -2623,6 +2098,31 @@ var tools = {
                     'private': false,
                     'description': 'My Store',
                     'organizationOnly': 0
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/stores/get', {
+                    'filter': [
+                        'dns',
+                        'role',
+                        'logo',
+                        'users',
+                        'cover',
+                        'private',
+                        'contact',
+                        'payfast',
+                        'storeId',
+                        'address',
+                        'serverDate',
+                        'description',
+                        'organizationOnly'
+                    ],
+                    'storeId': storeId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -2710,7 +2210,7 @@ var tools = {
             updatesubscriber: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/stores/updatesubscriber', {
+                tools.post('/store/stores/update-subscriber', {
                     'role': 2,
                     'email': 'shared@email.com',
                     'storeId': storeId,
@@ -2772,10 +2272,24 @@ var tools = {
             }
         },
         reviews: {
+            add: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/reviews/add', {
+                    'score': 1,
+                    'message': 'xxx',
+                    'storeId': storeId,
+                    'reviewId': reviewId,
+                    'productId': productId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
             get: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/reviews/get', {
+                tools.post('/store/reviews/get', {
                     'filter': [
                         'score',
                         'status',
@@ -2792,24 +2306,10 @@ var tools = {
 
                 return deferred.promise;
             },
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/reviews/add', {
-                    'score': 1,
-                    'message': 'xxx',
-                    'storeId': storeId,
-                    'reviewId': reviewId,
-                    'productId': productId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             list: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/reviews/list', {
+                tools.post('/store/reviews/list', {
                     'filter': [
                         'score',
                         'status',
@@ -2874,37 +2374,6 @@ var tools = {
             }
         },
         products: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.put('/store/products/get', {
-                    'filter': [
-                        'cost',
-                        'role',
-                        'info',
-                        'type',
-                        'users',
-                        'score',
-                        'title',
-                        'price',
-                        'images',
-                        'storeId',
-                        'reviews',
-                        'productId',
-                        'promotion',
-                        'supplierId',
-                        'serverDate',
-                        'departments',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId,
-                    'productId': productId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -2943,10 +2412,38 @@ var tools = {
 
                 return deferred.promise;
             },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/products/get', {
+                    'filter': [
+                        'cost',
+                        'role',
+                        'info',
+                        'type',
+                        'score',
+                        'title',
+                        'price',
+                        'images',
+                        'storeId',
+                        'reviews',
+                        'productId',
+                        'promotion',
+                        'supplierId',
+                        'serverDate',
+                        'departments',
+                        'description'
+                    ],
+                    'productId': productId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
             list: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/products/list', {
+                tools.post('/store/products/list', {
                     'filter': [
                         'cost',
                         'role',
@@ -2965,20 +2462,6 @@ var tools = {
                         'departments',
                         'description'
                     ],
-                    'storeId': storeId,
-                    'productId': productId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            share: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/products/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'productId': productId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -2989,7 +2472,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/products/update', {
-                    'storeId': storeId,
                     'productId': productId,
                     'description': 'Mocha Product 1'
                 })
@@ -3001,32 +2483,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/products/delete', {
-                    'storeId': storeId,
-                    'productId': productId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/products/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'productId': productId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/products/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'productId': productId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3035,25 +2491,6 @@ var tools = {
             }
         },
         warnings: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/get', {
-                    'filter': [
-                        'role',
-                        'storeId',
-                        'warningId',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId,
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -3066,32 +2503,34 @@ var tools = {
 
                 return deferred.promise;
             },
-            list: () => {
+            get: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/warnings/list', {
+                tools.post('/store/warnings/get', {
                     'filter': [
                         'role',
                         'storeId',
                         'warningId',
                         'serverDate',
-                        'description',
-                        'organizationOnly'
+                        'description'
                     ],
-                    'storeId': storeId,
                     'warningId': warningId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
                 return deferred.promise;
             },
-            share: () => {
+            list: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/warnings/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                tools.post('/store/warnings/list', {
+                    'filter': [
+                        'role',
+                        'storeId',
+                        'warningId',
+                        'serverDate',
+                        'description'
+                    ],
                     'warningId': warningId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3102,7 +2541,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/warnings/update', {
-                    'storeId': storeId,
                     'warningId': warningId,
                     'description': 'API 1'
                 })
@@ -3114,32 +2552,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/warnings/delete', {
-                    'storeId': storeId,
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'warningId': warningId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3148,56 +2560,36 @@ var tools = {
             }
         },
         couriers: {
+            add: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/couriers/add', {
+                    'options': [
+                        {
+                            'price': 1,
+                            'optionId': 'express',
+                            'description': 'express'
+                        }
+                    ],
+                    'icon': 'xxx',
+                    'email': 'xxx',
+                    'email': 'xxx',
+                    'phone': 'xxx',
+                    'account': 'xxx',
+                    'storeId': storeId,
+                    'description': 'xxx'
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
             get: () => {
                 var deferred = Q.defer();
 
                 tools.post('/store/couriers/get', {
                     'filter': [
                         'role',
-                        'email',
-                        'phone',
-                        'users',
-                        'storeId',
-                        'account',
-                        'options',
-                        'courierId',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId,
-                    'courierId': courierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/couriers/add', {
-                    'email': 'xxx',
-                    'phone': 'xxx',
-                    'account': 'xxx',
-                    'storeId': storeId,
-                    'options': [{
-                        'price': 1,
-                        'optionId': 'express',
-                        'description': 'express'
-                    }],
-                    'description': 'xxx',
-                    'organizationOnly': 0
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            list: () => {
-                var deferred = Q.defer();
-
-                tools.put('/store/couriers/list', {
-                    'filter': [
-                        'role',
+                        'icon',
                         'email',
                         'phone',
                         'storeId',
@@ -3207,20 +2599,28 @@ var tools = {
                         'serverDate',
                         'description'
                     ],
-                    'storeId': storeId,
                     'courierId': courierId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
                 return deferred.promise;
             },
-            share: () => {
+            list: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/couriers/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                tools.post('/store/couriers/list', {
+                    'filter': [
+                        'role',
+                        'icon',
+                        'email',
+                        'phone',
+                        'storeId',
+                        'account',
+                        'options',
+                        'courierId',
+                        'serverDate',
+                        'description'
+                    ],
                     'courierId': courierId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3231,7 +2631,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/couriers/update', {
-                    'storeId': storeId,
                     'courierId': courierId,
                     'description': 'Courier 1'
                 })
@@ -3243,32 +2642,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/couriers/delete', {
-                    'storeId': storeId,
-                    'courierId': courierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/couriers/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'courierId': courierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/couriers/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'courierId': courierId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3277,29 +2650,6 @@ var tools = {
             }
         },
         suppliers: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/suppliers/get', {
-                    'filter': [
-                        'role',
-                        'users',
-                        'phone',
-                        'email',
-                        'address',
-                        'storeId',
-                        'supplierId',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId,
-                    'supplierId': supplierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -3307,6 +2657,7 @@ var tools = {
                     'address': {
                         'street': '22 Jump Street',
                         'suburb': 'Knuckle',
+                        'country': 'South Africa',
                         'cityTown': 'Shoot',
                         'postalCode': '2020',
                         'additionalInfo': 'testing'
@@ -3321,36 +2672,40 @@ var tools = {
 
                 return deferred.promise;
             },
-            list: () => {
+            get: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/suppliers/list', {
+                tools.post('/store/suppliers/get', {
                     'filter': [
                         'role',
-                        'users',
                         'phone',
                         'email',
-                        'storeId',
                         'address',
+                        'storeId',
                         'supplierId',
                         'serverDate',
-                        'description',
-                        'organizationOnly'
+                        'description'
                     ],
-                    'storeId': storeId,
                     'supplierId': supplierId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
                 return deferred.promise;
             },
-            share: () => {
+            list: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/suppliers/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                tools.post('/store/suppliers/list', {
+                    'filter': [
+                        'role',
+                        'phone',
+                        'email',
+                        'storeId',
+                        'address',
+                        'supplierId',
+                        'serverDate',
+                        'description'
+                    ],
                     'supplierId': supplierId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3371,10 +2726,8 @@ var tools = {
                     'about': 'xxx',
                     'email': 'xxx',
                     'phone': 'xxx',
-                    'storeId': storeId,
                     'supplierId': supplierId,
-                    'description': 'Supplier 1 Updated',
-                    'organizationOnly': 1
+                    'description': 'Supplier 1 Updated'
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -3384,32 +2737,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/suppliers/delete', {
-                    'storeId': storeId,
-                    'supplierId': supplierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/suppliers/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'supplierId': supplierId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/suppliers/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'supplierId': supplierId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3422,8 +2749,8 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/wishlists/add', {
-                    'quantity': 1,
                     'storeId': storeId,
+                    'quantity': 1,
                     'productId': productId,
                     'wishlistId': wishlistId
 
@@ -3475,6 +2802,28 @@ var tools = {
             }
         },
         addresses: {
+            add: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/addresses/add', {
+                    'vat': 'xxx',
+                    'type': 'business',
+                    'street': 'xxx',
+                    'number': 'xxx',
+                    'suburb': 'xxx',
+                    'storeId': storeId,
+                    'business': 'xxx',
+                    'cityTown': 'xxx',
+                    'recipient': 'xxx',
+                    'addressId': 'xxx',
+                    'serverDate': 'xxx',
+                    'postalCode': 'xxx',
+                    'additionalInfo': 'xxx'
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
             get: () => {
                 var deferred = Q.defer();
 
@@ -3496,28 +2845,6 @@ var tools = {
                     ],
                     'storeId': storeId,
                     'addressId': addressId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/add', {
-                    'vat': 'xxx',
-                    'type': 'business',
-                    'street': 'xxx',
-                    'number': 'xxx',
-                    'suburb': 'xxx',
-                    'storeId': storeId,
-                    'business': 'xxx',
-                    'cityTown': 'xxx',
-                    'recipient': 'xxx',
-                    'addressId': 'xxx',
-                    'serverDate': 'xxx',
-                    'postalCode': 'xxx',
-                    'additionalInfo': 'xxx'
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -3591,26 +2918,6 @@ var tools = {
             return deferred.promise;
         },
         departments: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/departments/get', {
-                    'filter': [
-                        'role',
-                        'users',
-                        'storeId',
-                        'serverDate',
-                        'description',
-                        'departmentId',
-                        'organizationOnly'
-                    ],
-                    'storeId': storeId,
-                    'departmentId': departmentId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
@@ -3623,10 +2930,10 @@ var tools = {
 
                 return deferred.promise;
             },
-            list: () => {
+            get: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/departments/list', {
+                tools.post('/store/departments/get', {
                     'filter': [
                         'role',
                         'storeId',
@@ -3634,20 +2941,23 @@ var tools = {
                         'description',
                         'departmentId'
                     ],
-                    'storeId': storeId,
                     'departmentId': departmentId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
                 return deferred.promise;
             },
-            share: () => {
+            list: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/departments/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                tools.post('/store/departments/list', {
+                    'filter': [
+                        'role',
+                        'storeId',
+                        'serverDate',
+                        'description',
+                        'departmentId'
+                    ],
                     'departmentId': departmentId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3658,7 +2968,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/departments/update', {
-                    'storeId': storeId,
                     'description': 'Department 1',
                     'departmentId': departmentId
                 })
@@ -3670,32 +2979,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/departments/delete', {
-                    'storeId': storeId,
-                    'departmentId': departmentId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/departments/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'departmentId': departmentId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/departments/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'departmentId': departmentId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3704,41 +2987,38 @@ var tools = {
             }
         },
         collectionpoints: {
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/collectionpoints/get', {
-                    'filter': [
-                        'role',
-                        'users',
-                        'storeId',
-                        'address',
-                        'serverDate',
-                        'description',
-                        'organizationOnly',
-                        'collectionpointId'
-                    ],
-                    'storeId': storeId,
-                    'collectionpointId': collectionpointId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
             add: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/collectionpoints/add', {
+                tools.post('/store/collection-points/add', {
                     'address': {
                         'street': 'xxx',
                         'suburb': 'xxx',
+                        'country': 'xxx',
                         'cityTown': 'xxx',
                         'postalCode': 'xxx',
                         'additionalInfo': 'xxx'
                     },
                     'storeId': storeId,
-                    'description': 'test',
-                    'organizationOnly': 0
+                    'description': 'test'
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/collection-points/get', {
+                    'filter': [
+                        'role',
+                        'storeId',
+                        'address',
+                        'serverDate',
+                        'description',
+                        'collectionpointId'
+                    ],
+                    'collectionpointId': collectionpointId
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -3747,31 +3027,15 @@ var tools = {
             list: () => {
                 var deferred = Q.defer();
 
-                tools.put('/store/collectionpoints/list', {
+                tools.post('/store/collection-points/list', {
                     'filter': [
                         'role',
-                        'users',
                         'storeId',
                         'address',
                         'serverDate',
                         'description',
-                        'organizationOnly',
                         'collectionpointId'
                     ],
-                    'storeId': storeId,
-                    'collectionpointId': collectionpointId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            share: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/collectionpoints/share', {
-                    'role': 4,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
                     'collectionpointId': collectionpointId
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -3781,15 +3045,15 @@ var tools = {
             update: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/collectionpoints/update', {
+                tools.post('/store/collection-points/update', {
                     'address': {
                         'street': 'xxx',
                         'suburb': 'xxx',
+                        'country': 'xxx',
                         'cityTown': 'xxx',
                         'postalCode': 'xxx',
                         'additionalInfo': 'xxx'
                     },
-                    'storeId': storeId,
                     'description': 'test',
                     'collectionpointId': collectionpointId
                 })
@@ -3800,33 +3064,7 @@ var tools = {
             delete: () => {
                 var deferred = Q.defer();
 
-                tools.post('/store/collectionpoints/delete', {
-                    'storeId': storeId,
-                    'collectionpointId': collectionpointId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            unsubscribe: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/collectionpoints/unsubscribe', {
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
-                    'collectionpointId': collectionpointId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            updatesubscriber: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/collectionpoints/updatesubscriber', {
-                    'role': 2,
-                    'email': 'shared@email.com',
-                    'storeId': storeId,
+                tools.post('/store/collection-points/delete', {
                     'collectionpointId': collectionpointId
                 })
                     .then(deferred.resolve, deferred.resolve);

@@ -29,7 +29,7 @@ mat-drawer-container {
         border: none;
         box-shadow: none;
         transition: width 500ms;
-        border-right: 1px solid #E0E0E0;
+        border-right: 1px solid #e0e0e0;
         mat-list {
             mat-list-item {
                 height: 55px;
@@ -40,8 +40,8 @@ mat-drawer-container {
                 }
             }
             mat-list-item.active {
-                color: #2196F3 !important;
-                background-color: rgba($color: #2196F3, $alpha: 0.1) !important;
+                color: #2196f3 !important;
+                background-color: rgba($color: #2196f3, $alpha: 0.1) !important;
             }
         }
     }
