@@ -166,17 +166,18 @@ button[mat-menu-item] {
 .orders-filter-dialog mat-dialog-container {
     width: 500px !important;
     padding: 0px !important;
-    background-color: #FFF !important;
+    background-color: #fff !important;
 }
 tfoot td {
     font-size: 12px !important;
     font-weight: 500 !important;
 }
-@import '~quill/dist/quill.core.css';
-@import '~quill/dist/quill.bubble.css';
-@import '~quill/dist/quill.snow.css';
-.ql-toolbar, .ql-container {
-    border-color: #E0E0E0 !important;
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.bubble.css";
+@import "~quill/dist/quill.snow.css";
+.ql-toolbar,
+.ql-container {
+    border-color: #e0e0e0 !important;
 }
 .ql-toolbar {
     border-top-left-radius: 4px;

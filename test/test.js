@@ -845,11 +845,11 @@ describe('Products', function () {
                 try {
                     result.should.have.property('cost');
                     result.should.have.property('role');
-                    result.should.have.property('info');
                     result.should.have.property('type');
                     result.should.have.property('score');
                     result.should.have.property('title');
                     result.should.have.property('price');
+                    result.should.have.property('expiry');
                     result.should.have.property('images');
                     result.should.have.property('storeId');
                     result.should.have.property('reviews');
@@ -880,12 +880,12 @@ describe('Products', function () {
                 try {
                     result[0].should.have.property('cost');
                     result[0].should.have.property('role');
-                    result[0].should.have.property('info');
                     result[0].should.have.property('type');
                     result[0].should.have.property('score');
                     result[0].should.have.property('title');
                     result[0].should.have.property('image');
                     result[0].should.have.property('price');
+                    result[0].should.have.property('expiry');
                     result[0].should.have.property('storeId');
                     result[0].should.have.property('reviews');
                     result[0].should.have.property('productId');
@@ -2386,6 +2386,10 @@ var tools = {
                             'position': 2
                         }
                     ],
+                    'expiry': {
+                        'date': new Date(),
+                        'enabled': false
+                    },
                     'shipping': {},
                     'promotion': {
                         'price': 0,
@@ -2395,7 +2399,6 @@ var tools = {
                         departmentId
                     ],
                     'cost': 50,
-                    'info': [],
                     'type': 'physical',
                     'title': 'My First Product',
                     'price': 100,
@@ -2415,11 +2418,11 @@ var tools = {
                     'filter': [
                         'cost',
                         'role',
-                        'info',
                         'type',
                         'score',
                         'title',
                         'price',
+                        'expiry',
                         'images',
                         'storeId',
                         'reviews',
@@ -2443,12 +2446,12 @@ var tools = {
                     'filter': [
                         'cost',
                         'role',
-                        'info',
                         'type',
                         'image',
                         'score',
                         'title',
                         'price',
+                        'expiry',
                         'storeId',
                         'reviews',
                         'productId',

@@ -36,21 +36,21 @@ export class OrdersPage implements OnInit, OnDestroy {
 	private async list() {
 		this.loading = true;
 
-		let to = new Date(this.filter.value.date.to);
-			to.setHours(23);
-			to.setMinutes(59);
-			to.setSeconds(59);
-			to.setMilliseconds(999);
-		let from = new Date(this.filter.value.date.from);
-			from.setHours(0);
-			from.setMinutes(0);
-			from.setSeconds(0);
-			from.setMilliseconds(0);
+		const to = new Date(this.filter.value.date.to);
+		to.setHours(23);
+		to.setMinutes(59);
+		to.setSeconds(59);
+		to.setMilliseconds(999);
+		const from = new Date(this.filter.value.date.from);
+		from.setHours(0);
+		from.setMinutes(0);
+		from.setSeconds(0);
+		from.setMilliseconds(0);
 
 		const response = await this.service.list({
 			date: {
-				to: to,
-				from: from
+				to,
+				from
 			},
 			filter: [
 				'vat',
@@ -80,9 +80,9 @@ export class OrdersPage implements OnInit, OnDestroy {
 		this.orders.data.map(order => {
 			result += order[key];
 		});
-		
+
 		return result;
-	};
+	}
 
 	ngOnInit(): void {
 		this.buttons.hide('add');
@@ -94,7 +94,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 		this.sort.direction = 'desc';
 		this.orders.sort = this.sort;
 
-		let date = new Date(this.filter.value.date.from);
+		const date = new Date(this.filter.value.date.from);
 		date.setDate(1);
 		(this.filter.controls.date as FormGroup).controls.from.setValue(date);
 
@@ -111,7 +111,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 					this.filter.controls.status.setValue(result.status);
 					this.filter.controls.storeId.setValue(result.storeId);
 					this.list();
-				};
+				}
 			});
 		});
 

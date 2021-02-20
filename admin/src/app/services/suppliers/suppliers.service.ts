@@ -4,12 +4,12 @@ import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root'
 })
 
 export class SuppliersService {
 
-    public data: Supplier[] = [];
+	public data: Supplier[] = [];
 
 	constructor(private api: ApiService) { }
 

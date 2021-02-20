@@ -2180,12 +2180,12 @@ var module = function () {
 					var params = {
 						'cost': args.req.body.cost || 0,
 						'type': args.req.body.type,
-						'info': args.req.body.info || [],
 						'links': args.req.body.links || [],
 						'score': 0,
 						'title': args.req.body.title,
 						'price': args.req.body.price,
 						'images': args.req.body.images || [],
+						'expiry': args.req.body.expiry || {},
 						'reviews': 0,
 						'storeId': ObjectId(args.req.body.storeId),
 						'visible': args.req.body.visible,
@@ -2434,9 +2434,6 @@ var module = function () {
 					if (typeof (args.req.body.cost) != 'undefined') {
 						update.$set.cost = args.req.body.cost;
 					};
-					if (typeof (args.req.body.info) != 'undefined') {
-						update.$set.info = args.req.body.info;
-					};
 					if (typeof (args.req.body.type) != 'undefined') {
 						update.$set.type = args.req.body.type;
 					};
@@ -2457,6 +2454,14 @@ var module = function () {
 					};
 					if (typeof (args.req.body.quantity) != 'undefined') {
 						update.$set.quantity = args.req.body.quantity;
+					};
+					if (typeof (args.req.body.expiry) != 'undefined') {
+						if (typeof (args.req.body.expiry.date) != 'undefined') {
+							update.$set['expiry.date'] = new Date(args.req.body.expiry.date);
+						};
+						if (typeof (args.req.body.expiry.enabled) != 'undefined') {
+							update.$set['expiry.enabled'] = args.req.body.expiry.enabled;
+						};
 					};
 					if (typeof (args.req.body.promotion) != 'undefined') {
 						if (typeof (args.req.body.promotion.price) != 'undefined') {

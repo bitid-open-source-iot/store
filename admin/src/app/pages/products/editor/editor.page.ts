@@ -25,12 +25,15 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, public products: ProductsService, private buttons: ButtonsService, private formerror: FormErrorService, public suppliers: SuppliersService, public departments: DepartmentsService) { }
 
 	public form: FormGroup = new FormGroup({
+		expiry: new FormGroup({
+			date: new FormControl(null, [Validators.required]),
+			enabled: new FormControl(null, [Validators.required])
+		}),
 		promotion: new FormGroup({
 			price: new FormControl(null, [Validators.required]),
 			enabled: new FormControl(null, [Validators.required])
 		}),
 		cost: new FormControl(0, [Validators.required]),
-		info: new FormControl([], [Validators.required]),
 		type: new FormControl(null, [Validators.required]),
 		links: new FormControl([]),
 		title: new FormControl(null, [Validators.required]),
@@ -45,6 +48,10 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 	});
 	public mode: string;
 	public errors: any = {
+		expiry: {
+			date: '',
+			enabled: ''
+		},
 		promotion: {
 			price: '',
 			enabled: ''
@@ -83,11 +90,11 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 			filter: [
 				'role',
 				'cost',
-				'info',
 				'type',
 				'links',
 				'title',
 				'price',
+				'expiry',
 				'images',
 				'visible',
 				'storeId',
@@ -103,11 +110,13 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		if (response.ok) {
 			this.product = new Product(response.result);
 			if (this.product.role > 2) {
+				(this.form.controls.expiry as FormGroup).controls.date.setValue(this.product.expiry.date);
+				(this.form.controls.expiry as FormGroup).controls.enabled.setValue(this.product.expiry.enabled);
+
 				(this.form.controls.promotion as FormGroup).controls.price.setValue(this.product.promotion.price);
 				(this.form.controls.promotion as FormGroup).controls.enabled.setValue(this.product.promotion.enabled);
 
 				this.form.controls.cost.setValue(this.product.cost);
-				this.form.controls.info.setValue(this.product.info);
 				this.form.controls.type.setValue(this.product.type);
 				this.form.controls.links.setValue(this.product.links);
 				this.form.controls.title.setValue(this.product.title);
@@ -212,8 +221,15 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		}
 
 		const response = await this.products[mode]({
+			expiry: {
+				date: this.form.value.expiry.date,
+				enabled: this.form.value.expiry.enabled
+			},
+			promotion: {
+				price: this.form.value.promotion.price,
+				enabled: this.form.value.promotion.enabled
+			},
 			cost: this.form.value.cost,
-			info: this.form.value.info,
 			type: this.form.value.type,
 			links: this.form.value.links,
 			title: this.form.value.title,
@@ -223,7 +239,6 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 			storeId: this.form.value.storeId,
 			quantity: this.form.value.quantity,
 			productId: this.productId,
-			promotion: this.form.value.promotion,
 			supplierId: this.form.value.supplierId,
 			departments: this.form.value.departments,
 			description: this.form.value.description

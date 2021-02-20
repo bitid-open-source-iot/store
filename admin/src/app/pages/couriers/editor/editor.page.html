@@ -16,10 +16,13 @@
 
                 <mat-select name="storeId" formControlName="storeId" required>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found" formControlName="store"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found"
+                            formControlName="store"></ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }" [value]="store.storeId" [disabled]="store.role < 2">
+                    <mat-option
+                        *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }"
+                        [value]="store.storeId" [disabled]="store.role < 2">
                         {{ store.description }}
                     </mat-option>
                 </mat-select>
@@ -70,8 +73,8 @@
                     Description
                 </mat-label>
 
-                <input matInput type="text" name="description" placeholder="description"
-                    formControlName="description" required>
+                <input matInput type="text" name="description" placeholder="description" formControlName="description"
+                    required>
 
                 <mat-error *ngIf="errors.description">
                     {{ errors.description }}

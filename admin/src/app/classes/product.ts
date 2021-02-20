@@ -1,12 +1,15 @@
 export class Product {
 
+    public expiry = {
+        date: null,
+        enabled: null
+    };
     public promotion = {
         price: null,
         enabled: null
     };
     public role?: number;
     public cost?: number;
-    public info?: any[] = [];
     public type?: string;
     public score?: number;
     public links?: any[] = [];
@@ -24,6 +27,14 @@ export class Product {
 
     constructor(args?: PRODUCT) {
         if (typeof (args) != 'undefined' && args != null) {
+            if (typeof (args.expiry) != 'undefined' && args.expiry != null) {
+                if (typeof (args.expiry.date) != 'undefined' && args.expiry.date != null) {
+                    this.expiry.date = args.expiry.date;
+                }
+                if (typeof (args.expiry.enabled) != 'undefined' && args.expiry.enabled != null) {
+                    this.expiry.enabled = args.expiry.enabled;
+                }
+            }
             if (typeof (args.promotion) != 'undefined' && args.promotion != null) {
                 if (typeof (args.promotion.price) != 'undefined' && args.promotion.price != null) {
                     this.promotion.price = args.promotion.price;
@@ -37,9 +48,6 @@ export class Product {
             }
             if (typeof (args.cost) != 'undefined' && args.cost != null) {
                 this.cost = args.cost;
-            }
-            if (typeof (args.info) != 'undefined' && args.info != null) {
-                this.info = args.info;
             }
             if (typeof (args.type) != 'undefined' && args.type != null) {
                 this.type = args.type;
@@ -89,13 +97,16 @@ export class Product {
 }
 
 interface PRODUCT {
+    expiry?: {
+        date?: string;
+        enabled?: boolean;
+    };
     promotion?: {
         price?: number;
         enabled?: boolean;
     };
     role?: number;
     cost?: number;
-    info?: any[];
     type?: string;
     score?: number;
     links?: any[];

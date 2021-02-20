@@ -38,11 +38,11 @@ export class OrdersFilterDialog implements OnInit, OnDestroy {
 
 	public close() {
 		this.dialog.close(false);
-	};
+	}
 
 	public submit() {
 		this.dialog.close(this.form.value);
-	};
+	}
 
 	private async load() {
 		this.loading = true;
@@ -65,7 +65,7 @@ export class OrdersFilterDialog implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
-	};
+	}
 
 	ngOnInit(): void {
 		this.subscriptions.form = this.form.valueChanges.subscribe(data => {

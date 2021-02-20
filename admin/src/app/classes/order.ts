@@ -6,12 +6,12 @@ export class Order {
         delivered: null,
         initialized: null
     };
-    public vat?: number = 0;
+    public vat = 0;
     public email?: string;
-    public total?: number = 0;
+    public total = 0;
     public status?: string;
     public orderId?: string;
-    public subtotal?: number = 0;
+    public subtotal = 0;
 
     constructor(args?: ORDER) {
         if (typeof (args) != 'undefined' && args != null) {

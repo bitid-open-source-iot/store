@@ -10,10 +10,13 @@
 
                 <mat-select name="storeId" formControlName="storeId" required>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found" formControlName="store"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found"
+                            formControlName="store"></ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }" [value]="store.storeId" [disabled]="store.role < 2">
+                    <mat-option
+                        *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }"
+                        [value]="store.storeId" [disabled]="store.role < 2">
                         {{ store.description }}
                     </mat-option>
                 </mat-select>
@@ -52,7 +55,8 @@
                     Description
                 </mat-label>
 
-                <input matInput type="text" name="description" placeholder="description" formControlName="description" required>
+                <input matInput type="text" name="description" placeholder="description" formControlName="description"
+                    required>
 
                 <mat-error *ngIf="errors.description">
                     {{ errors.description }}
@@ -68,9 +72,9 @@
                     <mat-label>
                         Street
                     </mat-label>
-    
+
                     <input matInput type="text" name="street" placeholder="street" formControlName="street" required>
-    
+
                     <mat-error *ngIf="errors.address.street">
                         {{ errors.address.street }}
                     </mat-error>
@@ -80,9 +84,9 @@
                     <mat-label>
                         Suburb
                     </mat-label>
-    
+
                     <input matInput type="text" name="suburb" placeholder="suburb" formControlName="suburb" required>
-    
+
                     <mat-error *ngIf="errors.address.suburb">
                         {{ errors.address.suburb }}
                     </mat-error>
@@ -94,9 +98,10 @@
                     <mat-label>
                         City/Town
                     </mat-label>
-    
-                    <input matInput type="text" name="cityTown" placeholder="city/town" formControlName="cityTown" required>
-    
+
+                    <input matInput type="text" name="cityTown" placeholder="city/town" formControlName="cityTown"
+                        required>
+
                     <mat-error *ngIf="errors.address.cityTown">
                         {{ errors.address.cityTown }}
                     </mat-error>
@@ -106,9 +111,10 @@
                     <mat-label>
                         Postal Code
                     </mat-label>
-    
-                    <input matInput type="text" name="postalCode" placeholder="postal code" formControlName="postalCode" required>
-    
+
+                    <input matInput type="text" name="postalCode" placeholder="postal code" formControlName="postalCode"
+                        required>
+
                     <mat-error *ngIf="errors.address.postalCode">
                         {{ errors.address.postalCode }}
                     </mat-error>
@@ -132,7 +138,8 @@
                     Additional Info
                 </mat-label>
 
-                <textarea matInput name="additionalInfo" placeholder="additional info" formControlName="additionalInfo" cdkTextareaAutosize></textarea>
+                <textarea matInput name="additionalInfo" placeholder="additional info" formControlName="additionalInfo"
+                    cdkTextareaAutosize></textarea>
 
                 <mat-error *ngIf="errors.address.additionalInfo">
                     {{ errors.address.additionalInfo }}

@@ -8,8 +8,7 @@
                     Cost
                 </mat-label>
 
-                <input matInput type="number" name="cost" placeholder="cost"
-                    formControlName="cost" required>
+                <input matInput type="number" name="cost" placeholder="cost" formControlName="cost" required>
 
                 <mat-error *ngIf="errors.cost">
                     {{ errors.cost }}
@@ -88,10 +87,13 @@
 
                 <mat-select name="links" formControlName="links" multiple>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter products" noEntriesFoundLabel="no products found" formControlName="product"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter products"
+                            noEntriesFoundLabel="no products found" formControlName="product"></ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let product of products.data | orderBy : 'title' | filterBy : { title: filter.value.product }" [value]="product.productId">
+                    <mat-option
+                        *ngFor="let product of products.data | orderBy : 'title' | filterBy : { title: filter.value.product }"
+                        [value]="product.productId">
                         {{ product.title }}
                     </mat-option>
                 </mat-select>
@@ -108,10 +110,13 @@
 
                 <mat-select name="storeId" formControlName="storeId" required>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found" formControlName="store"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found"
+                            formControlName="store"></ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }" [value]="store.storeId" [disabled]="store.role < 2">
+                    <mat-option
+                        *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }"
+                        [value]="store.storeId" [disabled]="store.role < 2">
                         {{ store.description }}
                     </mat-option>
                 </mat-select>
@@ -126,7 +131,8 @@
                     Quantity
                 </mat-label>
 
-                <input matInput type="number" name="quantity" placeholder="quantity" formControlName="quantity" required>
+                <input matInput type="number" name="quantity" placeholder="quantity" formControlName="quantity"
+                    required>
 
                 <mat-error *ngIf="errors.quantity">
                     {{ errors.quantity }}
@@ -140,10 +146,13 @@
 
                 <mat-select name="supplierId" placeholder="supplierId" formControlName="supplierId" required>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter suppliers" noEntriesFoundLabel="no suppliers found" formControlName="supplier"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter suppliers"
+                            noEntriesFoundLabel="no suppliers found" formControlName="supplier"></ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let supplier of suppliers.data | orderBy : 'description' | filterBy : { description: filter.value.supplier }" [value]="supplier.supplierId">
+                    <mat-option
+                        *ngFor="let supplier of suppliers.data | orderBy : 'description' | filterBy : { description: filter.value.supplier }"
+                        [value]="supplier.supplierId">
                         {{ supplier.description }}
                     </mat-option>
                 </mat-select>
@@ -160,10 +169,14 @@
 
                 <mat-select name="departments" formControlName="departments" required multiple>
                     <mat-option [formGroup]="filter">
-                        <ngx-mat-select-search placeholderLabel="filter departments" noEntriesFoundLabel="no departments found" formControlName="department"></ngx-mat-select-search>
+                        <ngx-mat-select-search placeholderLabel="filter departments"
+                            noEntriesFoundLabel="no departments found" formControlName="department">
+                        </ngx-mat-select-search>
                     </mat-option>
 
-                    <mat-option *ngFor="let department of departments.data | orderBy : 'description' | filterBy : { description: filter.value.department }" [value]="department.departmentId">
+                    <mat-option
+                        *ngFor="let department of departments.data | orderBy : 'description' | filterBy : { description: filter.value.department }"
+                        [value]="department.departmentId">
                         {{ department.description }}
                     </mat-option>
                 </mat-select>

@@ -17,4 +17,4 @@ import { CommonModule } from '@angular/common';
 	]
 })
 
-export class OrderPipeModule {}
+export class OrderPipeModule { }

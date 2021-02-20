@@ -3,7 +3,7 @@ import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root'
 })
 
 export class OrdersService {

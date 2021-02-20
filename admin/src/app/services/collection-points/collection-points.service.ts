@@ -4,12 +4,12 @@ import { environment } from 'src/environments/environment';
 import { CollectionPoint } from 'src/app/classes/collection-point';
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root'
 })
 
 export class CollectionPointsService {
 
-    public data: CollectionPoint[] = [];
+	public data: CollectionPoint[] = [];
 
 	constructor(private api: ApiService) { }
 
