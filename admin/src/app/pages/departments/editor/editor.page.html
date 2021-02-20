@@ -9,7 +9,11 @@
                 </mat-label>
 
                 <mat-select name="storeId" formControlName="storeId" required>
-                    <mat-option *ngFor="let store of stores.data" [value]="store.storeId">
+                    <mat-option [formGroup]="filter">
+                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found" formControlName="store"></ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }" [value]="store.storeId" [disabled]="store.role < 2">
                         {{ store.description }}
                     </mat-option>
                 </mat-select>

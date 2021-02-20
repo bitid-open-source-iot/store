@@ -4,6 +4,7 @@ import { ProductsEditorPage } from './editor/editor.page';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
+import { QuillModule } from 'ngx-quill';
 import { CommonModule } from '@angular/common';
 import { UploadModule } from 'src/app/libs/upload/upload.module';
 import { OptionsModule } from 'src/app/libs/options/options.module';
@@ -17,10 +18,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
+import { OrderPipeModule } from 'src/app/pipes/order/order.module';
+import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
@@ -47,14 +51,18 @@ const routes: Routes = [
         MatTableModule,
         MatChipsModule,
         MatInputModule,
+        OrderPipeModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         MatFooterModule,
+        FilterPipeModule,
         MatContentModule,
         MatFormFieldModule,
         ReactiveFormsModule,
         MatProgressBarModule,
+        QuillModule.forRoot(),
+        NgxMatSelectSearchModule,
         RouterModule.forChild(routes)
     ],
     declarations: [

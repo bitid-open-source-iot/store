@@ -25,7 +25,6 @@ import { StoresService } from './services/stores/stores.service';
 import { ConfigService } from './services/config/config.service';
 import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
-import { SettingsService } from './services/settings/settings.service';
 import { FormErrorService } from './services/form-error/form-error.service';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
 
@@ -64,7 +63,6 @@ import { environment } from '../environments/environment';
         StoresService,
         AccountService,
         ButtonsService,
-        SettingsService,
         FormErrorService,
         LocalstorageService
     ],

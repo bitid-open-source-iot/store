@@ -42,6 +42,9 @@ export class CollectionPointsEditorPage implements OnInit, OnDestroy {
 		storeId: '',
 		description: ''
 	};
+	public filter: FormGroup = new FormGroup({
+		store: new FormControl(null, [Validators.required])
+	});
 	public loading: boolean;
 	private subscriptions: any = {};
 	public collectionpoint: CollectionPoint = new CollectionPoint();

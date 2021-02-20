@@ -48,6 +48,9 @@ export class SuppliersEditorPage implements OnInit, OnDestroy {
 		storeId: '',
 		description: ''
 	};
+	public filter: FormGroup = new FormGroup({
+		store: new FormControl(null, [Validators.required])
+	});
 	public loading: boolean;
 	public supplier: Supplier = new Supplier();
 	public supplierId: string;

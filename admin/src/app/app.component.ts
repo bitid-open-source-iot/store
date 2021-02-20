@@ -6,7 +6,6 @@ import { ConfigService } from './services/config/config.service';
 import { UpdateService } from './libs/update/update.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { AccountService } from './services/account/account.service';
-import { SettingsService } from './services/settings/settings.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
@@ -30,7 +29,7 @@ export class AppComponent implements OnInit {
 	@ViewChild('search', { static: true }) private search: MatButton;
 	@ViewChild('toolbar', { static: true }) private toolbar: MatToolbar;
 
-	constructor(private config: ConfigService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, private settings: SettingsService, private registry: MatIconRegistry, private sanitizer: DomSanitizer, private localstorage: LocalstorageService) {
+	constructor(private config: ConfigService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, private registry: MatIconRegistry, private sanitizer: DomSanitizer, private localstorage: LocalstorageService) {
 		this.registry.addSvgIcon('arc', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/arc.svg'));
 		this.registry.addSvgIcon('button', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/button.svg'));
 		this.registry.addSvgIcon('circle', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/circle.svg'));
@@ -61,7 +60,6 @@ export class AppComponent implements OnInit {
 
 		await this.config.init();
 		await this.update.init();
-		await this.settings.init();
 
 		await this.splashscreen.hide();
 	}

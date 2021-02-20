@@ -2059,8 +2059,8 @@ var module = function () {
 				]
 			};
 
-			if (typeof(args.req.body.date) != 'undefined' && args.req.body.date != null) {
-				if (typeof(args.req.body.date.to) != 'undefined' && args.req.body.date.to != null) {
+			if (typeof (args.req.body.date) != 'undefined' && args.req.body.date != null) {
+				if (typeof (args.req.body.date.to) != 'undefined' && args.req.body.date.to != null) {
 					match.$or.map(o => {
 						Object.keys(o).map(key => {
 							if (key.indexOf('date.') > -1) {
@@ -2069,7 +2069,7 @@ var module = function () {
 						});
 					});
 				};
-				if (typeof(args.req.body.date.from) != 'undefined' && args.req.body.date.from != null) {
+				if (typeof (args.req.body.date.from) != 'undefined' && args.req.body.date.from != null) {
 					match.$or.map(o => {
 						Object.keys(o).map(key => {
 							if (key.indexOf('date.') > -1) {
@@ -2079,27 +2079,27 @@ var module = function () {
 					});
 				};
 			};
-			if (typeof(args.req.body.status) != 'undefined' && args.req.body.status != null) {
+			if (typeof (args.req.body.status) != 'undefined' && args.req.body.status != null) {
 				if (Array.isArray(args.req.body.status) && args.req.body.status.length > 0) {
 					match.$or.map(o => {
 						o.status = {
 							$in: args.req.body.status
 						};
 					});
-				} else if (typeof(args.req.body.status) == 'string') {
+				} else if (typeof (args.req.body.status) == 'string') {
 					match.$or.map(o => {
 						o.status = args.req.body.status;
 					});
 				};
 			};
-			if (typeof(args.req.body.storeId) != 'undefined' && args.req.body.storeId != null) {
+			if (typeof (args.req.body.storeId) != 'undefined' && args.req.body.storeId != null) {
 				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
 					match.$or.map(o => {
 						o.storeId = {
 							$in: args.req.body.storeId.map(id => ObjectId(id))
 						};
 					});
-				} else if (typeof(args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
 					match.$or.map(o => {
 						o.storeId = ObjectId(args.req.body.storeId);
 					});
@@ -2189,6 +2189,7 @@ var module = function () {
 						'reviews': 0,
 						'storeId': ObjectId(args.req.body.storeId),
 						'visible': args.req.body.visible,
+						'quantity': args.req.body.quantity || 0,
 						'returned': 0,
 						'purchased': 0,
 						'promotion': args.req.body.promotion || { 'price': 0, 'enabled': false },
@@ -2453,6 +2454,9 @@ var module = function () {
 					};
 					if (typeof (args.req.body.visible) != 'undefined') {
 						update.$set.visible = args.req.body.visible;
+					};
+					if (typeof (args.req.body.quantity) != 'undefined') {
+						update.$set.quantity = args.req.body.quantity;
 					};
 					if (typeof (args.req.body.promotion) != 'undefined') {
 						if (typeof (args.req.body.promotion.price) != 'undefined') {

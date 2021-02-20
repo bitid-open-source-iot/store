@@ -28,6 +28,9 @@ export class DepartmentsEditorPage implements OnInit, OnDestroy {
 		storeId: '',
 		description: ''
 	};
+	public filter: FormGroup = new FormGroup({
+		store: new FormControl(null, [Validators.required])
+	});
 	public loading: boolean;
 	public department: Department = new Department();
 	public departmentId: string;

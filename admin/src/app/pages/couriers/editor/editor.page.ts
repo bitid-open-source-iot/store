@@ -37,6 +37,9 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 		account: '',
 		description: ''
 	};
+	public filter: FormGroup = new FormGroup({
+		store: new FormControl(null, [Validators.required])
+	});
 	public options: MatTableDataSource<any> = new MatTableDataSource<any>();
 	public courier: Courier = new Courier();
 	public loading: boolean;
