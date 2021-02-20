@@ -1,1 +1,87 @@
-<p>orders works!</p>
+<mat-content>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+    <table mat-table [dataSource]="orders" matSort>
+        <ng-container matColumnDef="orderId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Order ID
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.orderId }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+                Orders: {{ orders.data.length }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Email
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.email }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Date
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.date[element.status] | date : 'yyyy/MM/dd' }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Status
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.status }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container matColumnDef="subtotal">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Sub Total
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.subtotal | currency : 'R' }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ sum('subtotal') | currency : 'R' }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="vat">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                VAT
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.vat | currency : 'R' }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ sum('vat') | currency : 'R' }}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Total
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.total | currency : 'R' }}
+            </td>
+            <td mat-footer-cell *matFooterCellDef>
+                {{ sum('total') | currency : 'R' }}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true;"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="columns; sticky: true;"></tr>
+    </table>
+</mat-content>

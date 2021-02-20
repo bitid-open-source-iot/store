@@ -1,0 +1,94 @@
+<mat-toolbar>
+    <mat-label class="spacer">
+        Filter Orders
+    </mat-label>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-content>
+    <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+        <h2>
+            Date
+        </h2>
+
+        <section formGroupName="date">
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    From
+                </mat-label>
+
+                <input matInput type="date" name="from" placeholder="from" formControlName="from" required>
+
+                <mat-error *ngIf="errors.date.from">
+                    {{ errors.date.from }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    To
+                </mat-label>
+
+                <input matInput type="date" name="to" placeholder="to" formControlName="to" required>
+
+                <mat-error *ngIf="errors.date.to">
+                    {{ errors.date.to }}
+                </mat-error>
+            </mat-form-field>
+        </section>
+
+        <mat-form-field appearance="outline">
+            <mat-label>
+                Store
+            </mat-label>
+
+            <mat-select name="storeId" formControlName="storeId" multiple>
+                <mat-option *ngFor="let store of stores.data" [value]="store.storeId">
+                    {{ store.description }}
+                </mat-option>
+            </mat-select>
+
+            <mat-error *ngIf="errors.storeId">
+                {{ errors.storeId }}
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>
+                Status
+            </mat-label>
+
+            <mat-select name="status" formControlName="status" multiple>
+                <mat-option value="initialized">
+                    Initialized
+                </mat-option>
+                <mat-option value="paid">
+                    Paid
+                </mat-option>
+                <mat-option value="delivered">
+                    Delivered
+                </mat-option>
+                <mat-option value="returned">
+                    Returned
+                </mat-option>
+            </mat-select>
+
+            <mat-error *ngIf="errors.status">
+                {{ errors.status }}
+            </mat-error>
+        </mat-form-field>
+
+        <button #button type="submit" style="display: none;"></button>
+    </form>
+</mat-content>
+
+<mat-footer>
+    <button type="button" mat-flat-button (click)="button.click()">
+        submit
+    </button>
+</mat-footer>

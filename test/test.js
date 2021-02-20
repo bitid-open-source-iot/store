@@ -2230,10 +2230,6 @@ var tools = {
                 var deferred = Q.defer();
 
                 tools.post('/store/reports/sales', {
-                    'date': {
-                        'to': new Date(),
-                        'from': new Date()
-                    },
                     'storeId': storeId
                 })
                     .then(deferred.resolve, deferred.resolve);

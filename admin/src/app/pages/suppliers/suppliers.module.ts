@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
@@ -46,7 +45,6 @@ const routes: Routes = [
         OptionsModule,
         MatIconModule,
         MatTableModule,
-        MatChipsModule,
         MatInputModule,
         MatRippleModule,
         MatButtonModule,

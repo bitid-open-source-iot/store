@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportsPage } from './reports.page';
+import { OrdersFilterDialog } from './filter.dialog';
 
-describe('ReportsPage', () => {
-  let component: ReportsPage;
-  let fixture: ComponentFixture<ReportsPage>;
+describe('OrdersFilterDialog', () => {
+  let component: OrdersFilterDialog;
+  let fixture: ComponentFixture<OrdersFilterDialog>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReportsPage]
+      declarations: [OrdersFilterDialog]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReportsPage);
+    fixture = TestBed.createComponent(OrdersFilterDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

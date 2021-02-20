@@ -39,7 +39,8 @@ form {
 table {
     width: 100%;
     background-color: transparent !important;
-    .mat-header-row {
+    .mat-header-row,
+    .mat-footer-row {
         height: 30px !important;
         background-color: #fff;
     }
@@ -108,144 +109,6 @@ mat-list {
         width: 100%;
     }
 }
-mat-grid-list {
-    border-bottom: 1px solid #e0e0e0;
-    background-color: #e0e0e0;
-    mat-grid-tile {
-        cursor: pointer;
-        background-color: #ffffff;
-    }
-}
-body.dark-mode {
-    *::-webkit-scrollbar {
-        width: 1em !important;
-        background-color: #212121 !important;
-    }
-    *::-webkit-scrollbar-thumb {
-        outline: none !important;
-        background-color: #757575 !important;
-    }
-    color: #e0e0e0 !important;
-    background-color: #000000 !important;
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    p {
-        color: #e0e0e0 !important;
-    }
-    splashscreen,
-    mat-dialog-container {
-        color: #e0e0e0 !important;
-        background-color: #000000 !important;
-    }
-    mat-grid-list {
-        border-bottom: 1px solid #757575;
-        background-color: #757575;
-        mat-grid-tile {
-            background-color: #000000 !important;
-        }
-    }
-    form {
-        color: #e0e0e0 !important;
-    }
-    mat-card,
-    mat-drawer,
-    mat-footer,
-    mat-toolbar,
-    mat-bottom-sheet-container {
-        color: #e0e0e0 !important;
-        border-color: #212121 !important;
-        background-color: #0a0a0a !important;
-    }
-    mat-account {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-    button:disabled {
-        color: rgba(255, 255, 255, 0.25) !important;
-    }
-    input[type="color"] {
-        border-color: #757575 !important;
-    }
-    .mat-form-field,
-    .mat-select-value {
-        color: #e0e0e0 !important;
-    }
-    .mat-form-field-outline {
-        color: #757575 !important;
-    }
-    .mat-form-field-invalid {
-        .mat-form-field-outline {
-            color: #f44336 !important;
-        }
-        .mat-form-field-label-wrapper label {
-            color: #f44336 !important;
-        }
-    }
-    .mat-form-field-label-wrapper label {
-        color: #e0e0e0 !important;
-    }
-    .mat-list {
-        .mat-subheader,
-        .mat-list-item {
-            color: #e0e0e0 !important;
-        }
-        .mat-list-item[lines="full"] {
-            border-color: rgba(255, 255, 255, 0.25) !important;
-        }
-    }
-    .mat-slide-toggle .mat-slide-toggle-bar {
-        background-color: rgba(255, 255, 255, 0.25) !important;
-    }
-    .mat-header-row {
-        background-color: #212121 !important;
-        .mat-header-cell {
-            color: #e0e0e0 !important;
-            border-color: #212121 !important;
-        }
-    }
-    .mat-row {
-        .mat-cell {
-            color: #e0e0e0 !important;
-            border-color: #212121 !important;
-        }
-    }
-    .mat-tab-group,
-    .mat-tab-label {
-        color: #e0e0e0 !important;
-    }
-    .mat-tab-header {
-        border-color: #212121 !important;
-    }
-    mat-drawer-container {
-        mat-drawer {
-            mat-button-toggle-group {
-                border-color: #757575 !important;
-                mat-button-toggle {
-                    color: #e0e0e0 !important;
-                    border-color: #757575 !important;
-                    background-color: transparent !important;
-                }
-                .mat-button-toggle-checked {
-                    background-color: #424242 !important;
-                }
-            }
-        }
-        mat-drawer-content {
-            mat-toolbar {
-                border-color: #757575 !important;
-                input {
-                    background-color: rgba(255, 255, 255, 0.1) !important;
-                }
-            }
-        }
-    }
-    form h2.collapsed {
-        border-bottom: 1px solid #212121 !important;
-    }
-}
 mat-progress-bar {
     top: 0px !important;
     left: 0px !important;
@@ -254,15 +117,21 @@ mat-progress-bar {
     position: absolute !important;
 }
 home-page,
+orders-page,
 stores-page,
+reviews-page,
 couriers-page,
+products-page,
 suppliers-page,
 departments-page,
 authenticate-page,
 stores-editor-page,
+products-editor-page,
 couriers-editor-page,
 suppliers-editor-page,
-departments-editor-page {
+collection-points-page,
+departments-editor-page,
+collection-points-editor-page {
     height: calc(100vh - 56px);
     display: flex;
     position: relative;
@@ -293,4 +162,13 @@ button[mat-menu-item] {
 .mat-column-options {
     width: 40px;
     padding-right: 8px !important;
+}
+.orders-filter-dialog mat-dialog-container {
+    width: 500px !important;
+    padding: 0px !important;
+    background-color: #FFF !important;
+}
+tfoot td {
+    font-size: 12px !important;
+    font-weight: 500 !important;
 }

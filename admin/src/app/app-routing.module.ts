@@ -21,11 +21,6 @@ const routes: Routes = [
         loadChildren: () => import('./pages/stores/stores.module').then(m => m.StoresPageModule)
     },
     {
-        path: 'reports',
-        canActivate: [AuthService],
-        loadChildren: () => import('./pages/reports/reports.module').then(m => m.ReportsPageModule)
-    },
-    {
         path: 'reviews',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/reviews/reviews.module').then(m => m.ReviewsPageModule)

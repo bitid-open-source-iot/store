@@ -2042,23 +2042,85 @@ var module = function () {
 			date.from.setSeconds(0);
 			date.from.setMilliseconds(0);
 
+			var match = {
+				$or: [
+					{
+						'date.initialized': {}
+					},
+					{
+						'date.paid': {}
+					},
+					{
+						'date.delivered': {}
+					},
+					{
+						'date.returned': {}
+					}
+				]
+			};
+
+			if (typeof(args.req.body.date) != 'undefined' && args.req.body.date != null) {
+				if (typeof(args.req.body.date.to) != 'undefined' && args.req.body.date.to != null) {
+					match.$or.map(o => {
+						Object.keys(o).map(key => {
+							if (key.indexOf('date.') > -1) {
+								o[key].$lte = new Date(args.req.body.date.to);
+							};
+						});
+					});
+				};
+				if (typeof(args.req.body.date.from) != 'undefined' && args.req.body.date.from != null) {
+					match.$or.map(o => {
+						Object.keys(o).map(key => {
+							if (key.indexOf('date.') > -1) {
+								o[key].$gte = new Date(args.req.body.date.from);
+							};
+						});
+					});
+				};
+			};
+			if (typeof(args.req.body.status) != 'undefined' && args.req.body.status != null) {
+				if (Array.isArray(args.req.body.status) && args.req.body.status.length > 0) {
+					match.$or.map(o => {
+						o.status = {
+							$in: args.req.body.status
+						};
+					});
+				} else if (typeof(args.req.body.status) == 'string') {
+					match.$or.map(o => {
+						o.status = args.req.body.status;
+					});
+				};
+			};
+			if (typeof(args.req.body.storeId) != 'undefined' && args.req.body.storeId != null) {
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.$or.map(o => {
+						o.storeId = {
+							$in: args.req.body.storeId.map(id => ObjectId(id))
+						};
+					});
+				} else if (typeof(args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.$or.map(o => {
+						o.storeId = ObjectId(args.req.body.storeId);
+					});
+				};
+			};
+
+			match.$or.map(o => {
+				Object.keys(o).map(key => {
+					if (key.indexOf('date.') > -1 && Object.keys(o[key]).length == 0) {
+						delete o[key];
+					};
+				});
+			});
+
 			var params = [
 				{
-					$match: {
-						'date.paid': {
-							$gte: date.from,
-							$lte: date.to
-						},
-						'status': 'paid',
-						'storeId': ObjectId(args.req.body.storeId)
-					}
+					$match: match
 				},
 				{
-					$project: {
-						'_id': 0,
+					$addFields: {
 						'vat': '$payment.vat',
-						'date': '$date.paid',
-						'email': '$email',
 						'total': '$payment.total',
 						'orderId': '$_id',
 						'subtotal': '$payment.subtotal'
@@ -2288,7 +2350,7 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						image: '$image.src' 
+						image: '$image.src'
 					}
 				},
 				{

@@ -1,0 +1,44 @@
+<mat-content>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Store
+                </mat-label>
+
+                <mat-select name="storeId" formControlName="storeId" required>
+                    <mat-option *ngFor="let store of stores.data" [value]="store.storeId">
+                        {{ store.description }}
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.storeId">
+                    {{ errors.storeId }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Description
+                </mat-label>
+
+                <input matInput type="text" name="description" placeholder="description"
+                    formControlName="description" required>
+
+                <mat-error *ngIf="errors.description">
+                    {{ errors.description }}
+                </mat-error>
+            </mat-form-field>
+
+            <button #button type="submit" style="display: none;"></button>
+        </form>
+    </div>
+</mat-content>
+
+<mat-footer>
+    <button type="button" color="primary" mat-flat-button (click)="button.click()">
+        submit
+    </button>
+</mat-footer>
