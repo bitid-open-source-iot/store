@@ -1,8 +1,14 @@
 export class Review {
 
     public role?: number;
+    public store = {
+        description: null
+    };
     public score?: number;
     public status?: string;
+    public product = {
+        title: null
+    };
     public storeId?: string;
     public message?: string;
     public reviewId?: string;
@@ -10,6 +16,19 @@ export class Review {
 
     constructor(args: REVIEW) {
         if (typeof (args) != 'undefined' && args != null) {
+            if (typeof (args.store) != 'undefined' && args.store != null) {
+                if (typeof (args.store.description) != 'undefined' && args.store.description != null) {
+                    this.store.description = args.store.description;
+                }
+            }
+            if (typeof (args.product) != 'undefined' && args.product != null) {
+                if (typeof (args.product.title) != 'undefined' && args.product.title != null) {
+                    this.product.title = args.product.title;
+                }
+            }
+            if (typeof (args.role) != 'undefined' && args.role != null) {
+                this.role = args.role;
+            }
             if (typeof (args.role) != 'undefined' && args.role != null) {
                 this.role = args.role;
             }
@@ -37,6 +56,12 @@ export class Review {
 }
 
 interface REVIEW {
+    store?: {
+        description?: string;
+    };
+    product?: {
+        title?: string;
+    };
     role?: number;
     score?: number;
     status?: string;

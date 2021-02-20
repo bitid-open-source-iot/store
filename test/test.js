@@ -853,6 +853,7 @@ describe('Products', function () {
                     result.should.have.property('images');
                     result.should.have.property('storeId');
                     result.should.have.property('reviews');
+                    result.should.have.property('location');
                     result.should.have.property('productId');
                     result.should.have.property('promotion');
                     result.should.have.property('supplierId');
@@ -888,6 +889,7 @@ describe('Products', function () {
                     result[0].should.have.property('expiry');
                     result[0].should.have.property('storeId');
                     result[0].should.have.property('reviews');
+                    result[0].should.have.property('location');
                     result[0].should.have.property('productId');
                     result[0].should.have.property('promotion');
                     result[0].should.have.property('supplierId');
@@ -2390,6 +2392,11 @@ var tools = {
                         'date': new Date(),
                         'enabled': false
                     },
+                    'location': {
+                        'enabled': true,
+                        'latitude': 0,
+                        'longitude': 0
+                    },
                     'shipping': {},
                     'promotion': {
                         'price': 0,
@@ -2426,6 +2433,7 @@ var tools = {
                         'images',
                         'storeId',
                         'reviews',
+                        'location',
                         'productId',
                         'promotion',
                         'supplierId',
@@ -2454,6 +2462,7 @@ var tools = {
                         'expiry',
                         'storeId',
                         'reviews',
+                        'location',
                         'productId',
                         'promotion',
                         'supplierId',

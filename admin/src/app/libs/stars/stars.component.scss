@@ -1,0 +1,10 @@
+mat-stars {
+    display: flex;
+    flex-direction: row;
+    mat-icon {
+        color: #E0E0E0;
+    }
+    mat-icon.active {
+        color: #FFC107;
+    }
+}

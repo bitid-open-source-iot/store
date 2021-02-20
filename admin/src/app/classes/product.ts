@@ -4,6 +4,11 @@ export class Product {
         date: null,
         enabled: null
     };
+    public location = {
+        enabled: null,
+        latitude: 0,
+        longitude: 0
+    };
     public promotion = {
         price: null,
         enabled: null
@@ -13,6 +18,7 @@ export class Product {
     public type?: string;
     public score?: number;
     public links?: any[] = [];
+    public image?: string;
     public title?: string;
     public price?: number;
     public images?: any[] = [];
@@ -33,6 +39,17 @@ export class Product {
                 }
                 if (typeof (args.expiry.enabled) != 'undefined' && args.expiry.enabled != null) {
                     this.expiry.enabled = args.expiry.enabled;
+                }
+            }
+            if (typeof (args.location) != 'undefined' && args.location != null) {
+                if (typeof (args.location.enabled) != 'undefined' && args.location.enabled != null) {
+                    this.location.enabled = args.location.enabled;
+                }
+                if (typeof (args.location.latitude) != 'undefined' && args.location.latitude != null) {
+                    this.location.latitude = args.location.latitude;
+                }
+                if (typeof (args.location.longitude) != 'undefined' && args.location.longitude != null) {
+                    this.location.longitude = args.location.longitude;
                 }
             }
             if (typeof (args.promotion) != 'undefined' && args.promotion != null) {
@@ -63,6 +80,9 @@ export class Product {
             }
             if (typeof (args.price) != 'undefined' && args.price != null) {
                 this.price = args.price;
+            }
+            if (typeof (args.image) != 'undefined' && args.image != null) {
+                this.image = args.image;
             }
             if (typeof (args.images) != 'undefined' && args.images != null) {
                 this.images = args.images;
@@ -101,6 +121,11 @@ interface PRODUCT {
         date?: string;
         enabled?: boolean;
     };
+    location?: {
+        enabled?: boolean;
+        latitude?: number;
+        longitude?: number;
+    };
     promotion?: {
         price?: number;
         enabled?: boolean;
@@ -108,6 +133,7 @@ interface PRODUCT {
     role?: number;
     cost?: number;
     type?: string;
+    image?: string;
     score?: number;
     links?: any[];
     title?: string;

@@ -3,6 +3,7 @@ import { ReviewsPage } from './reviews.page';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
+import { StarsModule } from 'src/app/libs/stars/stars.module';
 import { CommonModule } from '@angular/common';
 import { UploadModule } from 'src/app/libs/upload/upload.module';
 import { OptionsModule } from 'src/app/libs/options/options.module';
@@ -32,6 +33,7 @@ const routes: Routes = [
 @NgModule({
     imports: [
         FormsModule,
+        StarsModule,
         CommonModule,
         UploadModule,
         ConfirmModule,

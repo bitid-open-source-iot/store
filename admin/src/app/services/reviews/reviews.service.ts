@@ -14,4 +14,12 @@ export class ReviewsService {
 		return await this.api.post(environment.store, '/store/reviews/list', params);
 	}
 
+	public async reject(params) {
+		return await this.api.post(environment.store, '/store/reviews/reject', params);
+	}
+
+	public async approve(params) {
+		return await this.api.post(environment.store, '/store/reviews/approve', params);
+	}
+
 }

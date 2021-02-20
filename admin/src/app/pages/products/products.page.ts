@@ -22,7 +22,7 @@ export class ProductsPage implements OnInit, OnDestroy {
 
 	constructor(private toast: ToastService, private sheet: OptionsService, private confirm: ConfirmService, private router: Router, private service: ProductsService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
 
-	public columns: string[] = ['title', 'options'];
+	public columns: string[] = ['image', 'title', 'price', 'options'];
 	public loading: boolean;
 	public products: MatTableDataSource<Product> = new MatTableDataSource<Product>();
 	private subscriptions: any = {};
@@ -37,6 +37,9 @@ export class ProductsPage implements OnInit, OnDestroy {
 			filter: [
 				'role',
 				'title',
+				'image',
+				'price',
+				'promotion',
 				'productId'
 			]
 		});
@@ -57,11 +60,24 @@ export class ProductsPage implements OnInit, OnDestroy {
 			options: [
 				{
 					icon: 'edit',
-					title: 'Edit product',
+					title: 'Edit Product',
 					handler: () => {
 						this.router.navigate(['/products', 'editor'], {
 							queryParams: {
 								mode: 'update',
+								productId: product.productId
+							}
+						});
+					},
+					disabled: [0, 1]
+				},
+				{
+					icon: 'content_copy',
+					title: 'Copy Product',
+					handler: () => {
+						this.router.navigate(['/products', 'editor'], {
+							queryParams: {
+								mode: 'copy',
 								productId: product.productId
 							}
 						});

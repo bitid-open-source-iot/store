@@ -1716,33 +1716,8 @@ var module = function () {
 		list: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			if (typeof (args.req.body.status) != 'undefined') {
-				params.status = args.req.body.status;
-			};
-
-			if (typeof (args.req.body.reviewId) != 'undefined') {
-				if (Array.isArray(args.req.body.reviewId)) {
-					params._id = {
-						$in: args.req.body.reviewId.map(id => ObjectId(id))
-					};
-				} else if (typeof (args.req.body.reviewId) == 'string') {
-					params._id = ObjectId(args.req.body.reviewId);
-				};
-			};
-
-			if (typeof (args.req.body.productId) != 'undefined') {
-				if (Array.isArray(args.req.body.productId)) {
-					params.productId = {
-						$in: args.req.body.productId.map(id => ObjectId(id))
-					};
-				} else if (typeof (args.req.body.productId) == 'string') {
-					params.productId = ObjectId(args.req.body.productId);
-				};
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
 			};
 
 			var filter = {};
@@ -1751,16 +1726,63 @@ var module = function () {
 				args.req.body.filter.map(f => {
 					if (f == 'reviewId') {
 						filter['_id'] = 1;
+					} else if (f == 'role') {
+						filter['bitid.auth.users'] = 1;
 					} else {
 						filter[f] = 1;
 					};
 				});
 			};
 
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						store: {
+							description: '$stores.description'
+						},
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$lookup: {
+						as: 'products',
+						from: 'tblProducts',
+						localField: 'productId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$products'
+				},
+				{
+					$addFields: {
+						product: {
+							title: '$products.title'
+						}
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
 			db.call({
 				'params': params,
-				'filter': filter,
-				'operation': 'find',
+				'operation': 'aggregate',
 				'collection': 'tblReviews'
 			})
 				.then(result => {
@@ -1845,15 +1867,42 @@ var module = function () {
 		reject: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'_id': ObjectId(args.req.body.storeId),
-				'bitid.auth.users.email': args.req.body.header.email
-			};
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						},
+						'_id': ObjectId(args.req.body.reviewId)
+					}
+				}
+			];
 
 			db.call({
 				'params': params,
-				'operation': 'find',
-				'collection': 'tblStores'
+				'operation': 'aggregate',
+				'collection': 'tblReviews'
 			})
 				.then(result => {
 					var deferred = Q.defer();
@@ -1893,15 +1942,42 @@ var module = function () {
 		approve: (args) => {
 			var deferred = Q.defer();
 
-			var params = {
-				'_id': ObjectId(args.req.body.storeId),
-				'bitid.auth.users.email': args.req.body.header.email
-			};
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						},
+						'_id': ObjectId(args.req.body.reviewId)
+					}
+				}
+			];
 
 			db.call({
 				'params': params,
-				'operation': 'find',
-				'collection': 'tblStores'
+				'operation': 'aggregate',
+				'collection': 'tblReviews'
 			})
 				.then(result => {
 					var deferred = Q.defer();
@@ -2178,6 +2254,11 @@ var module = function () {
 					var deferred = Q.defer();
 
 					var params = {
+						'location': {
+							'enabled': args.req.body.location.enabled,
+							'latitude': args.req.body.location.latitude || 0,
+							'longitude': args.req.body.location.longitude || 0
+						},
 						'cost': args.req.body.cost || 0,
 						'type': args.req.body.type,
 						'links': args.req.body.links || [],
@@ -2461,6 +2542,17 @@ var module = function () {
 						};
 						if (typeof (args.req.body.expiry.enabled) != 'undefined') {
 							update.$set['expiry.enabled'] = args.req.body.expiry.enabled;
+						};
+					};
+					if (typeof (args.req.body.location) != 'undefined') {
+						if (typeof (args.req.body.location.enabled) != 'undefined') {
+							update.$set['location.enabled'] = args.req.body.location.enabled;
+						};
+						if (typeof (args.req.body.location.latitude) != 'undefined') {
+							uplatitude.$set['location.latitude'] = args.req.body.location.latitude;
+						};
+						if (typeof (args.req.body.location.longitude) != 'undefined') {
+							uplongitude.$set['location.longitude'] = args.req.body.location.longitude;
 						};
 					};
 					if (typeof (args.req.body.promotion) != 'undefined') {

@@ -1,0 +1,24 @@
+.mat-column-score,
+.mat-column-status {
+    width: 200px;
+}
+.mat-column-status {
+    span {
+        padding: 5px 10px;
+        font-size: 12px !important;
+        border-radius: 12px;
+        background-color: #E0E0E0;
+    }
+    span.pending {
+        color: #fff;
+        background-color: #2196F3;
+    }
+    span.rejected {
+        color: #fff;
+        background-color: #F44336;
+    }
+    span.approved {
+        color: #fff;
+        background-color: #4CAF50;
+    }
+}
