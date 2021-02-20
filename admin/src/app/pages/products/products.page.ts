@@ -22,7 +22,7 @@ export class ProductsPage implements OnInit, OnDestroy {
 
 	constructor(private toast: ToastService, private sheet: OptionsService, private confirm: ConfirmService, private router: Router, private service: ProductsService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
 
-	public columns: string[] = ['description', 'options'];
+	public columns: string[] = ['title', 'options'];
 	public loading: boolean;
 	public products: MatTableDataSource<Product> = new MatTableDataSource<Product>();
 	private subscriptions: any = {};
@@ -36,8 +36,8 @@ export class ProductsPage implements OnInit, OnDestroy {
 			},
 			filter: [
 				'role',
-				'productId',
-				'description'
+				'title',
+				'productId'
 			]
 		});
 

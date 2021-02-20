@@ -3,6 +3,109 @@
 
     <div class="container">
         <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <mat-form-field floatLabel="always" appearance="outline" >
+                <mat-label>
+                    Images
+                </mat-label>
+
+                <input matInput type="text" formControlName="images" style="display: none;" required>
+
+                <mat-grid-list cols="3" rowHeight="1:1">
+                    <mat-grid-tile *ngIf="form.value.images.length < 3" upload [upload-src]="image" (upload-change)="AddImage($event)" matRipple>
+                        <mat-icon>
+                            upload
+                        </mat-icon>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile *ngFor="let image of form.value.images" upload [upload-src]="image.src" (upload-change)="UpdateImage(image, $event)" matRipple>
+                        <button mat-icon-button class="star" [class.active]="image.main" (click)="MainImage($event, image)">
+                            <mat-icon>
+                                star
+                            </mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" class="delete" (click)="RemoveImage($event, image)">
+                            <mat-icon>
+                                delete
+                            </mat-icon>
+                        </button>
+                    </mat-grid-tile>
+                </mat-grid-list>
+            </mat-form-field>
+
+            <h2>
+                Expiry
+            </h2>
+
+            <section formGroupName="expiry">
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Enabled
+                    </mat-label>
+    
+                    <mat-select name="enabled" placeholder="enabled" formControlName="enabled" required>
+                        <mat-option [value]="true">
+                            Enabled
+                        </mat-option>
+                        <mat-option [value]="false">
+                            Disabled
+                        </mat-option>
+                    </mat-select>
+    
+                    <mat-error *ngIf="errors.expiry.enabled">
+                        {{ errors.expiry.enabled }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Date
+                    </mat-label>
+    
+                    <input matInput type="date" name="date" placeholder="date" formControlName="date" required>
+    
+                    <mat-error *ngIf="errors.expiry.date">
+                        {{ errors.expiry.date }}
+                    </mat-error>
+                </mat-form-field>
+            </section>
+
+            <h2>
+                Promotion
+            </h2>
+
+            <section formGroupName="promotion">
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Enabled
+                    </mat-label>
+    
+                    <mat-select name="enabled" placeholder="enabled" formControlName="enabled" required>
+                        <mat-option [value]="true">
+                            Enabled
+                        </mat-option>
+                        <mat-option [value]="false">
+                            Disabled
+                        </mat-option>
+                    </mat-select>
+    
+                    <mat-error *ngIf="errors.promotion.enabled">
+                        {{ errors.promotion.enabled }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>
+                        Price
+                    </mat-label>
+    
+                    <input matInput type="number" name="price" placeholder="price" formControlName="price" required>
+    
+                    <mat-error *ngIf="errors.promotion.price">
+                        {{ errors.promotion.price }}
+                    </mat-error>
+                </mat-form-field>
+            </section>
+
             <mat-form-field appearance="outline">
                 <mat-label>
                     Cost

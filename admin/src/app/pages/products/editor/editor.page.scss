@@ -10,3 +10,23 @@
     justify-content: center;
     background-color: #fafafa;
 }
+mat-grid-list mat-grid-tile {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    .star,
+    .delete {
+        top: 0px;
+        z-index: 100;
+        position: absolute;
+    }
+    .active {
+        color: #FFC107 !important;
+    }
+    .star {
+        left: 0px;
+    }
+    .delete {
+        right: 0px;
+    }
+}

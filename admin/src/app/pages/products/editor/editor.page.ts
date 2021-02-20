@@ -47,6 +47,7 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		description: new FormControl(null, [Validators.required])
 	});
 	public mode: string;
+	public image: string;
 	public errors: any = {
 		expiry: {
 			date: '',
@@ -138,6 +139,21 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
+	}
+
+	public AddImage(src) {
+		let images = this.form.value.images;
+		let tmp = {
+			src: src,
+			main: false,
+			position: images.length
+		}
+		if (images.length == 0) {
+			tmp.main = true;
+		};
+		images.push(tmp);
+		this.form.controls.images.setValue(images);
+		this.image = null;
 	}
 
 	private async load() {
@@ -251,6 +267,43 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
+	}
+
+	public UpdateImage(image, src) {
+		let images = this.form.value.images;
+		for (let i = 0; i < images.length; i++) {
+			if (images[i].src == image.src) {
+				images[i].src = src;
+				break;
+			};
+		};
+		this.form.controls.images.setValue(images);
+	}
+
+	public MainImage(event: MouseEvent, image) {
+		event.preventDefault();
+		event.stopPropagation();
+		let images = this.form.value.images;
+		images.map(o => {
+			o.main = false;
+			if (o.src == image.src) {
+				image.main = true;
+			};
+		});
+		this.form.controls.images.setValue(images);
+	}
+
+	public RemoveImage(event: MouseEvent, image) {
+		event.preventDefault();
+		event.stopPropagation();
+		let images = this.form.value.images;
+		for (let i = 0; i < images.length; i++) {
+			if (images[i].src == image.src) {
+				images.splice(i, 1);
+				break;
+			};
+		};
+		this.form.controls.images.setValue(images);
 	}
 
 	ngOnInit(): void {
