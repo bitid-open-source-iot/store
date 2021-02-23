@@ -69,6 +69,25 @@
                 </mat-chip-list>
             </mat-form-field>
 
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Show Map
+                </mat-label>
+
+                <mat-select name="maps" formControlName="maps" required>
+                    <mat-option [value]="true">
+                        Enabled
+                    </mat-option>
+                    <mat-option [value]="false">
+                        Disabled
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.maps">
+                    {{ errors.maps }}
+                </mat-error>
+            </mat-form-field>
+
             <h2>
                 Address
             </h2>

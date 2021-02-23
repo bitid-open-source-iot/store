@@ -42,7 +42,7 @@ export class StoresService {
 	}
 
 	public async updatesubscriber(params) {
-		return await this.api.post(environment.store, '/store/stores/updatesubscriber', params);
+		return await this.api.post(environment.store, '/store/stores/update-subscriber', params);
 	}
 
 }

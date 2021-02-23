@@ -74,7 +74,7 @@ export class CollectionPointsPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Delete ' + collectionpoint.description,
 							handler: async () => {
 								this.loading = true;
 

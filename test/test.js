@@ -16,8 +16,8 @@ var storeId = null;
 var reviewId = null;
 var addressId = null;
 var productId = null;
-var warningId = null;
 var courierId = null;
+var customerId = null;
 var supplierId = null;
 var wishlistId = null;
 var departmentId = null;
@@ -931,15 +931,15 @@ describe('Products', function () {
     });
 });
 
-describe('Warnings', function () {
-    it('/store/warnings/add', function (done) {
+describe('Customers', function () {
+    it('/store/customers/add', function (done) {
         this.timeout(5000);
 
-        tools.api.warnings.add()
+        tools.api.customers.add()
             .then((result) => {
                 try {
-                    warningId = result.warningId;
-                    result.should.have.property('warningId');
+                    customerId = result.customerId;
+                    result.should.have.property('customerId');
                     done();
                 } catch (e) {
                     done(e);
@@ -953,17 +953,17 @@ describe('Warnings', function () {
             });
     });
 
-    it('/store/warnings/get', function (done) {
+    it('/store/customers/get', function (done) {
         this.timeout(5000);
 
-        tools.api.warnings.get()
+        tools.api.customers.get()
             .then((result) => {
                 try {
                     result.should.have.property('role');
+                    result.should.have.property('email');
                     result.should.have.property('storeId');
-                    result.should.have.property('warningId');
+                    result.should.have.property('customerId');
                     result.should.have.property('serverDate');
-                    result.should.have.property('description');
                     done();
                 } catch (e) {
                     done(e);
@@ -977,17 +977,17 @@ describe('Warnings', function () {
             });
     });
 
-    it('/store/warnings/list', function (done) {
+    it('/store/customers/list', function (done) {
         this.timeout(5000);
 
-        tools.api.warnings.list()
+        tools.api.customers.list()
             .then((result) => {
                 try {
                     result[0].should.have.property('role');
+                    result[0].should.have.property('email');
                     result[0].should.have.property('storeId');
-                    result[0].should.have.property('warningId');
+                    result[0].should.have.property('customerId');
                     result[0].should.have.property('serverDate');
-                    result[0].should.have.property('description');
                     done();
                 } catch (e) {
                     done(e);
@@ -1001,10 +1001,10 @@ describe('Warnings', function () {
             });
     });
 
-    it('/store/warnings/update', function (done) {
+    it('/store/customers/update', function (done) {
         this.timeout(5000);
 
-        tools.api.warnings.update()
+        tools.api.customers.update()
             .then((result) => {
                 try {
                     result.should.have.property('updated');
@@ -1670,10 +1670,10 @@ describe('Remove Added Items', function () {
             });
     });
 
-    it('/store/warnings/delete', function (done) {
+    it('/store/customers/delete', function (done) {
         this.timeout(5000);
 
-        tools.api.warnings.delete()
+        tools.api.customers.delete()
             .then((result) => {
                 try {
                     result.should.have.property('deleted');
@@ -2498,75 +2498,6 @@ var tools = {
                 return deferred.promise;
             }
         },
-        warnings: {
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/add', {
-                    'storeId': storeId,
-                    'description': 'API 1 TEST',
-                    'organizationOnly': 0
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/get', {
-                    'filter': [
-                        'role',
-                        'storeId',
-                        'warningId',
-                        'serverDate',
-                        'description'
-                    ],
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            list: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/list', {
-                    'filter': [
-                        'role',
-                        'storeId',
-                        'warningId',
-                        'serverDate',
-                        'description'
-                    ],
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            update: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/update', {
-                    'warningId': warningId,
-                    'description': 'API 1'
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            delete: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/warnings/delete', {
-                    'warningId': warningId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            }
-        },
         couriers: {
             add: () => {
                 var deferred = Q.defer();
@@ -2651,6 +2582,74 @@ var tools = {
 
                 tools.post('/store/couriers/delete', {
                     'courierId': courierId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            }
+        },
+        customers: {
+            add: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/customers/add', {
+                    'email': 'customer@bitid.co.za',
+                    'storeId': storeId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/customers/get', {
+                    'filter': [
+                        'role',
+                        'email',
+                        'storeId',
+                        'customerId',
+                        'serverDate'
+                    ],
+                    'customerId': customerId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            list: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/customers/list', {
+                    'filter': [
+                        'role',
+                        'email',
+                        'storeId',
+                        'customerId',
+                        'serverDate'
+                    ],
+                    'customerId': customerId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            update: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/customers/update', {
+                    'email': 'customer@bitid.co.za',
+                    'customerId': customerId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            delete: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/customers/delete', {
+                    'customerId': customerId
                 })
                     .then(deferred.resolve, deferred.resolve);
 

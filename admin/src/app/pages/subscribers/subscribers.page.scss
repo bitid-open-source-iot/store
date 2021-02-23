@@ -1,0 +1,10 @@
+.mat-column-options {
+    width: 40px;
+    padding-right: 16px !important;
+}
+mat-list mat-list-item {
+    width: 100%;
+    mat-label {
+        margin-right: auto;
+    }
+}

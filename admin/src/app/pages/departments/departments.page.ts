@@ -74,7 +74,7 @@ export class DepartmentsPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Delete ' + department.description,
 							handler: async () => {
 								this.loading = true;
 

@@ -98,14 +98,14 @@ try {
                 app.use('/store/products', require('./api/products'));
                 __logger.info('Loaded: ./api/store/products');
 
-                app.use('/store/warnings', require('./api/warnings'));
-                __logger.info('Loaded: ./api/store/warnings');
-
                 app.use('/store/couriers', require('./api/couriers'));
                 __logger.info('Loaded: ./api/store/couriers');
 
                 app.use('/store/suppliers', require('./api/suppliers'));
                 __logger.info('Loaded: ./api/store/suppliers');
+
+                app.use('/store/customers', require('./api/customers'));
+                __logger.info('Loaded: ./api/store/customers');
 
                 app.use('/store/wishlists', require('./api/wishlists'));
                 __logger.info('Loaded: ./api/store/wishlists');

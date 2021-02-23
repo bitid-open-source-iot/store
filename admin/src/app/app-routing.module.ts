@@ -41,9 +41,19 @@ const routes: Routes = [
         loadChildren: () => import('./pages/suppliers/suppliers.module').then(m => m.SuppliersPageModule)
     },
     {
+        path: 'customers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/customers/customers.module').then(m => m.CustomersPageModule)
+    },
+    {
         path: 'departments',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/departments/departments.module').then(m => m.DepartmentsPageModule)
+    },
+    {
+        path: 'subscribers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/subscribers/subscribers.module').then(m => m.SubscribersPageModule)
     },
     {
         path: 'authenticate',

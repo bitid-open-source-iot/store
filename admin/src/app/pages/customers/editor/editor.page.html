@@ -1,0 +1,50 @@
+<mat-content>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Store
+                </mat-label>
+
+                <mat-select name="storeId" formControlName="storeId" required>
+                    <mat-option [formGroup]="filter">
+                        <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found"
+                            formControlName="store"></ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option
+                        *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }"
+                        [value]="store.storeId" [disabled]="store.role < 2">
+                        {{ store.description }}
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.storeId">
+                    {{ errors.storeId }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Email
+                </mat-label>
+
+                <input matInput type="email" name="email" placeholder="email" formControlName="email" required>
+
+                <mat-error *ngIf="errors.email">
+                    {{ errors.email }}
+                </mat-error>
+            </mat-form-field>
+
+            <button #button type="submit" style="display: none;"></button>
+        </form>
+    </div>
+</mat-content>
+
+<mat-footer>
+    <button type="button" color="primary" mat-flat-button (click)="button.click()">
+        submit
+    </button>
+</mat-footer>

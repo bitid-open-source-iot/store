@@ -21,12 +21,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ApiService } from './services/api/api.service';
 import { AuthService } from './services/auth/auth.service';
 import { ToastService } from './services/toast/toast.service';
-import { StoresService } from './services/stores/stores.service';
 import { ConfigService } from './services/config/config.service';
+import { OrdersService } from './services/orders/orders.service';
+import { StoresService } from './services/stores/stores.service';
 import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
+import { ReviewsService } from './services/reviews/reviews.service';
+import { ProductsService } from './services/products/products.service';
+import { CouriersService } from './services/couriers/couriers.service';
+import { CustomersService } from './services/customers/customers.service';
 import { FormErrorService } from './services/form-error/form-error.service';
+import { SuppliersService } from './services/suppliers/suppliers.service';
+import { DepartmentsService } from './services/departments/departments.service';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
+import { CollectionPointsService } from './services/collection-points/collection-points.service';
 
 /* --- COMPONENTS --- */
 import { AppComponent } from './app.component';
@@ -60,11 +68,19 @@ import { environment } from '../environments/environment';
         AuthService,
         ToastService,
         ConfigService,
+        OrdersService,
         StoresService,
         AccountService,
         ButtonsService,
+        ReviewsService,
+        ProductsService,
+        CouriersService,
+        CustomersService,
         FormErrorService,
-        LocalstorageService
+        SuppliersService,
+        DepartmentsService,
+        LocalstorageService,
+        CollectionPointsService
     ],
     bootstrap: [
         AppComponent

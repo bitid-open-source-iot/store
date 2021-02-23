@@ -38,6 +38,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			merchantKey: new FormControl(null, [Validators.required])
 		}),
 		dns: new FormControl([], [Validators.required]),
+		maps: new FormControl(false, [Validators.required]),
 		logo: new FormControl(null, [Validators.required]),
 		cover: new FormControl('./assets/cover.png', [Validators.required]),
 		description: new FormControl(null, [Validators.required]),
@@ -65,6 +66,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			merchantKey: ''
 		},
 		dns: '',
+		maps: '',
 		logo: '',
 		cover: '',
 		description: '',
@@ -95,6 +97,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		const response = await this.service.get({
 			filter: [
 				'dns',
+				'maps',
 				'role',
 				'logo',
 				'cover',
@@ -127,6 +130,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				(this.form.controls.payfast as FormGroup).controls.merchantKey.setValue(this.store.payfast.merchantKey);
 
 				this.form.controls.dns.setValue(this.store.dns);
+				this.form.controls.maps.setValue(this.store.maps);
 				this.form.controls.logo.setValue(this.store.logo);
 				this.form.controls.cover.setValue(this.store.cover);
 				this.form.controls.description.setValue(this.store.description);
@@ -172,6 +176,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				merchantKey: this.form.value.payfast.merchantKey
 			},
 			dns: this.form.value.dns,
+			maps: this.form.value.maps,
 			logo: this.form.value.logo,
 			cover: this.form.value.cover,
 			storeId: this.storeId,

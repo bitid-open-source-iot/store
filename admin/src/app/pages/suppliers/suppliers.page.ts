@@ -74,7 +74,7 @@ export class SuppliersPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Delete ' + supplier.description,
 							handler: async () => {
 								this.loading = true;
 

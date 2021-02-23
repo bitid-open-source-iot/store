@@ -74,7 +74,7 @@ export class CouriersPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Delete ' + courier.description,
 							handler: async () => {
 								this.loading = true;
 

@@ -88,7 +88,7 @@ export class StoresPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Unsubscribe ' + store.description,
 							handler: async () => {
 								this.loading = true;
 
@@ -122,7 +122,7 @@ export class StoresPage implements OnInit, OnDestroy {
 					danger: true,
 					handler: () => {
 						this.confirm.show({
-							message: '',
+							message: 'Delete ' + store.description,
 							handler: async () => {
 								this.loading = true;
 

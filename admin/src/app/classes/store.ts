@@ -21,6 +21,7 @@ export class Store {
         merchantKey: ''
     };
     public dns?: string[] = [];
+    public maps?: boolean;
     public role?: number;
     public logo?: string;
     public users?: User[];
@@ -77,6 +78,9 @@ export class Store {
             if (typeof (args.dns) != 'undefined' && args.dns != null) {
                 this.dns = args.dns;
             }
+            if (typeof (args.maps) != 'undefined' && args.maps != null) {
+                this.maps = args.maps;
+            }
             if (typeof (args.role) != 'undefined' && args.role != null) {
                 this.role = args.role;
             }
@@ -126,6 +130,7 @@ interface STORE {
         merchantKey?: string;
     };
     dns?: string[];
+    maps?: boolean;
     role?: number;
     logo?: string;
     users?: User[];
