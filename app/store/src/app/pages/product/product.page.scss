@@ -1,0 +1,103 @@
+mat-content {
+    .product {
+        .images {
+            display: flex;
+            padding: 2.5px;
+            flex-direction: column;
+            .image {
+                width: calc(100% - 5px);
+                margin: 2.5px;
+                outline: none;
+                position: relative;
+                padding-top: calc(100% - 5px);
+                background-size: cover;
+                background-color: #fff !important;
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+            .selection {
+                display: flex;
+                flex-direction: row;
+                .image {
+                    width: calc(33.33% - 5px);
+                    padding-top: calc(33.33% - 5px);
+                    .selected {
+                        top: 0px;
+                        color: #fff;
+                        right: 0px;
+                        width: 25px;
+                        height: 25px;
+                        position: absolute;
+                        background-color: #2196f3;
+                    }
+                }
+            }
+        }
+        .details {
+            margin: 0px 5px;
+            display: block;
+            background-color: #fff;
+            mat-toolbar {
+                background-color: transparent;
+            }
+            h1 {
+                color: #2196f3;
+                margin: 0px;
+                padding: 5px 16px;
+                small {
+                    color: #616161;
+                    font-size: 14px;
+                    text-decoration: line-through;
+                }
+            }
+            mat-list {
+                margin: 5px 16px;
+                mat-list-item {
+                    height: 14px !important;
+                }
+            }
+            mat-stars {
+                padding: 5px 16px;
+            }
+            .description {
+                padding: 5px 16px;
+            }
+            .links {
+                display: flex;
+                padding: 2.5px;
+                flex-direction: row;
+                .link {
+                    width: calc(25% - 5px);
+                    margin: 2.5px;
+                    outline: none;
+                    position: relative;
+                    padding-top: calc(25% - 5px);
+                    background-size: cover;
+                    background-color: #fff;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    label {
+                        left: 0px;
+                        right: 0px;
+                        bottom: 0px;
+                        position: absolute;
+                        text-align: center;
+                        font-weight: 500 !important;
+                    }
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 900px) {
+    .links .link {
+        width: calc(33.33% - 5px) !important;
+        padding-top: calc(33.33% - 5px) !important;
+    }
+}
+@media screen and (max-width: 900px) {
+    .links .link {
+        width: calc(50% - 5px) !important;
+        padding-top: calc(50% - 5px) !important;
+    }
+}

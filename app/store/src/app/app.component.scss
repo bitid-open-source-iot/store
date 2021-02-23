@@ -1,0 +1,54 @@
+mat-toolbar {
+    padding: 0px 8px;
+    img {
+        margin-right: 16px;
+    }
+    mat-label {
+        margin-left: 8px;
+    }
+    [mat-stroked-button] {
+        margin-left: 16px;
+    }
+}
+mat-drawer-container {
+    height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    mat-toolbar {
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        position: fixed;
+    }
+    mat-drawer {
+        width: 300px;
+        border: none;
+        box-shadow: none;
+        transition: width 500ms;
+        border-right: 1px solid #e0e0e0;
+        mat-list {
+            mat-list-item {
+                height: 55px;
+                cursor: pointer;
+                outline: none;
+                mat-icon {
+                    margin-right: 16px;
+                }
+            }
+            mat-list-item.active {
+                color: #2196f3 !important;
+                background-color: rgba($color: #2196f3, $alpha: 0.1) !important;
+            }
+        }
+    }
+    mat-drawer-content {
+        transition: margin 500ms;
+        margin-left: 0px !important;
+    }
+}
+@media screen and (max-width: 300px) {
+    mat-drawer-container mat-drawer {
+        width: 100% !important;
+    }
+}

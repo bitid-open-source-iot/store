@@ -1,0 +1,82 @@
+<mat-content>
+    <div class="container product">
+        <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+            <div fxFlex="25" fxFlex.lg="30" fxFlex.md="30" fxFlex.sm="100" fxFlex.xs="100">
+                <div class="images">
+                    <div class="image" [style.background-image]="'url(' + product.image + ')'"></div>
+                    <div class="selection">
+                        <div class="image" *ngFor="let image of product.images" [style.background-image]="'url(' + image.src + ')'" matRipple (click)="product.image = image.src">
+                            <div class="selected" *ngIf="product.image == image.src">
+                                <mat-icon>
+                                    check
+                                </mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div fxFlex class="details">
+                <mat-toolbar>
+                    <div class="page-title spacer">
+                        {{ product.title }}
+                    </div>
+    
+                    <button mat-icon-button (click)="wishlist.add(product)">
+                        <mat-icon>
+                            favorite
+                        </mat-icon>
+                    </button>
+            
+                    <button mat-icon-button (click)="cart.add(product)">
+                        <mat-icon>
+                            add_shopping_cart
+                        </mat-icon>
+                    </button>
+                </mat-toolbar>
+
+                <h1>
+                    {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }} <small *ngIf="product.promotion.enabled">{{ product.price | currency : 'R' }}</small>
+                </h1>
+    
+                <mat-stars size="20" [value]="product.score"></mat-stars>
+    
+                <div class="description" [innerHtml]="product.description"></div>
+                
+                <mat-toolbar>
+                    <mat-label class="spacer">
+                        Reviews
+                    </mat-label>
+    
+                    <button mat-icon-button (click)="ReviewProduct()">
+                        <mat-icon>
+                            rate_review
+                        </mat-icon>
+                    </button>
+                </mat-toolbar>
+
+                <mat-list>
+                    <mat-list-item *ngFor="let review of reviews.data">
+                        <mat-stars size="14" [value]="review.score"></mat-stars>
+                        
+                        {{ review.messase }}
+                    </mat-list-item>
+                </mat-list>
+                
+                <mat-toolbar *ngIf="links.length > 0">
+                    <mat-label class="spacer">
+                        People Also Buy
+                    </mat-label>
+                </mat-toolbar>
+
+                <div class="links" *ngIf="links.length > 0">
+                    <div class="link" *ngFor="let link of links" [style.background-image]="'url(' + link.image + ')'" matRipple [routerLink]="['/products', link.productId]">
+                        <label>
+                            {{ link.title }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-content>

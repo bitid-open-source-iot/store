@@ -66,9 +66,9 @@ try {
                     });
                 };
 
-                app.use('/', express.static(__dirname + '/store/dist/store'));
+                app.use('/', express.static(__dirname + '/app/store/dist/store'));
                 app.get('/*', (req, res) => {
-                    res.sendFile(__dirname + '/store/dist/store/index.html');
+                    res.sendFile(__dirname + '/app/store/dist/store/index.html');
                 });
 
                 app.use('/store/apis', require('./api/apis'));
@@ -201,9 +201,9 @@ try {
                     "limit": '100mb'
                 }));
 
-                appconsole.use('/', express.static(__dirname + '/admin/dist/admin'));
+                appconsole.use('/', express.static(__dirname + '/app/admin/dist/admin'));
                 appconsole.get('/*', (req, res) => {
-                    res.sendFile(__dirname + '/admin/dist/admin/index.html');
+                    res.sendFile(__dirname + '/app/admin/dist/admin/index.html');
                 });
 
                 appconsole.use((err, req, res, next) => {

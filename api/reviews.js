@@ -40,4 +40,9 @@ router.post('/approve', (req, res) => {
 	myModule.reviews.approve(req, res);
 });
 
+router.put('/public/list', (req, res) => {
+	var myModule = new bll.module();
+	myModule.reviews.public.list(req, res);
+});
+
 module.exports = router;

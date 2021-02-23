@@ -1,0 +1,37 @@
+<mat-toolbar>
+    <mat-label class="spacer">
+        Review {{ title }}
+    </mat-label>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+    <h2>
+        Stars
+    </h2>
+
+    <mat-slider max="5" min="1" step="1" thumbLabel tickInterval="1" formControlName="score" [disabled]="loading"></mat-slider>
+
+    <mat-form-field appearance="outline">
+        <mat-label>
+            Message
+        </mat-label>
+        
+        <input matInput type="text" name="message" placeholder="message" formControlName="message" required>
+
+        <mat-error *ngIf="errors.message">
+            {{ errors.message }}
+        </mat-error>
+    </mat-form-field>
+
+    <button type="submit" mat-flat-button color="primary">
+        {{ loading ? '' : 'submit' }}
+
+        <mat-progress-spinner mode="indeterminate" diameter="30" *ngIf="loading"></mat-progress-spinner>
+    </button>
+</form>

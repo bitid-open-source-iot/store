@@ -30,4 +30,14 @@ router.post('/delete', (req, res) => {
     myModule.products.delete(req, res);
 });
 
+router.put('/public/get', (req, res) => {
+    var myModule = new bll.module();
+    myModule.products.public.get(req, res);
+});
+
+router.put('/public/list', (req, res) => {
+    var myModule = new bll.module();
+    myModule.products.public.list(req, res);
+});
+
 module.exports = router;

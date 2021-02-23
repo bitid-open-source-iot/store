@@ -1,0 +1,37 @@
+<mat-content>
+    <header></header>
+
+    <div class="container products">
+        <div class="product" *ngFor="let product of products.data" routerLink="/product" [queryParams]="{productId: product.productId}">
+            <div class="product-image" [style.background-image]="'url(' + product.image + ')'" matRipple></div>
+
+            <div class="product-details" matRipple>
+                <h3>
+                    {{ product.title }}
+                </h3>
+                <h4>
+                    {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }}
+                    <small *ngIf="product.promotion.enabled">
+                        {{ product.price | currency : 'R' }}
+                    </small>
+                </h4>
+            </div>
+
+            <div class="product-actions">
+                <mat-stars size="16" [value]="product.score"></mat-stars>
+
+                <button mat-icon-button (click)="AddToWishlist($event, product)">
+                    <mat-icon>
+                        favorite
+                    </mat-icon>
+                </button>
+
+                <button mat-icon-button (click)="AddToCart($event, product)">
+                    <mat-icon>
+                        add_shopping_cart
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</mat-content>

@@ -1646,6 +1646,46 @@ var module = function () {
 	};
 
 	var dalReviews = {
+		public: {
+			list: (args) => {
+				var deferred = Q.defer();
+	
+				var params = {
+					'productId': ObjectId(args.req.body.productId)
+				};
+	
+				var filter = {};
+				if (typeof (args.req.body.filter) != 'undefined') {
+					filter._id = 0;
+					args.req.body.filter.map(f => {
+						if (f == 'reviewId') {
+							filter['_id'] = 1;
+						} else {
+							filter[f] = 1;
+						};
+					});
+				};
+	
+				db.call({
+					'params': params,
+					'filter': filter,
+					'operation': 'find',
+					'collection': 'tblReviews'
+				})
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						deferred.reject(err);
+					});
+	
+				return deferred.promise;
+			}
+		},
+
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -2229,6 +2269,135 @@ var module = function () {
 	};
 
 	var dalProducts = {
+		public: {
+			get: (args) => {
+				var deferred = Q.defer();
+	
+				var params = {
+					'_id': ObjectId(args.req.body.productId),
+					'storeId': ObjectId(args.req.body.storeId)
+				};
+	
+				var filter = {};
+				if (typeof (args.req.body.filter) != 'undefined') {
+					filter._id = 0;
+					args.req.body.filter.map(f => {
+						if (f == 'productId') {
+							filter['_id'] = 1;
+						} else {
+							filter[f] = 1;
+						};
+					});
+				};
+			
+				db.call({
+					'params': params,
+					'filter': filter,
+					'operation': 'find',
+					'collection': 'tblProducts'
+				})
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result[0]));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
+						deferred.reject(err);
+					});
+	
+				return deferred.promise;
+			},
+	
+			list: (args) => {
+				var deferred = Q.defer();
+	
+				var match = {
+					'storeId': ObjectId(args.req.body.storeId)
+				};
+
+				if (typeof (args.req.body.productId) != 'undefined' && args.req.body.productId != null) {
+					if (Array.isArray(args.req.body.productId) && args.req.body.productId.length > 0) {
+						match._id = {
+							$in: args.req.body.productId.map(id => ObjectId(id))
+						};
+					} else if (typeof (args.req.body.productId) == 'string' && args.req.body.productId.length == 24) {
+						match._id = ObjectId(args.req.body.productId);
+					}
+				};
+
+				var filter = {};
+				if (typeof (args.req.body.filter) != 'undefined') {
+					filter._id = 0;
+					args.req.body.filter.map(f => {
+						if (f == 'productId') {
+							filter['_id'] = 1;
+						} else {
+							filter[f] = 1;
+						};
+					});
+				};
+	
+				var params = [
+					{
+						$lookup: {
+							as: 'stores',
+							from: 'tblStores',
+							localField: 'storeId',
+							foreignField: '_id'
+						}
+					},
+					{
+						$unwind: '$stores'
+					},
+					{
+						$addFields: {
+							bitid: '$stores.bitid',
+							image: '$images'
+						}
+					},
+					{
+						$unwind: '$image'
+					},
+					{
+						$match: {
+							'image.main': true
+						}
+					},
+					{
+						$addFields: {
+							image: '$image.src'
+						}
+					},
+					{
+						$match: match
+					},
+					{
+						$project: filter
+					}
+				];
+	
+				db.call({
+					'params': params,
+					'operation': 'aggregate',
+					'collection': 'tblProducts'
+				})
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
+						deferred.reject(err);
+					});
+	
+				return deferred.promise;
+			}
+		},
+
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -2259,9 +2428,9 @@ var module = function () {
 
 					var params = {
 						'location': {
-							'enabled': args.req.body.location.enabled,
-							'latitude': args.req.body.location.latitude || 0,
-							'longitude': args.req.body.location.longitude || 0
+							'enabled': false,
+							'latitude':	0,
+							'longitude': 0
 						},
 						'cost': args.req.body.cost || 0,
 						'type': args.req.body.type,
@@ -2282,6 +2451,18 @@ var module = function () {
 						'serverDate': new Date(),
 						'departments': args.req.body.departments || [],
 						'description': args.req.body.description
+					};
+
+					if (typeof(args.req.body.location) != 'undefined' && args.req.body.location != null) {
+						if (typeof(args.req.body.location.enabled) != 'undefined' && args.req.body.location.enabled != null) {
+							params.location.enabled = args.req.body.location.enabled;
+						};
+						if (typeof(args.req.body.location.latitude) != 'undefined' && args.req.body.location.latitude != null) {
+							params.location.latitude = args.req.body.location.latitude;
+						};
+						if (typeof(args.req.body.location.longituded) != 'undefined' && args.req.body.location.longituded != null) {
+							params.location.longituded = args.req.body.location.longituded;
+						};
 					};
 
 					deferred.resolve({
@@ -2431,7 +2612,7 @@ var module = function () {
 				},
 				{
 					$match: {
-						'images.main': true
+						'image.main': true
 					}
 				},
 				{
@@ -2553,10 +2734,10 @@ var module = function () {
 							update.$set['location.enabled'] = args.req.body.location.enabled;
 						};
 						if (typeof (args.req.body.location.latitude) != 'undefined') {
-							uplatitude.$set['location.latitude'] = args.req.body.location.latitude;
+							update.$set['location.latitude'] = args.req.body.location.latitude;
 						};
 						if (typeof (args.req.body.location.longitude) != 'undefined') {
-							uplongitude.$set['location.longitude'] = args.req.body.location.longitude;
+							update.$set['location.longitude'] = args.req.body.location.longitude;
 						};
 					};
 					if (typeof (args.req.body.promotion) != 'undefined') {

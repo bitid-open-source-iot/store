@@ -937,6 +937,24 @@ var module = function () {
     };
 
     var bllReviews = {
+        public: {
+            list: (req, res) => {
+                var args = {
+                    'req': req,
+                    'res': res
+                };
+    
+                var myModule = new dalModule.module();
+                myModule.stores.validate(args)
+                    .then(myModule.reviews.public.list, null)
+                    .then(args => {
+                        __responder.success(req, res, args.result);
+                    }, err => {
+                        __responder.error(req, res, err);
+                    });
+            }
+        },
+
         add: (req, res) => {
             var args = {
                 'req': req,
@@ -1044,6 +1062,40 @@ var module = function () {
     };
 
     var bllProducts = {
+        public: {
+            get: (req, res) => {
+                var args = {
+                    'req': req,
+                    'res': res
+                };
+    
+                var myModule = new dalModule.module();
+                myModule.stores.validate(args)
+                    .then(myModule.products.public.get, null)
+                    .then(args => {
+                        __responder.success(req, res, args.result);
+                    }, err => {
+                        __responder.error(req, res, err);
+                    });
+            },
+    
+            list: (req, res) => {
+                var args = {
+                    'req': req,
+                    'res': res
+                };
+    
+                var myModule = new dalModule.module();
+                myModule.stores.validate(args)
+                    .then(myModule.products.public.list, null)
+                    .then(args => {
+                        __responder.success(req, res, args.result);
+                    }, err => {
+                        __responder.error(req, res, err);
+                    });
+            }
+        },
+
         add: (req, res) => {
             var args = {
                 'req': req,
