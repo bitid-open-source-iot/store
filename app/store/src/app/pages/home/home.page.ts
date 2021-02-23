@@ -3,6 +3,7 @@ import { CartService } from 'src/app/services/cart/cart.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
 import { OnInit, Component, OnDestroy } from '@angular/core';
+import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 
 @Component({
     selector: 'home-page',
@@ -12,7 +13,7 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 
 export class HomePage implements OnInit, OnDestroy {
 
-    constructor(private cart: CartService, public products: ProductsService, private wishlist: WishlistService) { }
+    constructor(private cart: CartService, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService) { }
     
     public loading: boolean;
 
@@ -54,6 +55,11 @@ export class HomePage implements OnInit, OnDestroy {
     };
 
     ngOnInit(): void {
+        this.buttons.show('cart');
+        this.buttons.hide('close');
+        this.buttons.hide('search');
+        this.buttons.show('wishlist');
+
         this.list();
     }
 

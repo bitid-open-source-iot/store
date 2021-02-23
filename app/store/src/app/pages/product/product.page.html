@@ -1,9 +1,11 @@
 <mat-content>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
     <div class="container product">
         <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
             <div fxFlex="25" fxFlex.lg="30" fxFlex.md="30" fxFlex.sm="100" fxFlex.xs="100">
                 <div class="images">
-                    <div class="image" [style.background-image]="'url(' + product.image + ')'"></div>
+                    <div class="image" [style.background-image]="'url(' + product.image + ')'" *ngIf="product.image"></div>
                     <div class="selection">
                         <div class="image" *ngFor="let image of product.images" [style.background-image]="'url(' + image.src + ')'" matRipple (click)="product.image = image.src">
                             <div class="selected" *ngIf="product.image == image.src">
@@ -48,7 +50,7 @@
                         Reviews
                     </mat-label>
     
-                    <button mat-icon-button (click)="ReviewProduct()">
+                    <button mat-icon-button (click)="ReviewProduct()" [disabled]="!authenticated">
                         <mat-icon>
                             rate_review
                         </mat-icon>
@@ -70,11 +72,11 @@
                 </mat-toolbar>
 
                 <div class="links" *ngIf="links.length > 0">
-                    <div class="link" *ngFor="let link of links" [style.background-image]="'url(' + link.image + ')'" matRipple [routerLink]="['/products', link.productId]">
+                    <a class="link" *ngFor="let link of links" [style.background-image]="'url(' + link.image + ')'" matRipple [routerLink]="['/product', link.productId]">
                         <label>
                             {{ link.title }}
                         </label>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

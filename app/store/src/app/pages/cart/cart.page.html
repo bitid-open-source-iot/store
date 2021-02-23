@@ -1,0 +1,94 @@
+<mat-content>
+    <div class="container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+        <div fxFlex="75" fxFlex.lg="70" fxFlex.md="60" fxFlex.sm="100" fxFlex.xs="100">
+            <mat-list>
+                <mat-list-item *ngFor="let item of cart.items">
+                    <img [src]="item.image" [alt]="item.title" width="40" height="40">
+
+                    <section>
+                        <label>
+                            {{ item.title }}
+                        </label>
+                        <span>
+                            {{ item.price | currency : 'R' }}
+                        </span>
+                        <p>
+                            ✕ <input type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)">
+                        </p>
+                    </section>
+
+                    <button mat-icon-button (click)="cart.more(item)">
+                        <mat-icon>
+                            add
+                        </mat-icon>
+                    </button>
+
+                    <button mat-icon-button (click)="cart.less(item)">
+                        <mat-icon>
+                            remove
+                        </mat-icon>
+                    </button>
+                </mat-list-item>
+                
+                <mat-list-item *ngIf="cart.items.length == 0">
+                    You have no items in your cart!
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+        <div fxFlex>
+            <div class="summary">
+                <h1>
+                    Summary
+                </h1>
+
+                <table>
+                    <tr>
+                        <td>
+                            Subtotal ({{ cart.items.length }} Items)
+                        </td>
+                        <td>
+                            {{ (cart.summary | async).subtotal | currency : 'R' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Discount
+                        </td>
+                        <td>
+                            {{ (cart.summary | async).discount | currency : 'R' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            VAT @ 15%
+                        </td>
+                        <td>
+                            {{ (cart.summary | async).vat | currency : 'R' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Total
+                        </td>
+                        <td>
+                            {{ (cart.summary | async).total | currency : 'R' }}
+                        </td>
+                    </tr>
+                </table>
+
+                <button mat-flat-button color="primary" [disabled]="cart.items.length == 0">
+                    Checkout
+                </button>
+
+                <button mat-flat-button [disabled]="cart.items.length == 0">
+                    Download Invoice
+                </button>
+
+                <button mat-flat-button routerLink="/home">
+                    Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+</mat-content>

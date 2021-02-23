@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRippleModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,6 +23,7 @@ import { ApiService } from './services/api/api.service';
 import { AuthService } from './services/auth/auth.service';
 import { CartService } from './services/cart/cart.service';
 import { ToastService } from './services/toast/toast.service';
+import { StoreService } from './services/store/store.service';
 import { ConfigService } from './services/config/config.service';
 import { OrdersService } from './services/orders/orders.service';
 import { StoresService } from './services/stores/stores.service';
@@ -49,6 +51,7 @@ import { environment } from '../environments/environment';
         BrowserModule,
         MatIconModule,
         MatListModule,
+        MatBadgeModule,
         MatDialogModule,
         MatRippleModule,
         MatButtonModule,
@@ -70,6 +73,7 @@ import { environment } from '../environments/environment';
         AuthService,
         CartService,
         ToastService,
+        StoreService,
         ConfigService,
         OrdersService,
         StoresService,

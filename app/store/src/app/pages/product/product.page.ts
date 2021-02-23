@@ -2,13 +2,14 @@ import { Review } from 'src/app/classes/review';
 import { Product } from 'src/app/classes/product';
 import { MatDialog } from '@angular/material/dialog';
 import { CartService } from 'src/app/services/cart/cart.service';
+import { AccountService } from 'src/app/services/account/account.service';
 import { ReviewsService } from 'src/app/services/reviews/reviews.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
+import { ProductReviewDialog } from './review/review.dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
-import { ProductReviewDialog } from './review/review.dialog';
 
 @Component({
     selector: 'product-page',
@@ -18,12 +19,14 @@ import { ProductReviewDialog } from './review/review.dialog';
 
 export class ProductPage implements OnInit, OnDestroy {
 
-    constructor(public cart: CartService, private dialog: MatDialog, private route: ActivatedRoute, public reviews: ReviewsService, private router: Router, private buttons: ButtonsService, private service: ProductsService, public wishlist: WishlistService) { }
+    constructor(public cart: CartService, private route: ActivatedRoute, private dialog: MatDialog, private account: AccountService, public reviews: ReviewsService, private router: Router, private buttons: ButtonsService, private service: ProductsService, public wishlist: WishlistService) { }
 
     public links: Product[] = [];
     public product: Product = new Product();
     public loading: boolean;
     public productId: string;
+    public authenticated: boolean;
+    private subscriptions: any = {};
 
     private async load() {
         this.loading = true;
@@ -71,20 +74,22 @@ export class ProductPage implements OnInit, OnDestroy {
             this.router.navigate(['/home']);
         }
 
-        const products = await this.service.list({
-            filter: [
-                'image',
-                'title',
-                'productId'
-            ],
-            productId: this.product.links
-        });
+        if (this.product.links.length > 0) {
+            const products = await this.service.list({
+                filter: [
+                    'image',
+                    'title',
+                    'productId'
+                ],
+                productId: this.product.links
+            });
 
-        if (products.ok) {
-            this.links = products.result.map(o => new Product(o));
-        } else {
-            this.links = [];
-        }
+            if (products.ok) {
+                this.links = products.result.map(o => new Product(o));
+            } else {
+                this.links = [];
+            }
+        };
 
         this.loading = false;
     };
@@ -94,16 +99,37 @@ export class ProductPage implements OnInit, OnDestroy {
             data: {
                 title: this.product.title,
                 productId: this.productId
-            }
+            },
+            panelClass: 'product-review-dialog'
         });
     };
 
     ngOnInit(): void {
-        const params = this.route.snapshot.queryParams;
-        this.productId = params.productId;
-        this.load();
+        this.buttons.hide('cart');
+        this.buttons.show('close');
+        this.buttons.hide('search');
+        this.buttons.hide('wishlist');
+
+        this.subscriptions.close = this.buttons.close.click.subscribe(params => {
+            window.history.back();
+        });
+
+        this.subscriptions.params = this.route.params.subscribe(params => {
+            this.links = [];
+            this.product = new Product();
+            this.productId = params.productId;
+            this.load();
+        });
+
+        this.subscriptions.authenticated = this.account.authenticated.subscribe(authenticated => {
+            this.authenticated = authenticated;
+        });
     }
 
-    ngOnDestroy(): void { }
+    ngOnDestroy(): void {
+        this.subscriptions.close.unsubscribe();
+        this.subscriptions.params.unsubscribe();
+        this.subscriptions.authenticated.unsubscribe();
+    }
 
 }

@@ -71,7 +71,7 @@ mat-list {
     padding: 0px !important;
     mat-list-item {
         outline: none !important;
-        mat-icon {
+        > mat-icon {
             margin-right: 16px;
         }
     }
@@ -137,7 +137,7 @@ button[mat-menu-item] {
     width: 40px;
     padding-right: 8px !important;
 }
-.orders-filter-dialog mat-dialog-container {
+.product-review-dialog mat-dialog-container {
     width: 500px !important;
     padding: 0px !important;
     background-color: #fff !important;
@@ -161,4 +161,21 @@ tfoot td {
 .ql-container {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+}
+.agm-info-window-content {
+    margin: 6px 0px 0px 6px !important;
+    .image {
+        width: 100%;
+        overflow: hidden;
+        padding-top: 100%;
+        border-radius: 5px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+    button {
+        height: 30px !important;
+        margin-top: 5px !important;
+        line-height: 30px !important;
+    }
 }

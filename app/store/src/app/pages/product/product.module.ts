@@ -24,7 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
     {
-        path: '',
+        path: ':productId',
         component: ProductPage
     }
 ];

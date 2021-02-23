@@ -1,0 +1,90 @@
+mat-content {
+    mat-list {
+        margin: 5px 2.5px;
+        border-radius: 4px;
+        background-color: #fff;
+        mat-list-item {
+            height: 56px;
+            align-items: center;
+            flex-direction: row;
+            img {
+                margin-right: 16px;
+                border-radius: 5px;
+            }
+            section {
+                display: flex;
+                margin-right: auto;
+                flex-direction: column;
+                label {
+                    height: 16px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    line-height: 16px;
+                }
+                span {
+                    color: #2196f3;
+                    height: 14px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 14px;
+                }
+                p {
+                    height: 14px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 14px;
+                    input {
+                        width: auto;
+                        border: none !important;
+                        outline: none !important;
+                        height: 12px;
+                        min-width: 10px;
+                        font-size: 12px;
+                        line-height: 12px;
+                    }
+                }
+            }
+            button {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+    }
+    .summary {
+        margin: 5px 2.5px;
+        border-radius: 4px;
+        padding-bottom: 8px;
+        background-color: #fff;
+        h1 {
+            padding: 0px 16px;
+            font-size: 16px !important;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        table {
+            width: calc(100% - 32px);
+            margin: 8px 16px;
+            font-size: 12px;
+            tr {
+                td:first-child {
+                    text-align: left;
+                }
+                td:last-child {
+                    text-align: right;
+                }
+            }
+            tr:last-child {
+                td {
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+            }
+        }
+        button[mat-flat-button],
+        button[mat-stroked-button] {
+            width: calc(100% - 32px);
+            margin: 0px 16px;
+            margin-bottom: 8px;
+        }
+    }
+}

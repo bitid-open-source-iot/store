@@ -4,5 +4,6 @@ export const environment = {
     appId: "000000000000000000000021",
     drive: "https://drive.bitid.co.za",
     appName: "Store Admin",
-    production: true
+    production: true,
+    googleMapsApiKey: "AIzaSyAOoUrCyDCaCLuUV_6uBjMwmmCqNHHFmLs"
 }

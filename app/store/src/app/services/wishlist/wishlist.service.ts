@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { AccountService } from '../account/account.service';
+import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../localstorage/localstorage.service';
 
 @Injectable({
@@ -10,7 +11,8 @@ import { LocalstorageService } from '../localstorage/localstorage.service';
 
 export class WishlistService {
 
-    public items:   any[] = [];
+    public items: any[] = [];
+    public count: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) {};
 
@@ -25,6 +27,7 @@ export class WishlistService {
         } else {
             this.items = this.localstorage.getObject('wishlist', []);
         };
+        this.count.next(this.items.length);
     };
 
     public async add(params: any) {
@@ -72,6 +75,7 @@ export class WishlistService {
             };
         };
         this.localstorage.setObject('wishlist', this.items);
+        this.count.next(this.items.length);
     };
 
     public async list(params: any) {
@@ -80,6 +84,7 @@ export class WishlistService {
         if (response.ok) {
             this.items = response.result;
         };
+        this.count.next(this.items.length);
 
         return response;
     };
@@ -105,6 +110,7 @@ export class WishlistService {
             };
         };
         this.localstorage.setObject('wishlist', this.items);
+        this.count.next(this.items.length);
     };
 
     public async delete(params: any) {
@@ -119,6 +125,7 @@ export class WishlistService {
         };
         
         this.localstorage.setObject('wishlist', this.items);
+        this.count.next(this.items.length);
     };
 
 }

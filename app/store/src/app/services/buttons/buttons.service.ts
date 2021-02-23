@@ -9,7 +9,7 @@ export class ButtonsService {
 
 	constructor() { }
 
-	public add: BUTTON = {
+	public cart: BUTTON = {
 		click: new Subject<MouseEvent | TouchEvent>(),
 		visible: new BehaviorSubject(false)
 	};
@@ -19,12 +19,12 @@ export class ButtonsService {
 		visible: new BehaviorSubject(false)
 	};
 
-	public filter: BUTTON = {
+	public search: BUTTON = {
 		click: new Subject<MouseEvent | TouchEvent>(),
 		visible: new BehaviorSubject(false)
 	};
 
-	public search: BUTTON = {
+	public wishlist: BUTTON = {
 		click: new Subject<MouseEvent | TouchEvent>(),
 		visible: new BehaviorSubject(false)
 	};
@@ -40,6 +40,6 @@ export class ButtonsService {
 }
 
 interface BUTTON {
-	'click': Subject<MouseEvent | TouchEvent>;
-	'visible': BehaviorSubject<boolean>;
+	click: Subject<MouseEvent | TouchEvent>;
+	visible: BehaviorSubject<boolean>;
 }

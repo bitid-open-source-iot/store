@@ -1,5 +1,19 @@
 <mat-content>
-    <div class="container">
-        
-    </div>
+    <agm-map [fitBounds]="true">
+        <agm-marker *ngFor="let product of products.data" [title]="product.description" [latitude]="product.location.latitude" [longitude]="product.location.longitude" [agmFitBounds]="true" [markerClickable]="true">
+            <agm-info-window [isOpen]="true">
+                <div class="image" [style.background-image]="'url(' + product.image + ')'"></div>
+
+                <div class="product-details">
+                    <h3>
+                        {{ product.title }}
+                    </h3>
+                </div>
+
+                <button mat-flat-button [routerLink]="['/product', product.productId]">
+                    View
+                </button>
+            </agm-info-window>
+        </agm-marker>
+    </agm-map>
 </mat-content>

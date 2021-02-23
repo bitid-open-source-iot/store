@@ -2,7 +2,7 @@
     <header></header>
 
     <div class="container products">
-        <div class="product" *ngFor="let product of products.data" routerLink="/product" [queryParams]="{productId: product.productId}">
+        <div class="product" *ngFor="let product of products.data" [routerLink]="['/product', product.productId]">
             <div class="product-image" [style.background-image]="'url(' + product.image + ')'" matRipple></div>
 
             <div class="product-details" matRipple>

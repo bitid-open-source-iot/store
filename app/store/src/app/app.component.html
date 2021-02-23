@@ -6,28 +6,28 @@
     </button>
 
     <mat-label class="spacer">
-        Online Store
+        {{ store.description | async }}
     </mat-label>
 
-    <button mat-icon-button>
+    <button #search mat-icon-button>
         <mat-icon>
             search
         </mat-icon>
     </button>
 
-    <button mat-icon-button routeLink="/wishlist">
-        <mat-icon>
+    <button #wishlist mat-icon-button routerLink="/wishlist">
+        <mat-icon [matBadge]="items.wishlist" matBadgeSize="small" matBadgeColor="warn">
             favorite
         </mat-icon>
     </button>
 
-    <button mat-icon-button routeLink="/cart">
-        <mat-icon>
+    <button #cart mat-icon-button routerLink="/cart">
+        <mat-icon [matBadge]="items.cart" matBadgeSize="small" matBadgeColor="warn">
             shopping_cart
         </mat-icon>
     </button>
 
-    <button mat-icon-button>
+    <button #close mat-icon-button>
         <mat-icon>
             close
         </mat-icon>

@@ -1,39 +1,39 @@
 /* --- PAGES --- */
-import { MapPage } from './map.page';
+import { CartPage } from './cart.page';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AgmCoreModule } from '@agm/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
 import { Routes, RouterModule } from '@angular/router';
-
-import { environment } from 'src/environments/environment';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
     {
         path: '',
-        component: MapPage
+        component: CartPage
     }
 ];
 
 @NgModule({
     imports: [
+        FormsModule,
         CommonModule,
+        MatIconModule,
+        MatListModule,
         MatButtonModule,
         MatContentModule,
-        AgmCoreModule.forRoot({
-            apiKey: environment.googleMapsApiKey,
-            libraries: [
-                'places'
-            ]
-        }),
+        FlexLayoutModule,
+        ReactiveFormsModule,
         RouterModule.forChild(routes)
     ],
     declarations: [
-        MapPage
+        CartPage
     ]
 })
 
-export class MapPageModule { }
+export class CartPageModule { }

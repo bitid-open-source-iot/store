@@ -1,18 +1,18 @@
 mat-content {
-    img {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 10px !important;
-    }
-    h1 {
-        margin-bottom: 10px !important;
-    }
-    p {
-        margin-bottom: 20px !important;
-    }
-    button {
+    agm-map {
         width: 100%;
-        max-width: 400px;
-        margin-bottom: 20px;
+        height: calc(100% - 56px);
+    }
+}
+.product-details {
+    display: flex;
+    padding: 0px 5px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    h3 {
+        font-size: 12px !important;
+        font-weight: 500 !important;
+        text-transform: uppercase;
     }
 }

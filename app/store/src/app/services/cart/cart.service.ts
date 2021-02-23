@@ -11,15 +11,16 @@ import { LocalstorageService } from '../localstorage/localstorage.service';
 
 export class CartService {
 
-    public items:   any[]                       = [];
-    public summary: BehaviorSubject<Summary>    = new BehaviorSubject<Summary>({
-        'vat':      0,
-        'total':    0,
+    public items: any[] = [];
+    public count: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    public summary: BehaviorSubject<Summary> = new BehaviorSubject<Summary>({
+        'vat': 0,
+        'total': 0,
         'subtotal': 0,
         'discount': 0
     });
 
-    constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) {};
+    constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) { };
 
     public async clear() {
         this.items = [];
@@ -31,7 +32,7 @@ export class CartService {
     public async init() {
         if (this.account.authenticated.value) {
             const response = await this.api.post(environment.store, '/store/carts/list', {});
-    
+
             if (response.ok) {
                 this.items = response.result;
                 this.localstorage.setObject('cart', this.items);
@@ -43,28 +44,29 @@ export class CartService {
     };
 
     public async calculate() {
-        let summary: Summary    = {};
-        summary.vat             = 0;
-        summary.total           = 0;
-        summary.subtotal        = 0;
-        summary.discount        = 0;
+        let summary: Summary = {};
+        summary.vat = 0;
+        summary.total = 0;
+        summary.subtotal = 0;
+        summary.discount = 0;
         this.items.map(item => {
             summary.subtotal += item.price * item.quantity;
             if (item.promotion.enabled) {
                 summary.discount -= (item.price - item.promotion.price) * item.quantity;
             };
         });
-        summary.total  = summary.subtotal + summary.discount;
-        summary.vat    = summary.total * 0.15;
-        summary.total  = summary.total * 1.15;
+        summary.total = summary.subtotal + summary.discount;
+        summary.vat = summary.total * 0.15;
+        summary.total = summary.total * 1.15;
         this.summary.next(summary);
+        this.count.next(this.items.length);
     };
 
     public async add(params: any) {
         if (this.account.authenticated.value) {
             params.quantity = 1;
             const response = await this.api.post(environment.store, '/store/carts/add', params);
-    
+
             if (response.ok) {
                 let found: boolean;
                 this.items.map(item => {
@@ -75,13 +77,13 @@ export class CartService {
                 });
                 if (!found) {
                     this.items.push({
-                        'title':        params.title,
-                        'price':        params.price,
-                        'image':        params.image,
-                        'storeId':      params.storeId,
-                        'quantity':     1,
-                        'promotion':    params.promotion,
-                        'productId':    params.productId
+                        'title': params.title,
+                        'price': params.price,
+                        'image': params.image,
+                        'storeId': params.storeId,
+                        'quantity': 1,
+                        'promotion': params.promotion,
+                        'productId': params.productId
                     });
                 };
             };
@@ -95,13 +97,13 @@ export class CartService {
             });
             if (!found) {
                 this.items.push({
-                    'title':        params.title,
-                    'price':        params.price,
-                    'image':        params.image,
-                    'storeId':      params.storeId,
-                    'quantity':     1,
-                    'promotion':    params.promotion,
-                    'productId':    params.productId
+                    'title': params.title,
+                    'price': params.price,
+                    'image': params.image,
+                    'storeId': params.storeId,
+                    'quantity': 1,
+                    'promotion': params.promotion,
+                    'productId': params.productId
                 });
             };
         };
@@ -162,7 +164,7 @@ export class CartService {
     public async update(params: any) {
         if (this.account.authenticated.value) {
             const response = await this.api.post(environment.store, '/store/carts/update', params);
-    
+
             if (response.ok) {
                 for (let i = 0; i < this.items.length; i++) {
                     if (this.items[i].productId == params.productId) {
@@ -198,8 +200,8 @@ export class CartService {
 }
 
 interface Summary {
-    'vat'?:         number;
-    'total'?:       number;
-    'subtotal'?:    number;
-    'discount'?:    number;
+    'vat'?: number;
+    'total'?: number;
+    'subtotal'?: number;
+    'discount'?: number;
 }
