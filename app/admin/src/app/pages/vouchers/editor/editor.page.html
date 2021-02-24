@@ -28,6 +28,26 @@
 
             <mat-form-field appearance="outline">
                 <mat-label>
+                    Product
+                </mat-label>
+
+                <mat-select name="productId" formControlName="productId" required>
+                    <mat-option [formGroup]="filter">
+                        <ngx-mat-select-search placeholderLabel="filter products" noEntriesFoundLabel="no products found" formControlName="product"></ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option *ngFor="let product of products.data | orderBy : 'title' | filterBy : { title: filter.value.product }" [value]="product.productId" [disabled]="product.role < 2">
+                        {{ product.title }}
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.productId">
+                    {{ errors.productId }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
                     Description
                 </mat-label>
 

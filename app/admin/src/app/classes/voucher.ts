@@ -3,6 +3,7 @@ export class Voucher {
     public role?: number;
     public code?: string;
     public storeId?: string;
+    public productId?: string;
     public voucherId?: string;
     public description?: string;
 
@@ -16,6 +17,9 @@ export class Voucher {
             }
             if (typeof (args.storeId) != 'undefined' && args.storeId != null) {
                 this.storeId = args.storeId;
+            }
+            if (typeof (args.productId) != 'undefined' && args.productId != null) {
+                this.productId = args.productId;
             }
             if (typeof (args.voucherId) != 'undefined' && args.voucherId != null) {
                 this.voucherId = args.voucherId;
@@ -32,6 +36,7 @@ interface VOUCHER {
     role?: number;
     code?: string;
     storeId?: string;
+    productId?: string;
     voucherId?: string;
     description?: string;
 }

@@ -962,7 +962,9 @@ describe('Vouchers', function () {
                 try {
                     result.should.have.property('role');
                     result.should.have.property('code');
+                    result.should.have.property('status');
                     result.should.have.property('storeId');
+                    result.should.have.property('productId');
                     result.should.have.property('voucherId');
                     result.should.have.property('serverDate');
                     result.should.have.property('description');
@@ -987,7 +989,9 @@ describe('Vouchers', function () {
                 try {
                     result[0].should.have.property('role');
                     result[0].should.have.property('code');
+                    result[0].should.have.property('status');
                     result[0].should.have.property('storeId');
+                    result[0].should.have.property('productId');
                     result[0].should.have.property('voucherId');
                     result[0].should.have.property('serverDate');
                     result[0].should.have.property('description');
@@ -2621,6 +2625,7 @@ var tools = {
                 tools.post('/store/vouchers/add', {
                     'code': 'xxx',
                     'storeId': storeId,
+                    'productId': productId,
                     'description': 'xxx'
                 })
                     .then(deferred.resolve, deferred.resolve);
@@ -2634,7 +2639,9 @@ var tools = {
                     'filter': [
                         'role',
                         'code',
+                        'status',
                         'storeId',
+                        'productId',
                         'voucherId',
                         'serverDate',
                         'description'
@@ -2652,7 +2659,9 @@ var tools = {
                     'filter': [
                         'role',
                         'code',
+                        'status',
                         'storeId',
+                        'productId',
                         'voucherId',
                         'serverDate',
                         'description'

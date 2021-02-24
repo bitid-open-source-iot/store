@@ -2883,7 +2883,9 @@ var module = function () {
 
 					var params = {
 						'code': args.req.body.code,
+						'status': 'available',
 						'storeId': ObjectId(args.req.body.storeId),
+						'productId': ObjectId(args.req.body.productId),
 						'serverDate': new Date(),
 						'description': args.req.body.description
 					};
@@ -3108,6 +3110,9 @@ var module = function () {
 					};
 					if (typeof (args.req.body.code) != 'undefined') {
 						update.$set.code = args.req.body.code;
+					};
+					if (typeof (args.req.body.productId) != 'undefined') {
+						update.$set.productId = args.req.body.productId;
 					};
 					if (typeof (args.req.body.description) != 'undefined') {
 						update.$set.description = args.req.body.description;
