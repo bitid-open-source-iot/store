@@ -1,4 +1,5 @@
 import { User } from './user';
+import { CourierOption } from './courier-option';
 
 export class Courier {
 
@@ -31,7 +32,7 @@ export class Courier {
                 this.storeId = args.storeId;
             }
             if (typeof (args.options) != 'undefined' && args.options != null) {
-                this.options = args.options;
+                this.options = args.options.map(o => new CourierOption(o));
             }
             if (typeof (args.account) != 'undefined' && args.account != null) {
                 this.account = args.account;
@@ -53,7 +54,7 @@ interface COURIER {
     phone?: string;
     email?: string;
     storeId?: string;
-    options?: any[];
+    options?: CourierOption[];
     account?: string;
     courierId?: string;
     description?: string;

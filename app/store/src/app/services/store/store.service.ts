@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 export class StoreService {
 
 	public logo: BehaviorSubject<string> = new BehaviorSubject<string>('./assets/icons/icon-512x512.png');
+	public website: BehaviorSubject<string> = new BehaviorSubject<string>(window.location.href);
 	public description: BehaviorSubject<string> = new BehaviorSubject<string>('Online Store');
 
 	constructor(private api: ApiService, private meta: Meta, private title: Title) { }
@@ -22,6 +23,7 @@ export class StoreService {
 		if (response.ok) {
 			const store = new Store(response.result);
 			this.logo.next(store.logo);
+			this.website.next(store.contact.website);
 			this.title.setTitle(store.description);
 			this.description.next(store.description);
 			const favicon = <HTMLLinkElement>document.getElementById('favicon');

@@ -1,5 +1,5 @@
 <mat-toolbar>
-    <button mat-icon-button>
+    <button mat-icon-button (click)="toggle()">
         <mat-icon>
             menu
         </mat-icon>
@@ -34,4 +34,42 @@
     </button>
 </mat-toolbar>
 
-<router-outlet></router-outlet>
+<mat-drawer-container>
+    <mat-drawer position="start">
+        <mat-list>
+            <mat-list-item type="button" lines="full" routerLink="/home" routerLinkActive="active" matRipple>
+                <mat-icon>
+                    home
+                </mat-icon>
+
+                <mat-label>
+                    Home
+                </mat-label>
+            </mat-list-item>
+            
+            <mat-list-item type="button" lines="full" routerLink="/orders" routerLinkActive="active" matRipple>
+                <mat-icon>
+                    receipt
+                </mat-icon>
+
+                <mat-label>
+                    Orders
+                </mat-label>
+            </mat-list-item>
+            
+            <mat-list-item type="button" lines="full" (click)="website()" matRipple>
+                <mat-icon>
+                    language
+                </mat-icon>
+
+                <mat-label>
+                    Our Website
+                </mat-label>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>

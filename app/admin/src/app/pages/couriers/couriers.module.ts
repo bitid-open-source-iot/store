@@ -20,6 +20,7 @@ import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
 import { OrderPipeModule } from 'src/app/pipes/order/order.module';
 import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
@@ -57,6 +58,7 @@ const routes: Routes = [
         OrderPipeModule,
         FilterPipeModule,
         MatContentModule,
+        MatCheckboxModule,
         MatFormFieldModule,
         ReactiveFormsModule,
         MatProgressBarModule,

@@ -6,6 +6,7 @@ import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { WishlistService } from './services/wishlist/wishlist.service';
 import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
 	selector: 'app-root',
@@ -14,6 +15,8 @@ import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
+
+	@ViewChild(MatDrawer, { static: true }) private drawer: MatDrawer;
 
 	@ViewChild('cart', { static: true }) private cartbtn: MatButton;
 	@ViewChild('close', { static: true }) private closebtn: MatButton;
@@ -27,6 +30,14 @@ export class AppComponent implements OnInit {
 		wishlist: 0
 	};
 	public authenticated: boolean;
+
+	public toggle() {
+		this.drawer.toggle();
+	};
+
+	public website() {
+		window.open(this.store.website.value, '_blank');
+	};
 
 	private async initialize() {
 		await this.cart.init();

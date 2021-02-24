@@ -2,6 +2,7 @@ import { Store } from 'src/app/classes/store';
 import { Courier } from 'src/app/classes/courier';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
+import { CourierOption } from 'src/app/classes/courier-option';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { CouriersService } from 'src/app/services/couriers/couriers.service';
 import { FormErrorService } from 'src/app/services/form-error/form-error.service';
@@ -40,11 +41,23 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 	public filter: FormGroup = new FormGroup({
 		store: new FormControl(null, [Validators.required])
 	});
-	public options: MatTableDataSource<any> = new MatTableDataSource<any>();
+	public option: FormGroup = new FormGroup({
+		type: new FormControl(null, [Validators.required]),
+		price: new FormControl(null, [Validators.required, Validators.min(0)])
+	});
+	public columns: string[] = ['type', 'price', 'options']
+	public options: MatTableDataSource<CourierOption> = new MatTableDataSource<CourierOption>();
 	public courier: Courier = new Courier();
 	public loading: boolean;
 	public courierId: string;
 	private subscriptions: any = {};
+
+	public async add() {
+		this.options.data.push(new CourierOption(this.option.value));
+		this.options.data = this.options.data.map(o => new CourierOption(o));
+		this.option.reset();
+		this.option.markAsUntouched();
+	};
 
 	private async get() {
 		this.loading = true;
@@ -66,6 +79,7 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 		if (response.ok) {
 			this.courier = new Courier(response.result);
 			if (this.courier.role > 2) {
+				this.options.data = this.courier.options;
 				this.form.controls.icon.setValue(this.courier.icon);
 				this.form.controls.phone.setValue(this.courier.phone);
 				this.form.controls.email.setValue(this.courier.email);
@@ -139,6 +153,16 @@ export class CouriersEditorPage implements OnInit, OnDestroy {
 	public upload(key, value) {
 		this.form.controls[key].setValue(value);
 	}
+
+	public async remove(option: CourierOption) {
+		for (let i = 0; i < this.options.data.length; i++) {
+			if (this.options.data[i].optionId == option.optionId) {
+				this.options.data.splice(i, 1);
+				break;
+			};
+		};
+		this.options.data = this.options.data.map(o => new CourierOption(o));
+	};
 
 	ngOnInit(): void {
 		this.buttons.hide('add');
