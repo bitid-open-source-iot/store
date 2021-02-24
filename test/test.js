@@ -15,6 +15,7 @@ var orderId = null;
 var storeId = null;
 var reviewId = null;
 var addressId = null;
+var voucherId = null;
 var productId = null;
 var courierId = null;
 var customerId = null;
@@ -931,6 +932,100 @@ describe('Products', function () {
     });
 });
 
+describe('Vouchers', function () {
+    it('/store/vouchers/add', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.add()
+            .then((result) => {
+                try {
+                    voucherId = result.voucherId;
+                    result.should.have.property('voucherId');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
+    it('/store/vouchers/get', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.get()
+            .then((result) => {
+                try {
+                    result.should.have.property('role');
+                    result.should.have.property('code');
+                    result.should.have.property('storeId');
+                    result.should.have.property('voucherId');
+                    result.should.have.property('serverDate');
+                    result.should.have.property('description');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
+    it('/store/vouchers/list', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.list()
+            .then((result) => {
+                try {
+                    result[0].should.have.property('role');
+                    result[0].should.have.property('code');
+                    result[0].should.have.property('storeId');
+                    result[0].should.have.property('voucherId');
+                    result[0].should.have.property('serverDate');
+                    result[0].should.have.property('description');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
+    it('/store/vouchers/update', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.update()
+            .then((result) => {
+                try {
+                    result.should.have.property('updated');
+                    expect(result.updated).to.equal(1);
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+});
+
 describe('Customers', function () {
     it('/store/customers/add', function (done) {
         this.timeout(5000);
@@ -1653,6 +1748,27 @@ describe('Remove Added Items', function () {
         this.timeout(5000);
 
         tools.api.products.delete()
+            .then((result) => {
+                try {
+                    result.should.have.property('deleted');
+                    expect(result.deleted).to.equal(1);
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
+    it('/store/vouchers/delete', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.delete()
             .then((result) => {
                 try {
                     result.should.have.property('deleted');
@@ -2492,6 +2608,77 @@ var tools = {
 
                 tools.post('/store/products/delete', {
                     'productId': productId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            }
+        },
+        vouchers: {
+            add: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/vouchers/add', {
+                    'code': 'xxx',
+                    'storeId': storeId,
+                    'description': 'xxx'
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            get: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/vouchers/get', {
+                    'filter': [
+                        'role',
+                        'code',
+                        'storeId',
+                        'voucherId',
+                        'serverDate',
+                        'description'
+                    ],
+                    'voucherId': voucherId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            list: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/vouchers/list', {
+                    'filter': [
+                        'role',
+                        'code',
+                        'storeId',
+                        'voucherId',
+                        'serverDate',
+                        'description'
+                    ],
+                    'voucherId': voucherId
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            update: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/vouchers/update', {
+                    'voucherId': voucherId,
+                    'description': 'voucher 1'
+                })
+                    .then(deferred.resolve, deferred.resolve);
+
+                return deferred.promise;
+            },
+            delete: () => {
+                var deferred = Q.defer();
+
+                tools.post('/store/vouchers/delete', {
+                    'voucherId': voucherId
                 })
                     .then(deferred.resolve, deferred.resolve);
 

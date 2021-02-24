@@ -29,6 +29,7 @@ import { ButtonsService } from './services/buttons/buttons.service';
 import { ReviewsService } from './services/reviews/reviews.service';
 import { ProductsService } from './services/products/products.service';
 import { CouriersService } from './services/couriers/couriers.service';
+import { VouchersService } from './services/vouchers/vouchers.service';
 import { CustomersService } from './services/customers/customers.service';
 import { FormErrorService } from './services/form-error/form-error.service';
 import { SuppliersService } from './services/suppliers/suppliers.service';
@@ -73,6 +74,7 @@ import { environment } from '../environments/environment';
         AccountService,
         ButtonsService,
         ReviewsService,
+        VouchersService,
         ProductsService,
         CouriersService,
         CustomersService,

@@ -41,6 +41,11 @@ const routes: Routes = [
         loadChildren: () => import('./pages/suppliers/suppliers.module').then(m => m.SuppliersPageModule)
     },
     {
+        path: 'vouchers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/vouchers/vouchers.module').then(m => m.VouchersPageModule)
+    },
+    {
         path: 'customers',
         canActivate: [AuthService],
         loadChildren: () => import('./pages/customers/customers.module').then(m => m.CustomersPageModule)

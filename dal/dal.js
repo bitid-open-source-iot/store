@@ -2852,6 +2852,361 @@ var module = function () {
 		}
 	};
 
+	var dalVouchers = {
+		add: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'bitid.auth.users': {
+					$elemMatch: {
+						'role': {
+							$gte: 2
+						},
+						'email': args.req.body.header.email
+					}
+				},
+				'_id': ObjectId(args.req.body.storeId)
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'params': params,
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblStores'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'code': args.req.body.code,
+						'storeId': ObjectId(args.req.body.storeId),
+						'serverDate': new Date(),
+						'description': args.req.body.description
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'insert',
+						'collection': 'tblVouchers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result[0]));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		get: (args) => {
+			var deferred = Q.defer();
+
+			var match = {
+				'_id': ObjectId(args.req.body.voucherId),
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			var filter = {};
+			if (typeof (args.req.body.filter) != 'undefined') {
+				filter._id = 0;
+				args.req.body.filter.map(f => {
+					if (f == 'voucherId') {
+						filter['_id'] = 1;
+					} else if (f == 'role') {
+						filter['bitid.auth.users'] = 1;
+					} else {
+						filter[f] = 1;
+					};
+				});
+			};
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result[0]));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		list: (args) => {
+			var deferred = Q.defer();
+
+			var match = {
+				'bitid.auth.users.email': args.req.body.header.email
+			};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				match.storeId = ObjectId(args.req.body.storeId);
+			};
+
+			if (typeof (args.req.body.voucherId) != 'undefined') {
+				if (Array.isArray(args.req.body.voucherId)) {
+					match._id = {
+						$in: args.req.body.voucherId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.voucherId) == 'string') {
+					match._id = ObjectId(args.req.body.voucherId);
+				};
+			};
+
+			var filter = {};
+			if (typeof (args.req.body.filter) != 'undefined') {
+				filter._id = 0;
+				args.req.body.filter.map(f => {
+					if (f == 'voucherId') {
+						filter['_id'] = 1;
+					} else if (f == 'role') {
+						filter['bitid.auth.users'] = 1;
+					} else {
+						filter[f] = 1;
+					};
+				});
+			};
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						bitid: '$stores.bitid',
+					}
+				},
+				{
+					$match: match
+				},
+				{
+					$project: filter
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		update: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.voucherId)
+					};
+					var update = {
+						$set: {
+							'serverDate': new Date()
+						}
+					};
+					if (typeof (args.req.body.code) != 'undefined') {
+						update.$set.code = args.req.body.code;
+					};
+					if (typeof (args.req.body.description) != 'undefined') {
+						update.$set.description = args.req.body.description;
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblVouchers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.voucherId)
+					};
+
+					deferred.resolve({
+						'params': params,
+						'operation': 'remove',
+						'collection': 'tblVouchers'
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		}
+	};
+
 	var dalCouriers = {
 		add: (args) => {
 			var deferred = Q.defer();
@@ -5106,6 +5461,7 @@ var module = function () {
 		'reviews': dalReviews,
 		'reports': dalReports,
 		'products': dalProducts,
+		'vouchers': dalVouchers,
 		'couriers': dalCouriers,
 		'customers': dalCustomers,
 		'suppliers': dalSuppliers,

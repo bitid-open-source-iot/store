@@ -1174,6 +1174,85 @@ var module = function () {
         }
     };
 
+    var bllVouchers = {
+        add: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.add(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
+        get: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.get(args)
+                .then(tools.setRoleObject, null)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
+        list: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.list(args)
+                .then(tools.setRoleList, null)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
+        update: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.update(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
+        delete: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.delete(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        }
+    };
+
     var bllCouriers = {
         add: (req, res) => {
             var args = {
@@ -1771,6 +1850,7 @@ var module = function () {
         'payfast': bllPayfast,
         'reviews': bllReviews,
         'products': bllProducts,
+        'vouchers': bllVouchers,
         'couriers': bllCouriers,
         'customers': bllCustomers,
         'suppliers': bllSuppliers,

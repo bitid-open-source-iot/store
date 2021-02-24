@@ -98,6 +98,9 @@ try {
                 app.use('/store/products', require('./api/products'));
                 __logger.info('Loaded: ./api/store/products');
 
+                app.use('/store/vouchers', require('./api/vouchers'));
+                __logger.info('Loaded: ./api/store/vouchers');
+
                 app.use('/store/couriers', require('./api/couriers'));
                 __logger.info('Loaded: ./api/store/couriers');
 

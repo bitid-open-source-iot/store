@@ -16,18 +16,23 @@ export class AuthenticatePage implements OnInit, OnDestroy {
 
 	constructor(private title: Title, private route: ActivatedRoute, private config: ConfigService, private router: Router, private service: AccountService, private localstorage: LocalstorageService) { }
 
+	public error: boolean;
 	public loading: boolean;
 	private params: any = {};
 	private observers: any = {};
 
 	public async retrieve() {
+		this.error = false;
 		this.loading = true;
 
 		const response = await this.service.retrieve(this.params);
 
 		if (response.ok) {
+			this.error = false;
 			this.localstorage.setObject('token', response.result.token);
 			this.router.navigate(['/devices']);
+		} else {
+			this.error = true;
 		}
 
 		this.loading = false;
