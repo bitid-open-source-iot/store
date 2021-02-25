@@ -17,15 +17,43 @@ export class AccountService {
 	constructor(private api: ApiService, private router: Router, private localstorage: LocalstorageService) { }
 
 	public async init() {
-		const params = {
-			filter: [
-				'email',
-				'picture',
-				'username'
-			],
-			email: this.localstorage.get('email')
-		};
-		const response = await this.api.post(environment.auth, '/users/get', params);
+		const now = new Date();
+		let valid = true;
+		const email = this.localstorage.get('email');
+		const token = this.localstorage.getObject('token');
+
+		if (!email || !token) {
+			valid = false;
+		} else {
+			if (typeof (token.expiry) != 'undefined') {
+				const expiry = new Date(token.expiry);
+				if (expiry < now) {
+					valid = false;
+				}
+			} else {
+				valid = false;
+			}
+		}
+		if (valid) {
+			this.authenticated.next(true);
+			
+			const params = {
+				filter: [
+					'email',
+					'picture',
+					'username'
+				],
+				email: this.localstorage.get('email')
+			};
+			
+			const response = await this.api.post(environment.auth, '/users/get', params);
+			
+			if (response.ok) {
+				this.user.next(response.result);
+			};
+		} else {
+			this.authenticated.next(false);
+		}
 	}
 
 	public async signup() {

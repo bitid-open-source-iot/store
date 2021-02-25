@@ -6,12 +6,12 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 import { StoreService } from 'src/app/services/store/store.service';
 
 @Component({
-    selector: 'orders-viewer-page',
-    styleUrls: ['./viewer.page.scss'],
-    templateUrl: './viewer.page.html'
+    selector: 'orders-track-page',
+    styleUrls: ['./track.page.scss'],
+    templateUrl: './track.page.html'
 })
 
-export class OrdersViewerPage implements OnInit, OnDestroy {
+export class OrdersTrackPage implements OnInit, OnDestroy {
 
     constructor(private config: StoreService, private toast: ToastService, private route: ActivatedRoute, private router: Router, private service: OrdersService) { }
 

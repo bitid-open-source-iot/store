@@ -207,6 +207,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			dns: this.form.value.dns,
 			maps: this.form.value.maps,
 			logo: this.form.value.logo,
+			appId: this.form.value.appId,
 			cover: this.form.value.cover,
 			storeId: this.storeId,
 			description: this.form.value.description,

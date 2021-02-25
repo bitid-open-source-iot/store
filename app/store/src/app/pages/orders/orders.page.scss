@@ -1,18 +1,15 @@
 mat-content {
-    img {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 10px !important;
-    }
-    h1 {
-        margin-bottom: 10px !important;
-    }
-    p {
-        margin-bottom: 20px !important;
-    }
-    button {
-        width: 100%;
-        max-width: 400px;
-        margin-bottom: 20px;
+    mat-list {
+        margin: 5px 2.5px;
+        border-radius: 4px;
+        background-color: #fff;
+        mat-list-item {
+            height: 56px;
+            align-items: center;
+            flex-direction: row;
+        }
+        mat-list-item:last-child {
+            border-bottom: none;
+        }
     }
 }

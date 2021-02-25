@@ -24,6 +24,7 @@ export class Store {
     public maps?: boolean;
     public role?: number;
     public logo?: string;
+    public appId?: string;
     public users?: User[];
     public cover?: string;
     public private?: boolean;
@@ -93,6 +94,9 @@ export class Store {
             if (typeof (args.users) != 'undefined' && args.users != null) {
                 this.users = args.users.map(o => new User(o));
             }
+            if (typeof (args.appId) != 'undefined' && args.appId != null) {
+                this.appId = args.appId;
+            }
             if (typeof (args.storeId) != 'undefined' && args.storeId != null) {
                 this.storeId = args.storeId;
             }
@@ -133,6 +137,7 @@ interface STORE {
     maps?: boolean;
     role?: number;
     logo?: string;
+    appId?: string;
     users?: User[];
     cover?: string;
     private?: boolean;

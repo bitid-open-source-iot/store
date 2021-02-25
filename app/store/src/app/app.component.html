@@ -6,7 +6,7 @@
     </button>
 
     <mat-label class="spacer">
-        {{ store.description | async }}
+        {{ store ? store.description : '' }}
     </mat-label>
 
     <button #search mat-icon-button>

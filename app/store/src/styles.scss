@@ -112,9 +112,15 @@ mat-progress-bar {
     z-index: 100 !important;
     position: absolute !important;
 }
+map-page,
+cart-page,
 home-page,
 orders-page,
-authenticate-page {
+wishlist-page,
+checkout-page,
+authenticate-page,
+orders-track-page,
+orders-viewer-page {
     height: calc(100vh - 56px);
     display: flex;
     position: relative;

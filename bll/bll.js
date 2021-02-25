@@ -768,6 +768,22 @@ var module = function () {
                 });
         },
 
+        load: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.stores.load(args)
+                .then(tools.setRoleObject, null)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
         list: (req, res) => {
             var args = {
                 'req': req,

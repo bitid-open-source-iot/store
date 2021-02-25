@@ -1235,6 +1235,62 @@ var module = function () {
 			return deferred.promise;
 		},
 
+		load: (args) => {
+			var deferred = Q.defer();
+
+			var params = {};
+
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					params._id = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					params._id = ObjectId(args.req.body.storeId);
+				};
+			} else {
+				params.dns = args.req.headers.origin.replace('http://', '').replace('https://', '');
+			};
+
+			if (Object.keys(params).length == 0) {
+				var err = new ErrorResponse();
+				err.error.errors[0].code = 503;
+				err.error.errors[0].reason = 'Cant validate store!';
+				err.error.errors[0].message = 'Cant validate store!';
+				deferred.reject(err);
+			} else {
+				var filter = {
+					_id: 1,
+					logo: 1,
+					appId: 1,
+					cover: 1,
+					address: 1,
+					contact: 1,
+					payfast: 1,
+					private: 1,
+					payments: 1,
+					description: 1
+				};
+				db.call({
+					'params': params,
+					'filter': filter,
+					'operation': 'find',
+					'collection': 'tblStores'
+				})
+					.then(result => {
+						args.result = result[0];
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						deferred.reject(err);
+					});
+			};
+
+			return deferred.promise;
+		},
+
 		list: (args) => {
 			var deferred = Q.defer();
 

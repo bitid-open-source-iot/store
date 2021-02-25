@@ -1,3 +1,13 @@
 <mat-content>
-    
+    <div class="container">
+        <mat-list>
+            <mat-list-item lines="full" *ngFor="let order of orders.data">
+                
+            </mat-list-item>
+            
+            <mat-list-item *ngIf="orders.data.length == 0">
+                You have no orders!
+            </mat-list-item>
+        </mat-list>
+    </div>
 </mat-content>

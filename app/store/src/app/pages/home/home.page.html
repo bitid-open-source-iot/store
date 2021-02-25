@@ -1,5 +1,6 @@
 <mat-content>
-    <header></header>
+    <header *ngIf="store" [style.background-image]="'url(' + store.cover + ')'"></header>
+    <header *ngIf="!store"></header>
 
     <div class="container products">
         <div class="product" *ngFor="let product of products.data" [routerLink]="['/product', product.productId]">

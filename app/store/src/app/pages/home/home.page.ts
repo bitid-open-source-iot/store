@@ -1,9 +1,11 @@
 import { Product } from 'src/app/classes/product';
 import { CartService } from 'src/app/services/cart/cart.service';
+import { StoreService } from 'src/app/services/store/store.service';
+import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
 import { OnInit, Component, OnDestroy } from '@angular/core';
-import { ButtonsService } from 'src/app/services/buttons/buttons.service';
+import { Store } from 'src/app/classes/store';
 
 @Component({
     selector: 'home-page',
@@ -13,9 +15,11 @@ import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 
 export class HomePage implements OnInit, OnDestroy {
 
-    constructor(private cart: CartService, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService) { }
+    constructor(private cart: CartService, private config: StoreService, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService) { }
     
+    public store: Store;
     public loading: boolean;
+    private subscriptions: any = {};
 
     private async list() {
         this.loading = true;
@@ -60,9 +64,21 @@ export class HomePage implements OnInit, OnDestroy {
         this.buttons.hide('search');
         this.buttons.show('wishlist');
 
-        this.list();
+        this.subscriptions.store = this.config.value.subscribe(store => {
+            if (store) {
+                this.store = store;
+            };
+        });
+
+        this.subscriptions.loaded = this.config.loaded.subscribe(loaded => {
+            if (loaded) {
+                this.list();
+            };
+        });
     }
 
-    ngOnDestroy(): void { }
+    ngOnDestroy(): void {
+        this.subscriptions.loaded.unsubscribe();
+    }
 
 }

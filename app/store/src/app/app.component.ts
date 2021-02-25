@@ -1,3 +1,4 @@
+import { Store } from './classes/store';
 import { MatButton } from '@angular/material/button';
 import { MatDrawer } from '@angular/material/sidenav';
 import { CartService } from './services/cart/cart.service';
@@ -26,12 +27,13 @@ export class AppComponent implements OnInit {
 	@ViewChild('search', { static: true }) private searchbtn: MatButton;
 	@ViewChild('wishlist', { static: true }) private wishlistbtn: MatButton;
 
-	constructor(public cart: CartService, public store: StoreService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
+	constructor(public cart: CartService, private config: StoreService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
 
 	public items: any = {
 		cart: 0,
 		wishlist: 0
 	};
+	public store: Store;
 	public authenticated: boolean;
 
 	public sign() {
@@ -49,14 +51,14 @@ export class AppComponent implements OnInit {
 
 	public website() {
 		this.drawer.toggle();
-		window.open(this.store.website.value, '_blank');
+		window.open(this.store.contact.website, '_blank');
 	};
 
 	private async initialize() {
 		await this.splashscreen.show();
 
 		await this.cart.init();
-		await this.store.init();
+		await this.config.init();
 		await this.update.init();
 		await this.account.init();
 		await this.wishlist.init();
@@ -65,6 +67,12 @@ export class AppComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.config.value.subscribe(store => {
+			if (store) {
+				this.store = store;
+			};
+		});
+
 		this.cart.count.subscribe(count => this.items.cart = count);
 		this.wishlist.count.subscribe(count => this.items.wishlist = count);
 

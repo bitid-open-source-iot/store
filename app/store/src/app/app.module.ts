@@ -24,7 +24,6 @@ import { AuthService } from './services/auth/auth.service';
 import { CartService } from './services/cart/cart.service';
 import { ToastService } from './services/toast/toast.service';
 import { StoreService } from './services/store/store.service';
-import { ConfigService } from './services/config/config.service';
 import { OrdersService } from './services/orders/orders.service';
 import { StoresService } from './services/stores/stores.service';
 import { ButtonsService } from './services/buttons/buttons.service';
@@ -76,7 +75,6 @@ import { environment } from '../environments/environment';
         CartService,
         ToastService,
         StoreService,
-        ConfigService,
         OrdersService,
         StoresService,
         ButtonsService,
