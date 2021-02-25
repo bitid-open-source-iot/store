@@ -1167,6 +1167,7 @@ var module = function () {
 				'dns': args.req.body.dns || [],
 				'maps': args.req.body.maps || false,
 				'logo': args.req.body.logo,
+				'appId': args.req.body.appId,
 				'cover': args.req.body.cover,
 				'private': args.req.body.private || false,
 				'serverDate': new Date(),
@@ -1405,6 +1406,9 @@ var module = function () {
 			if (typeof (args.req.body.cover) != 'undefined' && args.req.body.cover != null) {
 				update.$set.cover = args.req.body.cover;
 			};
+			if (typeof (args.req.body.appId) != 'undefined' && args.req.body.appId != null) {
+				update.$set.appId = args.req.body.appId;
+			};
 			if (typeof (args.req.body.private) != 'undefined' && args.req.body.private != null) {
 				update.$set.private = args.req.body.private;
 			};
@@ -1487,10 +1491,35 @@ var module = function () {
 					$match: match
 				},
 				{
+					$lookup: {
+						as: 'customers',
+						from: 'tblCustomers',
+						localField: '_id',
+						foreignField: 'storeId'
+					}
+				},
+				{
+					$addFields: {
+						customers: '$customers.email'
+					}
+				},
+				{
+					$addFields: {
+						users: '$bitid.auth.users.email'
+					}
+				},
+				{
+					$addFields: {
+						users: {
+							$concatArrays: ["$users", "$customers"]
+						}
+					}
+				},
+				{
 					$project: {
 						'dns': 1,
 						'logo': 1,
-						'users': '$bitid.auth.users.email',
+						'users': 1,
 						'storeId': '$_id',
 						'private': 1,
 						'address': 1,
@@ -1503,9 +1532,11 @@ var module = function () {
 			];
 
 			if (Object.keys(match).length == 0) {
-				dalStores.errorResponse.error.errors[0].code = 503;
-				dalStores.errorResponse.error.errors[0].reason = 'Cant validate store!';
-				deferred.reject(dalStores.errorResponse);
+				var err = new ErrorResponse();
+				err.error.errors[0].code = 503;
+				err.error.errors[0].reason = 'Cant validate store!';
+				err.error.errors[0].message = 'Cant validate store!';
+				deferred.reject(err);
 			} else {
 				db.call({
 					'params': params,
@@ -1525,8 +1556,8 @@ var module = function () {
 								var err = new ErrorResponse();
 								err.error.code = 401;
 								err.error.errors[0].code = 401;
-								err.error.errors[0].reason = 'Store is private';
-								err.error.errors[0].message = 'Store is private';
+								err.error.errors[0].reason = 'Store is private!';
+								err.error.errors[0].message = 'Store is private!';
 								deferred.reject(err);
 							};
 						} else {

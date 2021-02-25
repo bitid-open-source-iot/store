@@ -197,6 +197,10 @@ export class CartService {
         return response;
     };
 
+    public includes(productId: string) {
+        return this.items.map(o => o.productId).includes(productId);
+    };
+
 }
 
 interface Summary {

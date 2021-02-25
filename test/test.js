@@ -55,6 +55,7 @@ describe('Stores', function () {
                     result.should.have.property('dns');
                     result.should.have.property('role');
                     result.should.have.property('logo');
+                    result.should.have.property('appId');
                     result.should.have.property('users');
                     result.should.have.property('cover');
                     result.should.have.property('private');
@@ -87,6 +88,7 @@ describe('Stores', function () {
                     result[0].should.have.property('dns');
                     result[0].should.have.property('role');
                     result[0].should.have.property('logo');
+                    result[0].should.have.property('appId');
                     result[0].should.have.property('users');
                     result[0].should.have.property('cover');
                     result[0].should.have.property('private');
@@ -2217,6 +2219,7 @@ var tools = {
                     'dns': ['bitid.com'],
                     'logo': 'https://www.bitid.co.za/assets/icons/icon-96x96.png',
                     'cover': 'https://www.bitid.co.za/assets/icons/icon-96x96.png',
+                    'appId': '000000000000000000000001',
                     'private': false,
                     'description': 'My Store',
                     'organizationOnly': 0
@@ -2233,6 +2236,7 @@ var tools = {
                         'dns',
                         'role',
                         'logo',
+                        'appId',
                         'users',
                         'cover',
                         'private',
@@ -2258,6 +2262,7 @@ var tools = {
                         'dns',
                         'role',
                         'logo',
+                        'appId',
                         'users',
                         'cover',
                         'private',

@@ -1,0 +1,42 @@
+mat-content {
+    mat-list {
+        margin: 5px 2.5px;
+        border-radius: 4px;
+        background-color: #fff;
+        mat-list-item {
+            height: 56px;
+            align-items: center;
+            flex-direction: row;
+            img {
+                margin-right: 16px;
+                border-radius: 5px;
+            }
+            section {
+                display: flex;
+                margin-right: auto;
+                flex-direction: column;
+                label {
+                    height: 16px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    line-height: 16px;
+                }
+                span {
+                    color: #2196f3;
+                    height: 14px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 14px;
+                }
+            }
+            button {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+        mat-list-item:last-child {
+            border-bottom: none;
+        }
+    }
+}

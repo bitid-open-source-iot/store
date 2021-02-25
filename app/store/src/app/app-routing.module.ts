@@ -20,6 +20,7 @@ const routes: Routes = [
     },
     {
         path: 'orders',
+        canActivate: [AuthService],
         loadChildren: () => import('./pages/orders/orders.module').then(m => m.OrdersPageModule)
     },
     {
@@ -29,6 +30,10 @@ const routes: Routes = [
     {
         path: 'checkout',
         loadChildren: () => import('./pages/checkout/checkout.module').then(m => m.CheckoutPageModule)
+    },
+    {
+        path: 'wishlist',
+        loadChildren: () => import('./pages/wishlist/wishlist.module').then(m => m.WishlistPageModule)
     },
     {
         path: 'authenticate',

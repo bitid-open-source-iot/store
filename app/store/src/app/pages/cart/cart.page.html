@@ -2,7 +2,7 @@
     <div class="container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
         <div fxFlex="75" fxFlex.lg="70" fxFlex.md="60" fxFlex.sm="100" fxFlex.xs="100">
             <mat-list>
-                <mat-list-item *ngFor="let item of cart.items">
+                <mat-list-item lines="full" *ngFor="let item of cart.items">
                     <img [src]="item.image" [alt]="item.title" width="40" height="40">
 
                     <section>
@@ -13,11 +13,11 @@
                             {{ item.price | currency : 'R' }}
                         </span>
                         <p>
-                            ✕ <input type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)">
+                            ✕ <input type="number" min="1" [max]="item.max" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)">
                         </p>
                     </section>
 
-                    <button mat-icon-button (click)="cart.more(item)">
+                    <button mat-icon-button (click)="cart.more(item)" [disabled]="item.quantity == item.max">
                         <mat-icon>
                             add
                         </mat-icon>
@@ -77,11 +77,11 @@
                     </tr>
                 </table>
 
-                <button mat-flat-button color="primary" [disabled]="cart.items.length == 0">
+                <button mat-flat-button color="primary" [disabled]="cart.items.length == 0 || (cart.summary | async).total == 0">
                     Checkout
                 </button>
 
-                <button mat-flat-button [disabled]="cart.items.length == 0">
+                <button mat-flat-button [disabled]="cart.items.length == 0 || (cart.summary | async).total == 0">
                     Download Invoice
                 </button>
 

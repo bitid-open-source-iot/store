@@ -50,6 +50,9 @@ mat-content {
                 justify-content: center !important;
             }
         }
+        mat-list-item:last-child {
+            border-bottom: none;
+        }
     }
     .summary {
         margin: 5px 2.5px;

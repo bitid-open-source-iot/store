@@ -12,7 +12,9 @@ import { BehaviorSubject } from 'rxjs';
 export class StoreService {
 
 	public logo: BehaviorSubject<string> = new BehaviorSubject<string>('./assets/icons/icon-512x512.png');
+	public loaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public website: BehaviorSubject<string> = new BehaviorSubject<string>(window.location.href);
+	public private: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public description: BehaviorSubject<string> = new BehaviorSubject<string>('Online Store');
 
 	constructor(private api: ApiService, private meta: Meta, private title: Title) { }
@@ -28,6 +30,12 @@ export class StoreService {
 			this.description.next(store.description);
 			const favicon = <HTMLLinkElement>document.getElementById('favicon');
 			favicon.href = store.logo;
+			this.loaded.next(true);
+		} else {
+			if (response.error.code == 401) {
+				this.private.next(true);
+			};
+			this.loaded.next(false);
 		};
 		
 		return response;

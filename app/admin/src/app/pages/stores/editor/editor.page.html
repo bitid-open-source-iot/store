@@ -15,6 +15,29 @@
         </div>
 
         <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    App
+                </mat-label>
+
+                <mat-select name="appId" formControlName="appId" required>
+                    <mat-option [formGroup]="filter">
+                        <ngx-mat-select-search placeholderLabel="filter apps" noEntriesFoundLabel="no apps found"
+                            formControlName="app"></ngx-mat-select-search>
+                    </mat-option>
+
+                    <mat-option
+                        *ngFor="let app of apps.data | orderBy : 'name' | filterBy : { name: filter.value.app }"
+                        [value]="app.appId" [disabled]="app.role < 2">
+                        {{ app.name }}
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.appId">
+                    {{ errors.appId }}
+                </mat-error>
+            </mat-form-field>
+            
             <section>
                 <mat-form-field appearance="outline">
                     <mat-label>

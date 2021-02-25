@@ -1,4 +1,5 @@
 import { Store } from 'src/app/classes/store';
+import { AppsService } from 'src/app/services/apps/apps.service';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { StoresService } from 'src/app/services/stores/stores.service';
@@ -16,7 +17,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export class StoresEditorPage implements OnInit, OnDestroy {
 
-	constructor(private toast: ToastService, private route: ActivatedRoute, private router: Router, private service: StoresService, private buttons: ButtonsService, private formerror: FormErrorService) { }
+	constructor(public apps: AppsService, private toast: ToastService, private route: ActivatedRoute, private router: Router, private service: StoresService, private buttons: ButtonsService, private formerror: FormErrorService) { }
 
 	public form: FormGroup = new FormGroup({
 		address: new FormGroup({
@@ -40,6 +41,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		dns: new FormControl([], [Validators.required]),
 		maps: new FormControl(false, [Validators.required]),
 		logo: new FormControl(null, [Validators.required]),
+		appId: new FormControl(null, [Validators.required]),
 		cover: new FormControl('./assets/cover.png', [Validators.required]),
 		description: new FormControl(null, [Validators.required]),
 		organizationOnly: new FormControl(null, [Validators.required])
@@ -68,10 +70,14 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		dns: '',
 		maps: '',
 		logo: '',
+		appId: '',
 		cover: '',
 		description: '',
 		organizationOnly: ''
 	};
+	public filter: FormGroup = new FormGroup({
+		app: new FormControl('')
+	});
 	public storeId: string;
 	public loading: boolean;
 	public keycodes: number[] = [ENTER, COMMA];
@@ -100,6 +106,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				'maps',
 				'role',
 				'logo',
+				'appId',
 				'cover',
 				'address',
 				'contact',
@@ -132,6 +139,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				this.form.controls.dns.setValue(this.store.dns);
 				this.form.controls.maps.setValue(this.store.maps);
 				this.form.controls.logo.setValue(this.store.logo);
+				this.form.controls.appId.setValue(this.store.appId);
 				this.form.controls.cover.setValue(this.store.cover);
 				this.form.controls.description.setValue(this.store.description);
 				this.form.controls.organizationOnly.setValue(this.store.organizationOnly);
@@ -142,6 +150,27 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		} else {
 			this.toast.error(response.error.message);
 			this.router.navigate(['/stores']);
+		}
+
+		this.loading = false;
+	}
+
+	private async load() {
+		this.loading = true;
+
+		const apps = await this.apps.list({
+			filter: [
+				'role',
+				'name',
+				'appId'
+			]
+		});
+
+		if (apps.ok) {
+			this.apps.data = apps.result;
+		} else {
+			this.apps.data = [];
+			this.toast.error(apps.error.message);
 		}
 
 		this.loading = false;
@@ -215,9 +244,12 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		this.mode = params.mode;
 		this.storeId = params.storeId;
 
-		if (this.mode != 'add') {
-			this.get();
-		}
+		(async () => {
+			if (this.mode != 'add') {
+				await this.get();
+			}
+			await this.load();
+		})();
 	}
 
 	ngOnDestroy(): void {

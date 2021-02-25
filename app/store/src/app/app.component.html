@@ -37,7 +37,17 @@
 <mat-drawer-container>
     <mat-drawer position="start">
         <mat-list>
-            <mat-list-item type="button" lines="full" routerLink="/home" routerLinkActive="active" matRipple>
+            <mat-list-item type="button" lines="full" routerLink="/map" routerLinkActive="active" matRipple (click)="toggle()">
+                <mat-icon>
+                    map
+                </mat-icon>
+
+                <mat-label>
+                    Map
+                </mat-label>
+            </mat-list-item>
+
+            <mat-list-item type="button" lines="full" routerLink="/home" routerLinkActive="active" matRipple (click)="toggle()">
                 <mat-icon>
                     home
                 </mat-icon>
@@ -47,7 +57,7 @@
                 </mat-label>
             </mat-list-item>
             
-            <mat-list-item type="button" lines="full" routerLink="/orders" routerLinkActive="active" matRipple>
+            <mat-list-item type="button" lines="full" routerLink="/orders" routerLinkActive="active" matRipple (click)="toggle()">
                 <mat-icon>
                     receipt
                 </mat-icon>
@@ -66,6 +76,30 @@
                     Our Website
                 </mat-label>
             </mat-list-item>
+            
+            <div mat-subheader>
+                Account
+            </div>
+            
+            <mat-list-item type="button" lines="full" (click)="sign()" matRipple>
+                <mat-icon>
+                    {{ authenticated ? 'logout' : 'login' }}
+                </mat-icon>
+
+                <mat-label>
+                    {{ authenticated ? 'Sign Out' : 'Sign In' }}
+                </mat-label>
+            </mat-list-item>
+            
+            <mat-list-item type="button" lines="full" (click)="account.signup()" matRipple *ngIf="!authenticated">
+                <mat-icon>
+                    person_add_alt_1
+                </mat-icon>
+
+                <mat-label>
+                    Sign up
+                </mat-label>
+            </mat-list-item>
         </mat-list>
     </mat-drawer>
 
@@ -73,3 +107,5 @@
         <router-outlet></router-outlet>
     </mat-drawer-content>
 </mat-drawer-container>
+
+<splashscreen></splashscreen>

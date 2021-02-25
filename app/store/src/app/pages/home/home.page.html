@@ -20,13 +20,13 @@
             <div class="product-actions">
                 <mat-stars size="16" [value]="product.score"></mat-stars>
 
-                <button mat-icon-button (click)="AddToWishlist($event, product)">
+                <button [class.selected]="wishlist.includes(product.productId)" mat-icon-button (click)="AddToWishlist($event, product)">
                     <mat-icon>
                         favorite
                     </mat-icon>
                 </button>
 
-                <button mat-icon-button (click)="AddToCart($event, product)">
+                <button [class.selected]="cart.includes(product.productId)" mat-icon-button (click)="AddToCart($event, product)">
                     <mat-icon>
                         add_shopping_cart
                     </mat-icon>

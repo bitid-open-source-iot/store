@@ -38,6 +38,7 @@ import { FormErrorService } from './services/form-error/form-error.service';
 import { SuppliersService } from './services/suppliers/suppliers.service';
 import { DepartmentsService } from './services/departments/departments.service';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
+import { PrivateMessageModule } from './libs/private-message/private-message.module';
 import { CollectionPointsService } from './services/collection-points/collection-points.service';
 
 /* --- COMPONENTS --- */
@@ -63,6 +64,7 @@ import { environment } from '../environments/environment';
         MatSnackBarModule,
         SplashscreenModule,
         MatFormFieldModule,
+        PrivateMessageModule,
         BrowserAnimationsModule,
         ServiceWorkerModule.register('ngsw-worker.js', {
             enabled: environment.production

@@ -2,18 +2,19 @@ import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
+import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 
 @Component({
-    selector: 'cart-page',
-    styleUrls: ['./cart.page.scss'],
-    templateUrl: './cart.page.html'
+    selector: 'wishlist-page',
+    styleUrls: ['./wishlist.page.scss'],
+    templateUrl: './wishlist.page.html'
 })
 
-export class CartPage implements OnInit, OnDestroy {
+export class WishlistPage implements OnInit, OnDestroy {
 
-    constructor(public cart: CartService, private router: Router, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
+    constructor(public cart: CartService, public wishlist: WishlistService, private router: Router, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
 
     public loading: boolean;
     private subscriptions: any = {};
@@ -22,7 +23,7 @@ export class CartPage implements OnInit, OnDestroy {
         this.loading = true;
 
         if (this.account.authenticated.value) {
-            await this.cart.list({});
+            await this.wishlist.list({});
         } else {
             const products = await this.products.list({
                 'filter': [
@@ -30,34 +31,33 @@ export class CartPage implements OnInit, OnDestroy {
                     'price',
                     'image',
                     'storeId',
-                    'quantity',
                     'productId',
                     'promotion'
                 ],
-                'productId': this.cart.items.map(o => o.productId)
+                'productId': this.wishlist.items.map(o => o.productId)
             });
 
             if (products.ok) {
-                for (let i = 0; i < this.cart.items.length; i++) {
+                for (let i = 0; i < this.wishlist.items.length; i++) {
                     products.result.map(item => {
-                        if (this.cart.items[i].productId == item.productId) {
-                            if (this.cart.items[i].quantity > item.quantity) {
-                                this.cart.items[i].quantity = item.quantity;
-                            };
-                            this.cart.items[i].max = item.quantity;
-                            this.cart.items[i].title = item.title;
-                            this.cart.items[i].price = item.price;
-                            this.cart.items[i].image = item.image;
-                            this.cart.items[i].storeId = item.storeId;
-                            this.cart.items[i].promotion = item.promotion;
+                        if (this.wishlist.items[i].productId == item.productId) {
+                            this.wishlist.items[i].title = item.title;
+                            this.wishlist.items[i].price = item.price;
+                            this.wishlist.items[i].image = item.image;
+                            this.wishlist.items[i].storeId = item.storeId;
+                            this.wishlist.items[i].promotion = item.promotion;
                         };
                     });
                 };
-                this.cart.calculate();
             };
         };
 
         this.loading = false;
+    };
+
+    public async MoveToCart(item) {
+        await this.cart.add(item);
+        await this.wishlist.delete(item);
     };
 
     ngOnInit(): void {

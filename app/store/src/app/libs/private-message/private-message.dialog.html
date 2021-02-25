@@ -1,0 +1,25 @@
+<mat-toolbar>
+    <mat-label>
+        Private Store
+    </mat-label>
+</mat-toolbar>
+
+<mat-content>
+    <div class="container">
+        <p *ngIf="!authenticated">
+            You must sign in and be allowed access in order to view products! You can create an account if you do not have one already by clicking sing up
+        </p>
+
+        <p *ngIf="authenticated">
+            You may only access this store by being an allowed customer!
+        </p>
+
+        <button mat-flat-button color="primary" (click)="account.signin()" *ngIf="!authenticated">
+            Sign In
+        </button>
+        
+        <button mat-stroked-button color="primary" (click)="account.signup()" *ngIf="!authenticated">
+            Sign Up
+        </button>
+    </div>
+</mat-content>

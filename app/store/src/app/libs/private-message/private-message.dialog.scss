@@ -1,0 +1,36 @@
+.private-message-dialog .mat-dialog-container {
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding: 0px;
+    z-index: 5000;
+    position: fixed;
+    border-radius: 0px;
+    mat-toolbar {
+        display: flex;
+        font-size: 14px;
+        margin-bottom: 5px;
+        justify-content: center;
+    }
+    mat-content {
+        height: calc(100vh - 100px);
+        display: flex !important;
+        align-items: center !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+    p {
+        margin: auto !important;
+        display: block;
+        max-width: 400px;
+        text-align: center;
+    }
+    button {
+        width: calc(100% - 20px);
+        margin: 20px auto;
+        display: block;
+        max-width: 400px;
+        text-transform: none;
+    }
+}

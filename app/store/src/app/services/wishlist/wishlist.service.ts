@@ -128,4 +128,8 @@ export class WishlistService {
         this.count.next(this.items.length);
     };
 
+    public includes(productId: string) {
+        return this.items.map(o => o.productId).includes(productId);
+    };
+
 }
