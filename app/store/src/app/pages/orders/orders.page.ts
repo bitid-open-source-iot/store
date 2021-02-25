@@ -24,13 +24,12 @@ export class OrdersPage implements OnInit, OnDestroy {
 
         if (response.ok) {
             this.orders.data = response.result.map(o => new Order(o));
-            debugger
         } else {
             this.orders.data = [];
         }
 
         this.loading = false;
-    }
+    };
 
     ngOnInit(): void {
         this.buttons.hide('cart');

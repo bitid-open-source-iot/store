@@ -9,6 +9,7 @@ import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { WishlistService } from './services/wishlist/wishlist.service';
 import { PrivateMessageService } from './libs/private-message/private-message.service';
+import { Router, NavigationEnd } from '@angular/router';
 import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
 
 @Component({
@@ -27,12 +28,13 @@ export class AppComponent implements OnInit {
 	@ViewChild('search', { static: true }) private searchbtn: MatButton;
 	@ViewChild('wishlist', { static: true }) private wishlistbtn: MatButton;
 
-	constructor(public cart: CartService, private config: StoreService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
+	constructor(public cart: CartService, private config: StoreService, private router: Router, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
 
 	public items: any = {
 		cart: 0,
 		wishlist: 0
 	};
+	public page: string = '';
 	public store: Store;
 	public authenticated: boolean;
 
@@ -67,6 +69,31 @@ export class AppComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		this.router.events.subscribe(event => {
+			if (event instanceof NavigationEnd) {
+				switch(event.url) {
+					case('/map'):
+						this.page = 'Map';
+						break;
+					case('/cart'):
+						this.page = 'Cart';
+						break;
+					case('/orders'):
+						this.page = 'Orders';
+						break;
+					case('/checkout'):
+						this.page = 'Checkout';
+						break;
+					case('/wishlist'):
+						this.page = 'Wishlist';
+						break;
+					default:
+						this.page = '';
+						break;
+				};
+			}
+		});
+
 		this.config.value.subscribe(store => {
 			if (store) {
 				this.store = store;

@@ -1,9 +1,10 @@
 import { Order } from 'src/app/classes/order';
+import { StoreService } from 'src/app/services/store/store.service';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { OrdersService } from 'src/app/services/orders/orders.service';
+import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
-import { StoreService } from 'src/app/services/store/store.service';
 
 @Component({
     selector: 'orders-viewer-page',
@@ -13,7 +14,7 @@ import { StoreService } from 'src/app/services/store/store.service';
 
 export class OrdersViewerPage implements OnInit, OnDestroy {
 
-    constructor(private config: StoreService, private toast: ToastService, private route: ActivatedRoute, private router: Router, private service: OrdersService) { }
+    constructor(private toast: ToastService, private route: ActivatedRoute, private config: StoreService, private router: Router, private service: OrdersService, private buttons: ButtonsService) { }
 
     public order: Order = new Order();
     public orderId: string;
@@ -30,24 +31,34 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
         if (response.ok) {
             this.order = new Order(response.result);
         } else {
-            this.router.navigate(['/orders']);
             this.toast.error(response.error.message);
+            this.router.navigate(['/orders']);
         }
 
         this.loading = false;
-    }
+    };
 
     ngOnInit(): void {
+        this.buttons.hide('cart');
+        this.buttons.show('close');
+        this.buttons.hide('search');
+        this.buttons.hide('wishlist');
+
+        this.subscriptions.close = this.buttons.close.click.subscribe(event => {
+            this.router.navigate(['/orders']);
+        });
+
         this.subscriptions.loaded = this.config.loaded.subscribe(loaded => {
             if (loaded) {
                 const params = this.route.snapshot.queryParams;
                 this.orderId = params.orderId;
                 this.get();
-            };
+            }
         });
     }
 
     ngOnDestroy(): void {
+        this.subscriptions.close.unsubscribe();
         this.subscriptions.loaded.unsubscribe();
     }
 

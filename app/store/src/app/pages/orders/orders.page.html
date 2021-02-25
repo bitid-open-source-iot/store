@@ -1,13 +1,23 @@
 <mat-content>
     <div class="container">
-        <mat-list>
-            <mat-list-item lines="full" *ngFor="let order of orders.data">
-                
-            </mat-list-item>
-            
-            <mat-list-item *ngIf="orders.data.length == 0">
-                You have no orders!
-            </mat-list-item>
-        </mat-list>
+        <div class="order" *ngFor="let order of orders.data">
+            <header>
+                <h4>
+                    {{ order.status }}, {{ order.date[order.status] | date : 'dd MMM yyyy' }}
+                </h4>
+
+                <button mat-stroked-button routerLink="/checkout" [queryParams]="{orderId: order.orderId}" *ngIf="order.status == 'initialized'">
+                    Pay
+                </button>
+
+                <button mat-stroked-button routerLink="viewer" [queryParams]="{orderId: order.orderId}" *ngIf="order.status == 'paid' || order.status == 'delivered'">
+                    View
+                </button>
+            </header>
+
+            <div class="products">
+                <div class="product" *ngFor="let product of order.products" [style.background-image]="'url(' + product.image + ')'"  [routerLink]="['/product', product.productId]"></div>
+            </div>
+        </div>
     </div>
 </mat-content>
