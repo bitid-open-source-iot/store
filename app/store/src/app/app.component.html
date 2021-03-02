@@ -37,7 +37,7 @@
 <mat-drawer-container>
     <mat-drawer position="start">
         <mat-list>
-            <mat-list-item type="button" lines="full" routerLink="/map" routerLinkActive="active" matRipple (click)="toggle()">
+            <mat-list-item type="button" lines="full" routerLink="/map" routerLinkActive="active" matRipple (click)="toggle()" *ngIf="map">
                 <mat-icon>
                     map
                 </mat-icon>

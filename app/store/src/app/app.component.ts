@@ -30,11 +30,12 @@ export class AppComponent implements OnInit {
 
 	constructor(public cart: CartService, private config: StoreService, private router: Router, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
 
+	public map: boolean;
+	public page: string = '';
 	public items: any = {
 		cart: 0,
 		wishlist: 0
 	};
-	public page: string = '';
 	public store: Store;
 	public authenticated: boolean;
 
@@ -96,6 +97,7 @@ export class AppComponent implements OnInit {
 
 		this.config.value.subscribe(store => {
 			if (store) {
+				this.map = this.store.maps;
 				this.store = store;
 			};
 		});
