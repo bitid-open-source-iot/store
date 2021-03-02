@@ -2,6 +2,7 @@ import { Review } from 'src/app/classes/review';
 import { Product } from 'src/app/classes/product';
 import { MatDialog } from '@angular/material/dialog';
 import { CartService } from 'src/app/services/cart/cart.service';
+import { DomSanitizer } from '@angular/platform-browser';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ReviewsService } from 'src/app/services/reviews/reviews.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
@@ -19,7 +20,7 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 
 export class ProductPage implements OnInit, OnDestroy {
 
-    constructor(public cart: CartService, private route: ActivatedRoute, private dialog: MatDialog, private account: AccountService, public reviews: ReviewsService, private router: Router, private buttons: ButtonsService, private service: ProductsService, public wishlist: WishlistService) { }
+    constructor(public cart: CartService, private route: ActivatedRoute, private dialog: MatDialog, private account: AccountService, public reviews: ReviewsService, private router: Router, private buttons: ButtonsService, private service: ProductsService, public wishlist: WishlistService, private sanitizer: DomSanitizer) { }
 
     public links: Product[] = [];
     public product: Product = new Product();
@@ -70,6 +71,7 @@ export class ProductPage implements OnInit, OnDestroy {
                     this.product.image = image.src;
                 };
             });
+            this.product.description = this.sanitizer.bypassSecurityTrustHtml(this.product.description);
         } else {
             this.router.navigate(['/home']);
         }

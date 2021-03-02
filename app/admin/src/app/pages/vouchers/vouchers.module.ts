@@ -25,6 +25,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const routes: Routes = [
     {
@@ -60,6 +61,7 @@ const routes: Routes = [
         MatFormFieldModule,
         ReactiveFormsModule,
         MatProgressBarModule,
+        MatProgressSpinnerModule,
         NgxMatSelectSearchModule,
         RouterModule.forChild(routes)
     ],

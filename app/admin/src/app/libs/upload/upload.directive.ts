@@ -25,7 +25,11 @@ export class UploadDirective implements OnChanges, AfterViewInit {
 	private element: HTMLElement;
 
 	ngOnChanges(): void {
-		this.renderer.setStyle(this.element, 'background-image', ['url(', this.src, ')'].join(''));
+		if (this.accept == 'application/pdf' && typeof(this.src) != 'undefined' && this.src != null) {
+			this.renderer.setStyle(this.element, 'background-image', ['url("./assets/pdf.png")'].join(''));
+		} else {
+			this.renderer.setStyle(this.element, 'background-image', ['url(', this.src, ')'].join(''));
+		};
 	}
 
 	ngAfterViewInit(): void {
@@ -52,7 +56,11 @@ export class UploadDirective implements OnChanges, AfterViewInit {
 							if (request.status == 200) {
 								const res = JSON.parse(request.response);
 								const file = [environment.drive, '/drive/files/get?fileId=', res.fileId, '&token=', res.token].join('');
-								this.renderer.setStyle(this.element, 'background-image', ['url(', file, ')'].join(''));
+								if (this.accept == 'application/pdf' && typeof(this.src) != 'undefined' && this.src != null) {
+									this.renderer.setStyle(this.element, 'background-image', ['url("./assets/pdf.png")'].join(''));
+								} else {
+									this.renderer.setStyle(this.element, 'background-image', ['url(', file, ')'].join(''));
+								};
 								this.change.emit(file);
 								this.uploading.emit(false);
 							}

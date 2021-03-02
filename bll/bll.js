@@ -234,6 +234,15 @@ var module = function () {
 
                                     args.order.products = products;
 
+                                    if (typeof(args.order.shipping) != 'undefined') {
+                                        args.order.shipping.enabled = false;
+                                        args.order.products.map(product => {
+                                            if (product.type == 'hardware') {
+                                                args.order.shipping.enabled = true;
+                                            };
+                                        });
+                                    };
+
                                     deferred.resolve(args);
                                 }, null)
                                 .then(args => {
@@ -1266,10 +1275,43 @@ var module = function () {
                 }, err => {
                     __responder.error(req, res, err);
                 });
+        },
+
+        markassold: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.vouchers.markassold(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
         }
     };
 
     var bllCouriers = {
+        public: {
+            list: (req, res) => {
+                var args = {
+                    'req': req,
+                    'res': res
+                };
+
+                var myModule = new dalModule.module();
+                myModule.stores.validate(args)
+                    .then(myModule.couriers.public.list, null)
+                    .then(args => {
+                        __responder.success(req, res, args.result);
+                    }, err => {
+                        __responder.error(req, res, err);
+                    });
+            }
+        },
+
         add: (req, res) => {
             var args = {
                 'req': req,
@@ -1779,6 +1821,24 @@ var module = function () {
     };
 
     var bllCollectionPoints = {
+        public: {
+            list: (req, res) => {
+                var args = {
+                    'req': req,
+                    'res': res
+                };
+
+                var myModule = new dalModule.module();
+                myModule.stores.validate(args)
+                    .then(myModule.collectionpoints.public.list, null)
+                    .then(args => {
+                        __responder.success(req, res, args.result);
+                    }, err => {
+                        __responder.error(req, res, err);
+                    });
+            }
+        },
+
         add: (req, res) => {
             var args = {
                 'req': req,

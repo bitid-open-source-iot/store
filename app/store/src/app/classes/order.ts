@@ -10,13 +10,13 @@ export class Order {
         initialized: null
     };
     public payment = {
-        vat: null,
-        total: null,
-        credit: null,
+        vat: 0,
+        total: 0,
+        credit: 0,
         method: null,
-        discount: null,
-        shipping: null,
-        subtotal: null
+        discount: 0,
+        shipping: 0,
+        subtotal: 0
     };
     public shipping = {
         address: {
@@ -27,8 +27,10 @@ export class Order {
             additionalInfo: null
         },
         method: null,
+        enabled: false,
         optionId: null,
-        courierId: null
+        courierId: null,
+        collectionpointId: null
     };
     public products?: OrderProduct[] = [];
     public recipient = {
@@ -112,11 +114,17 @@ export class Order {
                 if (typeof (args.shipping.method) != 'undefined' && args.shipping.method != null) {
                     this.shipping.method = args.shipping.method;
                 }
+                if (typeof (args.shipping.enabled) != 'undefined' && args.shipping.enabled != null) {
+                    this.shipping.enabled = args.shipping.enabled;
+                }
                 if (typeof (args.shipping.optionId) != 'undefined' && args.shipping.optionId != null) {
                     this.shipping.optionId = args.shipping.optionId;
                 }
                 if (typeof (args.shipping.courierId) != 'undefined' && args.shipping.courierId != null) {
                     this.shipping.courierId = args.shipping.courierId;
+                }
+                if (typeof (args.shipping.collectionpointId) != 'undefined' && args.shipping.collectionpointId != null) {
+                    this.shipping.collectionpointId = args.shipping.collectionpointId;
                 }
             }
             if (typeof (args.products) != 'undefined' && args.products != null) {
@@ -137,6 +145,9 @@ export class Order {
                     }
                     if (typeof (args.recipient.company.reg) != 'undefined' && args.recipient.company.reg != null) {
                         this.recipient.company.reg = args.recipient.company.reg;
+                    }
+                    if (typeof (args.recipient.company.name) != 'undefined' && args.recipient.company.name != null) {
+                        this.recipient.company.name = args.recipient.company.name;
                     }
                 }
                 if (typeof (args.recipient.email) != 'undefined' && args.recipient.email != null) {
@@ -189,8 +200,10 @@ interface ORDER {
             additionalInfo?: string;
         },
         method?: string;
+        enabled?: boolean;
         optionId?: string;
         courierId?: string;
+        collectionpointId?: string;
     };
     products?: OrderProduct[];
     recipient?: {

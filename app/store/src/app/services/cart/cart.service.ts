@@ -50,6 +50,7 @@ export class CartService {
         summary.subtotal = 0;
         summary.discount = 0;
         this.items.map(item => {
+            item.quantity = parseInt(item.quantity);
             summary.subtotal += item.price * item.quantity;
             if (item.promotion.enabled) {
                 summary.discount -= (item.price - item.promotion.price) * item.quantity;

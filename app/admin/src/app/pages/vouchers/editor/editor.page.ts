@@ -23,16 +23,16 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 
 	public form: FormGroup = new FormGroup({
 		code: new FormControl(null, [Validators.required]),
+		file: new FormControl(null, [Validators.required]),
 		storeId: new FormControl(null, [Validators.required]),
-		productId: new FormControl(null, [Validators.required]),
-		description: new FormControl(null, [Validators.required])
+		productId: new FormControl(null, [Validators.required])
 	});
 	public mode: string;
 	public errors: any = {
 		code: '',
+		file: '',
 		storeId: '',
-		productId: '',
-		description: ''
+		productId: ''
 	};
 	public filter: FormGroup = new FormGroup({
 		store: new FormControl(null, [Validators.required]),
@@ -50,9 +50,9 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 			filter: [
 				'role',
 				'code',
+				'file',
 				'storeId',
-				'productId',
-				'description'
+				'productId'
 			],
 			voucherId: this.voucherId
 		});
@@ -61,9 +61,9 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 			this.voucher = new Voucher(response.result);
 			if (this.voucher.role > 2) {
 				this.form.controls.code.setValue(this.voucher.code);
+				this.form.controls.file.setValue(this.voucher.file);
 				this.form.controls.storeId.setValue(this.voucher.storeId);
 				this.form.controls.productId.setValue(this.voucher.productId);
-				this.form.controls.description.setValue(this.voucher.description);
 			} else {
 				this.toast.error('Your role is not high enough to copy/edit this voucher!');
 				this.router.navigate(['/vouchers']);
@@ -81,7 +81,7 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 
 		const stores = await this.stores.list({
 			sort: {
-				description: 1
+				file: 1
 			},
 			filter: [
 				'storeId',
@@ -127,10 +127,10 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 
 		const response = await this.service[mode]({
 			code: this.form.value.code,
+			file: this.form.value.file,
 			storeId: this.form.value.storeId,
 			voucherId: this.voucherId,
-			productId: this.form.value.productId,
-			description: this.form.value.description
+			productId: this.form.value.productId
 		});
 
 		if (response.ok) {
@@ -140,6 +140,10 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 		}
 
 		this.loading = false;
+	}
+
+	public upload(key, value) {
+		this.form.controls[key].setValue(value);
 	}
 
 	ngOnInit(): void {

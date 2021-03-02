@@ -7,12 +7,20 @@ mat-content {
 .product-details {
     display: flex;
     padding: 0px 5px;
+    max-width: 150px;
+    margin-top: 4px;
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
     h3 {
+        width: 100px;
+        overflow: hidden;
         font-size: 12px !important;
+        text-align: center;
+        line-height: 14px !important;
         font-weight: 500 !important;
+        white-space: nowrap; 
+        text-overflow: ellipsis; 
         text-transform: uppercase;
     }
 }

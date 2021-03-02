@@ -3,6 +3,12 @@
 
     <div class="container">
         <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
+            <div class="file" upload [upload-src]="form.value.file" upload-accept="application/pdf" (upload-change)="upload('file', $event)" matRipple>
+                <mat-icon>
+                    upload
+                </mat-icon>
+            </div>
+
             <mat-form-field appearance="outline">
                 <mat-label>
                     Store
@@ -43,19 +49,6 @@
 
                 <mat-error *ngIf="errors.productId">
                     {{ errors.productId }}
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-                <mat-label>
-                    Description
-                </mat-label>
-
-                <input matInput type="text" name="description" placeholder="description" formControlName="description"
-                    required>
-
-                <mat-error *ngIf="errors.description">
-                    {{ errors.description }}
                 </mat-error>
             </mat-form-field>
 

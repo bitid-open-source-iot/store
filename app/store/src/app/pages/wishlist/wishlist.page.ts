@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
@@ -14,7 +13,7 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 
 export class WishlistPage implements OnInit, OnDestroy {
 
-    constructor(public cart: CartService, public wishlist: WishlistService, private router: Router, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
+    constructor(public cart: CartService, public wishlist: WishlistService, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
 
     public loading: boolean;
     private subscriptions: any = {};
@@ -67,7 +66,7 @@ export class WishlistPage implements OnInit, OnDestroy {
         this.buttons.hide('wishlist');
         
         this.subscriptions.close = this.buttons.close.click.subscribe(event => {
-            this.router.navigate(['/home']);
+            window.history.back();
         });
 
         this.list();

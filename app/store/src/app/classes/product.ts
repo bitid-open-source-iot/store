@@ -24,7 +24,7 @@ export class Product {
     public reviews?: number;
     public quantity?: number;
     public productId?: string;
-    public description?: string;
+    public description?: any;
 
     constructor(args?: PRODUCT) {
         if (typeof (args) != 'undefined' && args != null) {
@@ -121,5 +121,5 @@ interface PRODUCT {
     reviews?: number;
     quantity?: number;
     productId?: string;
-    description?: string;
+    description?: any;
 }

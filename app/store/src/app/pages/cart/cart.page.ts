@@ -1,5 +1,7 @@
 import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart/cart.service';
+import { ToastService } from 'src/app/services/toast/toast.service';
+import { OrdersService } from 'src/app/services/orders/orders.service';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ProductsService } from 'src/app/services/products/products.service';
@@ -13,7 +15,7 @@ import { OnInit, Component, OnDestroy } from '@angular/core';
 
 export class CartPage implements OnInit, OnDestroy {
 
-    constructor(public cart: CartService, private router: Router, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
+    constructor(public cart: CartService, private toast: ToastService, private orders: OrdersService, private router: Router, private account: AccountService, private buttons: ButtonsService, private products: ProductsService) { }
 
     public loading: boolean;
     private subscriptions: any = {};
@@ -60,6 +62,24 @@ export class CartPage implements OnInit, OnDestroy {
         this.loading = false;
     };
 
+    public async checkout() {
+        this.loading = true;
+
+        const response = await this.orders.initialize({});
+
+        if (response.ok) {
+            this.router.navigate(['/checkout'], {
+                queryParams: {
+                    orderId: response.result.orderId
+                }
+            });
+        } else {
+            this.toast.error(response.error.message);
+        };
+
+        this.loading = false;
+    };
+
     ngOnInit(): void {
         this.buttons.hide('cart');
         this.buttons.show('close');
@@ -67,7 +87,7 @@ export class CartPage implements OnInit, OnDestroy {
         this.buttons.hide('wishlist');
         
         this.subscriptions.close = this.buttons.close.click.subscribe(event => {
-            this.router.navigate(['/home']);
+            window.history.back();
         });
 
         this.list();

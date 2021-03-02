@@ -1,0 +1,19 @@
+.mat-column-status {
+    span {
+        color: #FFF;
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 12px;
+        border-radius: 12px;
+        background-color: #E0E0E0;
+    }
+    .sold {
+        background-color: #4CAF50;
+    }
+    .available {
+        background-color: #2196F3;
+    }
+}
+.mat-column-options mat-spinner {
+    margin-left: 5px !important;
+}

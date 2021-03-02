@@ -43,6 +43,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		logo: new FormControl(null, [Validators.required]),
 		appId: new FormControl(null, [Validators.required]),
 		cover: new FormControl('./assets/cover.png', [Validators.required]),
+		private: new FormControl(false, [Validators.required]),
 		description: new FormControl(null, [Validators.required]),
 		organizationOnly: new FormControl(null, [Validators.required])
 	});
@@ -72,6 +73,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 		logo: '',
 		appId: '',
 		cover: '',
+		private: '',
 		description: '',
 		organizationOnly: ''
 	};
@@ -112,6 +114,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				'contact',
 				'payfast',
 				'storeId',
+				'private',
 				'description',
 				'organizationOnly'
 			],
@@ -141,6 +144,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 				this.form.controls.logo.setValue(this.store.logo);
 				this.form.controls.appId.setValue(this.store.appId);
 				this.form.controls.cover.setValue(this.store.cover);
+				this.form.controls.private.setValue(this.store.private);
 				this.form.controls.description.setValue(this.store.description);
 				this.form.controls.organizationOnly.setValue(this.store.organizationOnly);
 			} else {
@@ -210,6 +214,7 @@ export class StoresEditorPage implements OnInit, OnDestroy {
 			appId: this.form.value.appId,
 			cover: this.form.value.cover,
 			storeId: this.storeId,
+			private: this.form.value.private,
 			description: this.form.value.description,
 			organizationOnly: this.form.value.organizationOnly
 		});

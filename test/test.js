@@ -964,6 +964,7 @@ describe('Vouchers', function () {
                 try {
                     result.should.have.property('role');
                     result.should.have.property('code');
+                    result.should.have.property('file');
                     result.should.have.property('status');
                     result.should.have.property('storeId');
                     result.should.have.property('productId');
@@ -991,6 +992,7 @@ describe('Vouchers', function () {
                 try {
                     result[0].should.have.property('role');
                     result[0].should.have.property('code');
+                    result[0].should.have.property('file');
                     result[0].should.have.property('status');
                     result[0].should.have.property('storeId');
                     result[0].should.have.property('productId');
@@ -2629,9 +2631,9 @@ var tools = {
 
                 tools.post('/store/vouchers/add', {
                     'code': 'xxx',
+                    'file': 'xxx',
                     'storeId': storeId,
                     'productId': productId,
-                    'description': 'xxx'
                 })
                     .then(deferred.resolve, deferred.resolve);
 
@@ -2644,6 +2646,7 @@ var tools = {
                     'filter': [
                         'role',
                         'code',
+                        'file',
                         'status',
                         'storeId',
                         'productId',
@@ -2664,6 +2667,7 @@ var tools = {
                     'filter': [
                         'role',
                         'code',
+                        'file',
                         'status',
                         'storeId',
                         'productId',

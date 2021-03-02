@@ -1,3 +1,391 @@
 <mat-content>
+    <mat-vertical-stepper [linear]="true">
+        <mat-step [stepControl]="recipient">
+            <div class="container">
+                <form [formGroup]="recipient">
+                    <ng-template matStepLabel>
+                        Recipient
+                    </ng-template>
+
+                    <section formGroupName="name">
+                        <mat-form-field appearance="outline">
+                            <mat-label>
+                                First Name
+                            </mat-label>
     
+                            <input matInput type="text" placeholder="first name" formControlName="first" required>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>
+                                Last Name
+                            </mat-label>
+    
+                            <input matInput type="text" placeholder="last name" formControlName="last" required>
+                        </mat-form-field>
+                    </section>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            Email
+                        </mat-label>
+
+                        <input matInput type="email" placeholder="email" formControlName="email" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            Number
+                        </mat-label>
+
+                        <input matInput type="tel" placeholder="number" formControlName="number" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" formGroupName="company">
+                        <mat-label>
+                            Company Name
+                        </mat-label>
+
+                        <input matInput type="text" placeholder="company name" formControlName="name">
+                    </mat-form-field>
+                    
+                    <section formGroupName="company">
+                        <mat-form-field appearance="outline">
+                            <mat-label>
+                                VAT
+                            </mat-label>
+    
+                            <input matInput type="text" placeholder="vat" formControlName="vat">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>
+                                REG
+                            </mat-label>
+    
+                            <input matInput type="text" placeholder="reg" formControlName="reg">
+                        </mat-form-field>
+                    </section>
+                    
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                    </button>
+                </form>
+            </div>
+        </mat-step>
+
+        <mat-step [stepControl]="payment">
+            <div class="container">
+                <form [formGroup]="payment">
+                    <ng-template matStepLabel>
+                        Payment
+                    </ng-template>
+                    
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            Method
+                        </mat-label>
+
+                        <mat-select formControlName="method" required>
+                            <mat-option value="bc">
+                                Bitcoin
+                            </mat-option>
+                            <mat-option value="cc">
+                                Credit Card
+                            </mat-option>
+                            <mat-option value="dc">
+                                Debit Card
+                            </mat-option>
+                            <mat-option value="eft">
+                                Instant EFT
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                    </button>
+                </form>
+            </div>
+        </mat-step>
+        
+        <mat-step [stepControl]="shipping" *ngIf="order.shipping.enabled">
+            <div class="container">
+                <form [formGroup]="shipping">
+                    <ng-template matStepLabel>
+                        Shipping
+                    </ng-template>
+                    
+                    <mat-form-field appearance="outline">
+                        <mat-label>
+                            Method
+                        </mat-label>
+
+                        <mat-select formControlName="method" required>
+                            <mat-option value="collect">
+                                Collect
+                            </mat-option>
+                            <mat-option value="deliver">
+                                Deliver
+                            </mat-option>
+                            <mat-option value="exworks">
+                                Ex Works
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'collect'">
+                        <mat-label>
+                            Collection Point
+                        </mat-label>
+
+                        <mat-select formControlName="collectionpointId" [required]="shipping.value.method == 'collect'">
+                            <mat-option *ngFor="let point of collectionpoints.data" [value]="point.collectionpointId">
+                                {{ point.description }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" formGroupName="address" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Street
+                        </mat-label>
+
+                        <input matInput type="text" name="street" formControlName="street" [required]="shipping.value.method == 'deliver'">
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" formGroupName="address" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Suburb
+                        </mat-label>
+
+                        <input matInput type="text" name="suburb" formControlName="suburb" [required]="shipping.value.method == 'deliver'">
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" formGroupName="address" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            City/Town
+                        </mat-label>
+
+                        <input matInput type="text" name="cityTown" formControlName="cityTown" [required]="shipping.value.method == 'deliver'">
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" formGroupName="address" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Postal Code
+                        </mat-label>
+
+                        <input matInput type="text" name="postalCode" formControlName="postalCode" [required]="shipping.value.method == 'deliver'">
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" formGroupName="address" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Additional Info
+                        </mat-label>
+
+                        <input matInput type="text" name="additionalInfo" formControlName="additionalInfo">
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Courier
+                        </mat-label>
+
+                        <mat-select name="courierId" formControlName="courierId" [required]="shipping.value.method == 'deliver'">
+                            <mat-option *ngFor="let courier of couriers.data" [value]="courier.courierId">
+                                {{ courier.description }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field appearance="outline" *ngIf="shipping.value.method == 'deliver'">
+                        <mat-label>
+                            Delivery Option
+                        </mat-label>
+
+                        <mat-select name="optionId" formControlName="optionId" [required]="shipping.value.method == 'deliver'">
+                            <mat-option style="text-transform: capitalize;" *ngFor="let option of options" [value]="option.optionId">
+                                {{ option.type }} - {{ option.price | currency : 'R' }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <button mat-flat-button color="primary" matStepperNext>
+                        Next
+                    </button>
+                </form>
+            </div>
+        </mat-step>
+
+        <mat-step>
+            <ng-template matStepLabel>
+                Confirm
+            </ng-template>
+
+            <div class="container">
+                <form>
+                    <h2>
+                        Products
+                    </h2>
+            
+                    <mat-list>
+                        <mat-list-item lines="full" *ngFor="let product of order.products">
+                            <img [src]="product.image" [alt]="product.title" width="40" height="40" draggable="false">
+            
+                            <section>
+                                <label>
+                                    {{ product.title }}
+                                </label>
+                                <span>
+                                    {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }}
+                                    <small *ngIf="product.promotion.enabled">
+                                        {{ product.price | currency : 'R' }}
+                                    </small>
+                                    <b>Qty: {{ product.quantity }}</b>
+                                </span>
+                            </section>
+                        </mat-list-item>
+                    </mat-list>
+            
+                    <h2 *ngIf="order.shipping.enabled">
+                        Shipping
+                    </h2>
+            
+                    <div class="shipping" *ngIf="order.shipping.enabled">
+                        <table>
+                            <tr>
+                                <th>
+                                    Method
+                                </th>
+                                <td>
+                                    {{ shipping.value.method }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">
+                                    Address
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ shipping.value.address.street }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ shipping.value.address.suburb }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ shipping.value.address.cityTown }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ shipping.value.address.postalCode }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ shipping.value.address.additionalInfo }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+            
+                    <h2>
+                        Payment
+                    </h2>
+            
+                    <div class="payment">
+                        <table>
+                            <tr>
+                                <th>
+                                    Method
+                                </th>
+                                <td>
+                                    {{ payment.value.method == 'bc' ? 'Bitcoin' : '' }}
+                                    {{ payment.value.method == 'cc' ? 'Credit Card' : '' }}
+                                    {{ payment.value.method == 'dc' ? 'Debit Card' : '' }}
+                                    {{ payment.value.method == 'eft' ? 'Instant EFT' : '' }}
+                                </td>
+                            </tr>
+            
+                            <tr>
+                                <th>
+                                    Subtotal
+                                </th>
+                                <td>
+                                    {{ payment.value.subtotal | currency : 'R' }}
+                                </td>
+                            </tr>
+            
+                            <tr *ngIf="order.shipping.enabled">
+                                <th>
+                                    Shipping
+                                </th>
+                                <td>
+                                    {{ payment.value.shipping | currency : 'R' }}
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <th>
+                                    Discount
+                                </th>
+                                <td>
+                                    {{ payment.value.discount | currency : 'R' }}
+                                </td>
+                            </tr>
+            
+                            <tr>
+                                <th>
+                                    VAT @ 15%
+                                </th>
+                                <td>
+                                    {{ payment.value.vat | currency : 'R' }}
+                                </td>
+                            </tr>
+            
+                            <tr>
+                                <th>
+                                    Total
+                                </th>
+                                <th>
+                                    {{ payment.value.total | currency : 'R' }}
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+                
+                <form id="payfast" ngNoForm [action]="payfast.url" method="POST" *ngIf="order">
+                    <input type="hidden" name="amount" [value]="payment.value.total | number : '0.2-2'" required>
+                    <input type="hidden" name="item_name" value="Online Store Purchase" required>
+                    <input type="hidden" name="name_last" [(ngModel)]="recipient.value.name.last" required>
+                    <input type="hidden" name="return_url" [(ngModel)]="payfast.return_url" required>
+                    <input type="hidden" name="cancel_url" [(ngModel)]="payfast.cancel_url" required>
+                    <input type="hidden" name="notify_url" [(ngModel)]="payfast.notify_url" required>
+                    <input type="hidden" name="name_first" [(ngModel)]="recipient.value.name.first" required>
+                    <input type="hidden" name="cell_number" [(ngModel)]="recipient.value.number" required>
+                    <input type="hidden" name="custom_str1" value="order" required>
+                    <input type="hidden" name="merchant_id" [(ngModel)]="payfast.merchant_id" required>
+                    <input type="hidden" name="m_payment_id" [(ngModel)]="orderId" required>
+                    <input type="hidden" name="merchant_key" [(ngModel)]="payfast.merchant_key" required>
+                    <input type="hidden" name="email_address" [(ngModel)]="order.email" required>
+                    <input type="hidden" name="payment_method" [(ngModel)]="payment.value.method" required>
+                    <input type="hidden" name="item_description" value="Online Store Purchase" required>
+                    <input type="hidden" name="email_confirmation" value="1" required>
+                    <input type="hidden" name="confirmation_address" [(ngModel)]="order.email" required>
+        
+                    <button type="button" mat-flat-button color="accent" type="button" color="primary" mat-flat-button (click)="verify()" [disabled]="payment.value.total == 0">
+                        {{ loading ? '' : 'Confirm & Pay' }}
+
+                        <mat-progress-spinner mode="indeterminate" diameter="30" *ngIf="loading"></mat-progress-spinner>
+                    </button>
+                </form>
+            </div>
+        </mat-step>
+    </mat-vertical-stepper>
 </mat-content>

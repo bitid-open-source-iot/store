@@ -2,14 +2,14 @@
     <div class="container">
         <mat-list>
             <mat-list-item lines="full" *ngFor="let item of wishlist.items">
-                <img [src]="item.image" [alt]="item.title" width="40" height="40">
+                <img [src]="item.image" [alt]="item.title" width="40" height="40" draggable="false">
 
                 <section>
                     <label>
                         {{ item.title }}
                     </label>
                     <span>
-                        {{ item.price | currency : 'R' }}
+                        {{ item.promotion.enabled ? (item.promotion.price | currency : 'R') : (item.price | currency : 'R') }}
                     </span>
                 </section>
 
@@ -19,7 +19,7 @@
                     </mat-icon>
                 </button>
 
-                <button mat-icon-button (click)="wishlist.less(item)">
+                <button mat-icon-button (click)="wishlist.delete(item)">
                     <mat-icon>
                         remove
                     </mat-icon>

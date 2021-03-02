@@ -30,4 +30,9 @@ router.post('/delete', (req, res) => {
     myModule.vouchers.delete(req, res);
 });
 
+router.post('/mark-as-sold', (req, res) => {
+    var myModule = new bll.module();
+    myModule.vouchers.markassold(req, res);
+});
+
 module.exports = router;

@@ -1,18 +1,76 @@
 mat-content {
-    img {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 10px !important;
+    mat-vertical-stepper {
+        height: 100%;
+        background-color: transparent;
+        form {
+            margin: 16px auto;
+            max-width: 600px;
+        }
     }
-    h1 {
-        margin-bottom: 10px !important;
+    h2 {
+        padding: 0px 16px !important;
+        font-size: 16px !important;
+        margin-top: 5px !important;
     }
-    p {
-        margin-bottom: 20px !important;
+    mat-list {
+        margin: 5px 2.5px;
+        border-radius: 4px;
+        background-color: #fff;
+        mat-list-item {
+            height: 56px;
+            align-items: center;
+            flex-direction: row;
+            img {
+                margin-right: 16px;
+                border-radius: 5px;
+            }
+            section {
+                display: flex;
+                margin-right: auto;
+                flex-direction: column;
+                label {
+                    height: 16px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    line-height: 16px;
+                }
+                span {
+                    color: #2196f3;
+                    height: 14px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    line-height: 14px;
+                    b {
+                        color: #424242;
+                        font-weight: 500 !important;
+                        padding-left: 8px;
+                    }
+                    small {
+                        color: #626262;
+                        text-decoration: line-through;
+                    }
+                }
+            }
+        }
+        mat-list-item:last-child {
+            border-bottom: none;
+        }
     }
-    button {
-        width: 100%;
-        max-width: 400px;
-        margin-bottom: 20px;
+    .payment,
+    .shipping {
+        margin: 5px 2.5px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        background-color: #fff;
+        table {
+            max-width: 500px;
+            th {
+                font-weight: 500;
+            }
+            th, td {
+                width: 50%;
+                text-align: left;
+            }
+        }
     }
 }

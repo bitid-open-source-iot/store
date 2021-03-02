@@ -33,4 +33,8 @@ export class VouchersService {
         return await this.api.post(environment.store, '/store/vouchers/delete', params);
     }
 
+    public async markassold(params) {
+        return await this.api.post(environment.store, '/store/vouchers/mark-as-sold', params);
+    }
+
 }

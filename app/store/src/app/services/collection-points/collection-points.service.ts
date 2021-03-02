@@ -13,24 +13,8 @@ export class CollectionPointsService {
 
 	constructor(private api: ApiService) { }
 
-	public async add(params) {
-		return await this.api.post(environment.store, '/store/collection-points/add', params);
-	}
-
-	public async get(params) {
-		return await this.api.post(environment.store, '/store/collection-points/get', params);
-	}
-
 	public async list(params) {
-		return await this.api.post(environment.store, '/store/collection-points/list', params);
-	}
-
-	public async update(params) {
-		return await this.api.post(environment.store, '/store/collection-points/update', params);
-	}
-
-	public async delete(params) {
-		return await this.api.post(environment.store, '/store/collection-points/delete', params);
+		return await this.api.post(environment.store, '/store/collection-points/public/list', params);
 	}
 
 }

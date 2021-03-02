@@ -2970,11 +2970,11 @@ var module = function () {
 
 					var params = {
 						'code': args.req.body.code,
+						'file': args.req.body.file,
 						'status': 'available',
 						'storeId': ObjectId(args.req.body.storeId),
 						'productId': ObjectId(args.req.body.productId),
-						'serverDate': new Date(),
-						'description': args.req.body.description
+						'serverDate': new Date()
 					};
 
 					deferred.resolve({
@@ -3036,11 +3036,27 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						bitid: '$stores.bitid',
+						bitid: '$stores.bitid'
 					}
 				},
 				{
 					$match: match
+				},
+				{
+					$lookup: {
+						as: 'products',
+						from: 'tblProducts',
+						localField: 'productId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$products'
+				},
+				{
+					$addFields: {
+						description: '$products.title'
+					}
 				},
 				{
 					$project: filter
@@ -3115,11 +3131,27 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						bitid: '$stores.bitid',
+						bitid: '$stores.bitid'
 					}
 				},
 				{
 					$match: match
+				},
+				{
+					$lookup: {
+						as: 'products',
+						from: 'tblProducts',
+						localField: 'productId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$products'
+				},
+				{
+					$addFields: {
+						description: '$products.title'
+					}
 				},
 				{
 					$project: filter
@@ -3188,7 +3220,8 @@ var module = function () {
 					var deferred = Q.defer();
 
 					var params = {
-						'_id': ObjectId(args.req.body.voucherId)
+						'_id': ObjectId(args.req.body.voucherId),
+						'status': 'available'
 					};
 					var update = {
 						$set: {
@@ -3198,11 +3231,11 @@ var module = function () {
 					if (typeof (args.req.body.code) != 'undefined') {
 						update.$set.code = args.req.body.code;
 					};
-					if (typeof (args.req.body.productId) != 'undefined') {
-						update.$set.productId = args.req.body.productId;
+					if (typeof (args.req.body.file) != 'undefined') {
+						update.$set.file = args.req.body.file;
 					};
-					if (typeof (args.req.body.description) != 'undefined') {
-						update.$set.description = args.req.body.description;
+					if (typeof (args.req.body.productId) != 'undefined') {
+						update.$set.productId = ObjectId(args.req.body.productId);
 					};
 
 					deferred.resolve({
@@ -3272,7 +3305,8 @@ var module = function () {
 					var deferred = Q.defer();
 
 					var params = {
-						'_id': ObjectId(args.req.body.voucherId)
+						'_id': ObjectId(args.req.body.voucherId),
+						'status': 'available'
 					};
 
 					deferred.resolve({
@@ -3296,10 +3330,128 @@ var module = function () {
 				});
 
 			return deferred.promise;
+		},
+
+		markassold: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$project: {
+						'bitid': '$stores.bitid'
+					}
+				},
+				{
+					$match: {
+						'bitid.auth.users': {
+							$elemMatch: {
+								'role': {
+									$gte: 2
+								},
+								'email': args.req.body.header.email
+							}
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.voucherId),
+						'status': 'available'
+					};
+					var update = {
+						$set: {
+							'status': 'sold',
+							'serverDate': new Date()
+						}
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblVouchers'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
 		}
 	};
 
 	var dalCouriers = {
+		public: {
+			list: (args) => {
+				var deferred = Q.defer();
+	
+				var params = {
+					storeId: ObjectId(args.req.body.storeId)
+				};
+
+				var filter = {};
+				if (typeof (args.req.body.filter) != 'undefined') {
+					filter._id = 0;
+					args.req.body.filter.map(f => {
+						if (f == 'courierId') {
+							filter['_id'] = 1;
+						} else {
+							filter[f] = 1;
+						};
+					});
+				};
+	
+				db.call({
+					'params': params,
+					'filter': filter,
+					'operation': 'aggregate',
+					'collection': 'tblCouriers'
+				})
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
+						deferred.reject(err);
+					});
+	
+				return deferred.promise;
+			}
+		},
+
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -5167,6 +5319,49 @@ var module = function () {
 	};
 
 	var dalCollectionPoints = {
+		public: {
+			list: (args) => {
+				var deferred = Q.defer();
+	
+				var params = {
+					storeId: ObjectId(args.req.body.storeId)
+				};
+	
+				var filter = {};
+				if (typeof (args.req.body.filter) != 'undefined') {
+					filter._id = 0;
+					args.req.body.filter.map(f => {
+						if (f == 'collectionpointId') {
+							filter['_id'] = 1;
+						} else if (f == 'role') {
+							filter['bitid.auth.users'] = 1;
+						} else {
+							filter[f] = 1;
+						};
+					});
+				};
+	
+				db.call({
+					'params': params,
+					'filter': filter,
+					'operation': 'find',
+					'collection': 'tblCollectionPoints'
+				})
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
+						deferred.reject(err);
+					});
+	
+				return deferred.promise;
+			}
+		},
+
 		add: (args) => {
 			var deferred = Q.defer();
 

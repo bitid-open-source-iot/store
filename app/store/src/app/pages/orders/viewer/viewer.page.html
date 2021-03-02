@@ -1,5 +1,134 @@
 <mat-content>
     <div class="container">
-        
+        <h2>
+            Products
+        </h2>
+
+        <mat-list>
+            <mat-list-item lines="full" *ngFor="let product of order.products">
+                <img [src]="product.image" [alt]="product.title" width="40" height="40" draggable="false">
+
+                <section>
+                    <label>
+                        {{ product.title }}
+                    </label>
+                    <span>
+                        {{ product.price | currency : 'R' }} <b>Qty: {{ product.quantity }}</b>
+                    </span>
+                </section>
+            </mat-list-item>
+        </mat-list>
+
+        <h2 *ngIf="order.shipping.enabled">
+            Shipping
+        </h2>
+
+        <div class="shipping" *ngIf="order.shipping.enabled">
+            <table>
+                <tr>
+                    <th>
+                        Method
+                    </th>
+                    <td>
+                        {{ order.shipping.method }}
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        Address
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ order.shipping.address.street }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ order.shipping.address.suburb }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ order.shipping.address.cityTown }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ order.shipping.address.postalCode }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ order.shipping.address.additionalInfo }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>
+            Payment
+        </h2>
+
+        <div class="payment">
+            <table>
+                <tr>
+                    <th>
+                        Method
+                    </th>
+                    <td>
+                        {{ order.payment.method == 'bc' ? 'Bitcoin' : '' }}
+                        {{ order.payment.method == 'cc' ? 'Credit Card' : '' }}
+                        {{ order.payment.method == 'dc' ? 'Debit Card' : '' }}
+                        {{ order.payment.method == 'eft' ? 'Instant EFT' : '' }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        Subtotal
+                    </th>
+                    <td>
+                        {{ order.payment.subtotal | currency : 'R' }}
+                    </td>
+                </tr>
+
+                <tr *ngIf="order.shipping.enabled">
+                    <th>
+                        Shipping
+                    </th>
+                    <td>
+                        {{ order.payment.shipping | currency : 'R' }}
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        Discount
+                    </th>
+                    <td>
+                        -{{ order.payment.discount | currency : 'R' }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        VAT @ 15%
+                    </th>
+                    <td>
+                        {{ order.payment.vat | currency : 'R' }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
+                        Total
+                    </th>
+                    <th>
+                        {{ order.payment.total | currency : 'R' }}
+                    </th>
+                </tr>
+            </table>
+        </div>
     </div>
 </mat-content>

@@ -37,6 +37,25 @@
                     {{ errors.appId }}
                 </mat-error>
             </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>
+                    Mode
+                </mat-label>
+
+                <mat-select name="private" formControlName="private" required>
+                    <mat-option [value]="false">
+                        Public
+                    </mat-option>
+                    <mat-option [value]="true">
+                        Private
+                    </mat-option>
+                </mat-select>
+
+                <mat-error *ngIf="errors.private">
+                    {{ errors.private }}
+                </mat-error>
+            </mat-form-field>
             
             <section>
                 <mat-form-field appearance="outline">

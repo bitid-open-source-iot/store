@@ -30,4 +30,9 @@ router.post('/delete', (req, res) => {
     myModule.collectionpoints.delete(req, res);
 });
 
+router.post('/public/list', (req, res) => {
+    var myModule = new bll.module();
+    myModule.collectionpoints.public.list(req, res);
+});
+
 module.exports = router;
