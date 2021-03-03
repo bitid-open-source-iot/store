@@ -5,377 +5,6 @@ const ObjectId = require('mongodb').ObjectId;
 const ErrorResponse = require('./../lib/error-response');
 
 var module = function () {
-	var dalApis = {
-		add: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'bitid.auth.users': {
-					$elemMatch: {
-						'role': {
-							$gte: 2
-						},
-						'email': args.req.body.header.email
-					}
-				},
-				'_id': ObjectId(args.req.body.storeId)
-			};
-
-			var filter = {
-				'_id': 1
-			};
-
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblStores'
-			})
-				.then(result => {
-					var deferred = Q.defer();
-
-					var params = {
-						'url': args.req.body.url,
-						'body': args.req.body.body || {},
-						'method': args.req.body.method,
-						'headers': args.req.body.headers || {},
-						'trigger': args.req.body.trigger,
-						'storeId': ObjectId(args.req.body.storeId),
-						'serverDate': new Date(),
-						'description': args.req.body.description
-					};
-
-					deferred.resolve({
-						'params': params,
-						'operation': 'insert',
-						'collection': 'tblApis'
-					});
-
-					return deferred.promise;
-				}, null)
-				.then(db.call, null)
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		get: (args) => {
-			var deferred = Q.defer();
-
-			var match = {
-				'_id': ObjectId(args.req.body.apiId),
-				'bitid.auth.users.email': args.req.body.header.email
-			};
-
-			var filter = {};
-			if (typeof (args.req.body.filter) != 'undefined') {
-				filter._id = 0;
-				args.req.body.filter.map(f => {
-					if (f == 'apiId') {
-						filter['_id'] = 1;
-					} else if (f == 'role') {
-						filter['bitid.auth.users'] = 1;
-					} else {
-						filter[f] = 1;
-					};
-				});
-			};
-
-			var params = [
-				{
-					$lookup: {
-						as: 'stores',
-						from: 'tblStores',
-						localField: 'storeId',
-						foreignField: '_id'
-					}
-				},
-				{
-					$unwind: '$stores'
-				},
-				{
-					$addFields: {
-						bitid: '$stores.bitid',
-					}
-				},
-				{
-					$match: match
-				},
-				{
-					$project: filter
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		list: (args) => {
-			var deferred = Q.defer();
-
-			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
-			};
-
-			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
-			};
-
-			if (typeof (args.req.body.apiId) != 'undefined') {
-				if (Array.isArray(args.req.body.apiId)) {
-					match._id = {
-						$in: args.req.body.apiId.map(id => ObjectId(id))
-					};
-				} else if (typeof (args.req.body.apiId) == 'string') {
-					match._id = ObjectId(args.req.body.apiId);
-				};
-			};
-
-			var filter = {};
-			if (typeof (args.req.body.filter) != 'undefined') {
-				filter._id = 0;
-				args.req.body.filter.map(f => {
-					if (f == 'apiId') {
-						filter['_id'] = 1;
-					} else if (f == 'role') {
-						filter['bitid.auth.users'] = 1;
-					} else {
-						filter[f] = 1;
-					};
-				});
-			};
-
-			var params = [
-				{
-					$lookup: {
-						as: 'stores',
-						from: 'tblStores',
-						localField: 'storeId',
-						foreignField: '_id'
-					}
-				},
-				{
-					$unwind: '$stores'
-				},
-				{
-					$addFields: {
-						bitid: '$stores.bitid',
-					}
-				},
-				{
-					$match: match
-				},
-				{
-					$project: filter
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		update: (args) => {
-			var deferred = Q.defer();
-
-			var params = [
-				{
-					$lookup: {
-						as: 'stores',
-						from: 'tblStores',
-						localField: 'storeId',
-						foreignField: '_id'
-					}
-				},
-				{
-					$unwind: '$stores'
-				},
-				{
-					$project: {
-						'bitid': '$stores.bitid'
-					}
-				},
-				{
-					$match: {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'role': {
-									$gte: 2
-								},
-								'email': args.req.body.header.email
-							}
-						}
-					}
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					var deferred = Q.defer();
-
-					var params = {
-						'_id': ObjectId(args.req.body.apiId)
-					};
-					var update = {
-						$set: {
-							'serverDate': new Date()
-						}
-					};
-					if (typeof (args.req.body.url) != 'undefined') {
-						update.$set.url = args.req.body.url;
-					};
-					if (typeof (args.req.body.body) != 'undefined') {
-						update.$set.body = args.req.body.body;
-					};
-					if (typeof (args.req.body.method) != 'undefined') {
-						update.$set.method = args.req.body.method;
-					};
-					if (typeof (args.req.body.headers) != 'undefined') {
-						update.$set.headers = args.req.body.headers;
-					};
-					if (typeof (args.req.body.trigger) != 'undefined') {
-						update.$set.trigger = args.req.body.trigger;
-					};
-					if (typeof (args.req.body.description) != 'undefined') {
-						update.$set.description = args.req.body.description;
-					};
-
-					deferred.resolve({
-						'params': params,
-						'update': update,
-						'operation': 'update',
-						'collection': 'tblApis'
-					});
-
-					return deferred.promise;
-				}, null)
-				.then(db.call, null)
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = [
-				{
-					$lookup: {
-						as: 'stores',
-						from: 'tblStores',
-						localField: 'storeId',
-						foreignField: '_id'
-					}
-				},
-				{
-					$unwind: '$stores'
-				},
-				{
-					$project: {
-						'bitid': '$stores.bitid'
-					}
-				},
-				{
-					$match: {
-						'bitid.auth.users': {
-							$elemMatch: {
-								'role': {
-									$gte: 2
-								},
-								'email': args.req.body.header.email
-							}
-						}
-					}
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblApis'
-			})
-				.then(result => {
-					var deferred = Q.defer();
-
-					var params = {
-						'_id': ObjectId(args.req.body.apiId)
-					};
-
-					deferred.resolve({
-						'params': params,
-						'operation': 'remove',
-						'collection': 'tblApis'
-					})
-
-					return deferred.promise;
-				}, null)
-				.then(db.call, null)
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		}
-	};
-
 	var dalCarts = {
 		add: (args) => {
 			var deferred = Q.defer();
@@ -655,6 +284,134 @@ var module = function () {
 				.then(result => {
 					args.order = JSON.parse(JSON.stringify(result[0]));
 					args.result = args.order;
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		load: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$match: {
+						"_id": ObjectId(args.req.body.orderId)
+					}
+				},
+				{
+					$lookup: {
+						as: 'store',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$store'
+				},
+				{
+					$project: {
+						"date": 1,
+						"email": 1,
+						"storeId": 1,
+						"payment": 1,
+						"orderId": "$_id",
+						"products": 1,
+						"shipping": 1,
+						"recipient": 1,
+						"store.logo": 1,
+						"store.address": 1,
+						"store.contact": 1,
+						"store.description": 1
+					}
+				},
+				{
+					$unwind: '$products'
+				},
+				{
+					$lookup: {
+						as: 'config',
+						from: 'tblProducts',
+						localField: 'products.productId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$config'
+				},
+				{
+					$addFields: {
+						"products.supplierId": "$config.supplierId"
+					}
+				},
+				{
+					$lookup: {
+						as: 'supplier',
+						from: 'tblSuppliers',
+						localField: 'products.supplierId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$supplier'
+				},
+				{
+					$addFields: {
+						"products.supplier": {
+							"phone": "$supplier.phone",
+							"email": "$supplier.email",
+							"address": "$supplier.address",
+							"description": "$supplier.description"
+						}
+					}
+				},
+				{
+					$group: {
+						"_id": "$products.productId",
+						"date": {
+							$first: "$date"
+						},
+						"email": {
+							$first: "$email"
+						},
+						"store": {
+							$first: "$store"
+						},
+						"orderId": {
+							$first: "$orderId"
+						},
+						"storeId": {
+							$first: "$storeId"
+						},
+						"payment": {
+							$first: "$payment"
+						},
+						"products": {
+							$push: "$products"
+						},
+						"shipping": {
+							$first: "$shipping"
+						},
+						"recipient": {
+							$first: "$recipient"
+						}
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblOrders'
+			})
+				.then(result => {
+					args.order = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -2650,6 +2407,10 @@ var module = function () {
 				'bitid.auth.users.email': args.req.body.header.email
 			};
 
+			if (typeof (args.req.body.type) != 'undefined') {
+				match.type = args.req.body.type;
+			};
+
 			if (typeof (args.req.body.storeId) != 'undefined') {
 				match.storeId = ObjectId(args.req.body.storeId);
 			};
@@ -2938,6 +2699,38 @@ var module = function () {
 				});
 
 			return deferred.promise;
+		},
+
+		purchase: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				_id: ObjectId(args.productId)
+			};
+			var update = {
+				$inc: {
+					quantity: -args.quantity
+				}
+			};
+
+			db.call({
+				'params': params,
+				'update': update,
+				'operation': 'update',
+				'collection': 'tblProducts'
+			})
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
 		}
 	};
 
@@ -2989,7 +2782,54 @@ var module = function () {
 				}, null)
 				.then(db.call, null)
 				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
+					var deferred = Q.defer();
+
+					args.voucher = result[0];
+
+					var params = {
+						'status': 'available',
+						'storeId': ObjectId(args.req.body.storeId),
+						'productId': ObjectId(args.req.body.productId)
+					};
+					var filter = {
+						_id: 1
+					};
+
+					deferred.resolve({
+						'params': params,
+						'filter': filter,
+						'operation': 'find',
+						'collection': 'tblVouchers',
+						'allowNoRecordsFound': true
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.productId)
+					};
+					var update = {
+						$set: {
+							'quantity': result.length
+						}
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblProducts'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(args.voucher));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -3236,9 +3076,6 @@ var module = function () {
 					if (typeof (args.req.body.file) != 'undefined') {
 						update.$set.file = args.req.body.file;
 					};
-					if (typeof (args.req.body.productId) != 'undefined') {
-						update.$set.productId = ObjectId(args.req.body.productId);
-					};
 
 					deferred.resolve({
 						'params': params,
@@ -3281,7 +3118,9 @@ var module = function () {
 				},
 				{
 					$project: {
-						'bitid': '$stores.bitid'
+						'bitid': '$stores.bitid',
+						'storeId': 1,
+						'productId': 1
 					}
 				},
 				{
@@ -3293,7 +3132,8 @@ var module = function () {
 								},
 								'email': args.req.body.header.email
 							}
-						}
+						},
+						'_id': ObjectId(args.req.body.voucherId)
 					}
 				}
 			];
@@ -3305,6 +3145,10 @@ var module = function () {
 			})
 				.then(result => {
 					var deferred = Q.defer();
+
+					args.voucher = JSON.parse(JSON.stringify(result[0]));
+					args.req.body.storeId = args.voucher.storeId;
+					args.req.body.productId = args.voucher.productId;
 
 					var params = {
 						'_id': ObjectId(args.req.body.voucherId),
@@ -3321,7 +3165,53 @@ var module = function () {
 				}, null)
 				.then(db.call, null)
 				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
+					var deferred = Q.defer();
+
+					args.result = result;
+
+					var params = {
+						'status': 'available',
+						'storeId': ObjectId(args.req.body.storeId),
+						'productId': ObjectId(args.req.body.productId)
+					};
+					var filter = {
+						_id: 1
+					};
+
+					deferred.resolve({
+						'params': params,
+						'filter': filter,
+						'operation': 'find',
+						'collection': 'tblVouchers',
+						'allowNoRecordsFound': true
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
+						'_id': ObjectId(args.req.body.productId)
+					};
+					var update = {
+						$set: {
+							'quantity': result.length
+						}
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblProducts'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -4783,224 +4673,6 @@ var module = function () {
 		}
 	};
 
-	var dalAddresses = {
-		add: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'vat': args.req.body.vat || '',
-				'type': args.req.body.type,
-				'email': args.req.body.header.email,
-				'street': args.req.body.street,
-				'suburb': args.req.body.suburb,
-				'number': args.req.body.number,
-				'storeId': ObjectId(args.req.body.storeId),
-				'business': args.req.body.business || '',
-				'cityTown': args.req.body.cityTown,
-				'recipient': args.req.body.recipient,
-				'serverDate': new Date(),
-				'postalCode': args.req.body.postalCode,
-				'additionalInfo': args.req.body.additionalInfo || ''
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'insert',
-				'collection': 'tblAddresses'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		get: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'_id': ObjectId(args.req.body.addressId),
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			var filter = {};
-			if (typeof (args.req.body.filter) != 'undefined') {
-				filter._id = 0;
-				args.req.body.filter.map(f => {
-					if (f == 'addressId') {
-						filter['_id'] = 1;
-					} else {
-						filter[f] = 1;
-					};
-				});
-			};
-
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblAddresses'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result[0]));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		list: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			if (typeof (args.req.body.addressId) != 'undefined') {
-				if (Array.isArray(args.req.body.addressId)) {
-					params._id = {
-						$in: args.req.body.addressId.map(id => ObjectId(id))
-					};
-				} else if (typeof (args.req.body.addressId) == 'string') {
-					params._id = ObjectId(args.req.body.addressId);
-				};
-			};
-
-			var filter = {};
-			if (typeof (args.req.body.filter) != 'undefined') {
-				filter._id = 0;
-				args.req.body.filter.map(f => {
-					if (f == 'addressId') {
-						filter['_id'] = 1;
-					} else {
-						filter[f] = 1;
-					};
-				});
-			};
-
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblAddresses'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		update: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'_id': ObjectId(args.req.body.addressId),
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-			var update = {
-				$set: {
-					'serverDate': new Date()
-				}
-			};
-			if (typeof (args.req.body.vat) != 'undefined') {
-				update.$set.vat = args.req.body.vat;
-			};
-			if (typeof (args.req.body.type) != 'undefined') {
-				update.$set.type = args.req.body.type;
-			};
-			if (typeof (args.req.body.street) != 'undefined') {
-				update.$set.street = args.req.body.street;
-			};
-			if (typeof (args.req.body.suburb) != 'undefined') {
-				update.$set.suburb = args.req.body.suburb;
-			};
-			if (typeof (args.req.body.number) != 'undefined') {
-				update.$set.number = args.req.body.number;
-			};
-			if (typeof (args.req.body.business) != 'undefined') {
-				update.$set.business = args.req.body.business;
-			};
-			if (typeof (args.req.body.cityTown) != 'undefined') {
-				update.$set.cityTown = args.req.body.cityTown;
-			};
-			if (typeof (args.req.body.recipient) != 'undefined') {
-				update.$set.recipient = args.req.body.recipient;
-			};
-			if (typeof (args.req.body.postalCode) != 'undefined') {
-				update.$set.postalCode = args.req.body.postalCode;
-			};
-			if (typeof (args.req.body.additionalInfo) != 'undefined') {
-				update.$set.additionalInfo = args.req.body.additionalInfo;
-			};
-
-			db.call({
-				'params': params,
-				'update': update,
-				'operation': 'update',
-				'collection': 'tblAddresses'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		delete: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'_id': ObjectId(args.req.body.addressId),
-				'email': args.req.body.header.email,
-				'storeId': ObjectId(args.req.body.storeId)
-			};
-
-			db.call({
-				'params': params,
-				'operation': 'remove',
-				'collection': 'tblAddresses'
-			})
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		}
-	};
-
 	var dalDepartments = {
 		add: (args) => {
 			var deferred = Q.defer();
@@ -5813,7 +5485,6 @@ var module = function () {
 	};
 
 	return {
-		'apis': dalApis,
 		'carts': dalCarts,
 		'orders': dalOrders,
 		'stores': dalStores,
@@ -5825,7 +5496,6 @@ var module = function () {
 		'customers': dalCustomers,
 		'suppliers': dalSuppliers,
 		'wishlists': dalWishlists,
-		'addresses': dalAddresses,
 		'departments': dalDepartments,
 		'transactions': dalTransactions,
 		'collectionpoints': dalCollectionPoints

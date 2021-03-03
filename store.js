@@ -17,20 +17,6 @@ global.__responder = new responder.module();
 
 try {
     var portal = {
-        errorResponse: {
-            "error": {
-                "code": 401,
-                "message": "Invalid Credentials",
-                "errors": [{
-                    "reason": "Portal Error",
-                    "message": "Portal Error",
-                    "location": "portal",
-                    "locationType": "portal"
-                }]
-            },
-            "hiddenErrors": []
-        },
-
         api: (args) => {
             var deferred = Q.defer();
 
@@ -71,9 +57,6 @@ try {
                     res.sendFile(__dirname + '/app/store/dist/store/index.html');
                 });
 
-                app.use('/store/apis', require('./api/apis'));
-                __logger.info('Loaded: ./api/store/apis');
-
                 app.use('/store/carts', require('./api/carts'));
                 __logger.info('Loaded: ./api/store/carts');
 
@@ -113,9 +96,6 @@ try {
                 app.use('/store/wishlists', require('./api/wishlists'));
                 __logger.info('Loaded: ./api/store/wishlists');
 
-                app.use('/store/addresses', require('./api/addresses'));
-                __logger.info('Loaded: ./api/store/addresses');
-
                 app.use('/store/departments', require('./api/departments'));
                 __logger.info('Loaded: ./api/store/departments');
 
@@ -134,8 +114,7 @@ try {
                 });
 
                 var server = http.createServer(app);
-                server.listen(args.settings.localwebserver.storeport);
-                deferred.resolve(args);
+                server.listen(args.settings.localwebserver.storeport, () => deferred.resolve(args));
             } catch (err) {
                 deferred.reject(err.message);
             };

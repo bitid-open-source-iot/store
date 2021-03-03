@@ -1,12 +1,9 @@
-db.tblApis.remove({});
 db.tblCarts.remove({});
 db.tblOrders.remove({});
 db.tblStores.remove({});
 db.tblReviews.remove({});
 db.tblProducts.remove({});
-db.tblWarnings.remove({});
 db.tblCouriers.remove({});
-db.tblAddresses.remove({});
 db.tblWishlists.remove({});
 db.tblSuppliers.remove({});
 db.tblDepartments.remove({});

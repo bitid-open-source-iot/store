@@ -103,7 +103,8 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 			filter: [
 				'title',
 				'productId'
-			]
+			],
+			type: 'voucher'
 		});
 
 		if (products.ok) {

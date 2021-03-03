@@ -9,12 +9,10 @@ const config = require('./config.json');
 
 chai.use(subset);
 
-var apiId = null;
 var cartId = null;
 var orderId = null;
 var storeId = null;
 var reviewId = null;
-var addressId = null;
 var voucherId = null;
 var productId = null;
 var courierId = null;
@@ -222,110 +220,6 @@ describe('Stores', function () {
     });
 });
 
-describe('Apis', function () {
-    it('/store/apis/add', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.add()
-            .then((result) => {
-                try {
-                    apiId = result.apiId;
-                    result.should.have.property('apiId');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/apis/get', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.get()
-            .then((result) => {
-                try {
-                    result.should.have.property('url');
-                    result.should.have.property('role');
-                    result.should.have.property('body');
-                    result.should.have.property('apiId');
-                    result.should.have.property('method');
-                    result.should.have.property('headers');
-                    result.should.have.property('trigger');
-                    result.should.have.property('storeId');
-                    result.should.have.property('serverDate');
-                    result.should.have.property('description');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/apis/list', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.list()
-            .then((result) => {
-                try {
-                    result[0].should.have.property('url');
-                    result[0].should.have.property('role');
-                    result[0].should.have.property('body');
-                    result[0].should.have.property('apiId');
-                    result[0].should.have.property('method');
-                    result[0].should.have.property('headers');
-                    result[0].should.have.property('trigger');
-                    result[0].should.have.property('storeId');
-                    result[0].should.have.property('serverDate');
-                    result[0].should.have.property('description');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/apis/update', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.update()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-});
-
 describe('Couriers', function () {
     it('/store/couriers/add', function (done) {
         this.timeout(50000);
@@ -506,114 +400,6 @@ describe('Suppliers', function () {
         this.timeout(5000);
 
         tools.api.suppliers.update()
-            .then((result) => {
-                try {
-                    result.should.have.property('updated');
-                    expect(result.updated).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-});
-
-describe('Addresses', function () {
-    it('/store/addresses/add', function (done) {
-        this.timeout(5000);
-
-        tools.api.addresses.add()
-            .then((result) => {
-                try {
-                    addressId = result.addressId;
-                    result.should.have.property('addressId');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/addresses/get', function (done) {
-        this.timeout(5000);
-
-        tools.api.addresses.get()
-            .then((result) => {
-                try {
-                    result.should.have.property('vat');
-                    result.should.have.property('type');
-                    result.should.have.property('number');
-                    result.should.have.property('street');
-                    result.should.have.property('suburb');
-                    result.should.have.property('storeId');
-                    result.should.have.property('business');
-                    result.should.have.property('cityTown');
-                    result.should.have.property('addressId');
-                    result.should.have.property('recipient');
-                    result.should.have.property('serverDate');
-                    result.should.have.property('postalCode');
-                    result.should.have.property('additionalInfo');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/addresses/list', function (done) {
-        this.timeout(5000);
-
-        tools.api.addresses.list()
-            .then((result) => {
-                try {
-                    result[0].should.have.property('vat');
-                    result[0].should.have.property('type');
-                    result[0].should.have.property('number');
-                    result[0].should.have.property('street');
-                    result[0].should.have.property('suburb');
-                    result[0].should.have.property('storeId');
-                    result[0].should.have.property('business');
-                    result[0].should.have.property('cityTown');
-                    result[0].should.have.property('addressId');
-                    result[0].should.have.property('recipient');
-                    result[0].should.have.property('serverDate');
-                    result[0].should.have.property('postalCode');
-                    result[0].should.have.property('additionalInfo');
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
-    it('/store/addresses/update', function (done) {
-        this.timeout(5000);
-
-        tools.api.addresses.update()
             .then((result) => {
                 try {
                     result.should.have.property('updated');
@@ -1710,27 +1496,6 @@ describe('Remove Added Items', function () {
             });
     });
 
-    it('/store/addresses/delete', function (done) {
-        this.timeout(5000);
-
-        tools.api.addresses.delete()
-            .then((result) => {
-                try {
-                    result.should.have.property('deleted');
-                    expect(result.deleted).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
     it('/store/collection-points/delete', function (done) {
         this.timeout(5000);
 
@@ -1857,27 +1622,6 @@ describe('Remove Added Items', function () {
             });
     });
 
-    it('/store/apis/delete', function (done) {
-        this.timeout(5000);
-
-        tools.api.apis.delete()
-            .then((result) => {
-                try {
-                    result.should.have.property('deleted');
-                    expect(result.deleted).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
-
     it('/store/stores/delete', function (done) {
         this.timeout(5000);
 
@@ -1926,91 +1670,6 @@ describe('Health Check', function () {
 
 var tools = {
     api: {
-        apis: {
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/add', {
-                    'url': 'xxx',
-                    'body': {},
-                    'method': 'xxx',
-                    'trigger': 'xxx',
-                    'headers': {},
-                    'storeId': storeId,
-                    'description': 'API 1 TEST',
-                    'organizationOnly': 0
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/get', {
-                    'filter': [
-                        'url',
-                        'role',
-                        'body',
-                        'apiId',
-                        'method',
-                        'trigger',
-                        'headers',
-                        'storeId',
-                        'serverDate',
-                        'description'
-                    ],
-                    'apiId': apiId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            list: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/list', {
-                    'filter': [
-                        'url',
-                        'role',
-                        'body',
-                        'apiId',
-                        'method',
-                        'trigger',
-                        'headers',
-                        'storeId',
-                        'serverDate',
-                        'description',
-                        'organizationOnly'
-                    ],
-                    'apiId': apiId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            update: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/update', {
-                    'apiId': apiId,
-                    'description': 'API 1'
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            delete: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/apis/delete', {
-                    'apiId': apiId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            }
-        },
         carts: {
             add: () => {
                 var deferred = Q.defer();
@@ -3007,114 +2666,6 @@ var tools = {
                 tools.post('/store/wishlists/delete', {
                     'storeId': storeId,
                     'wishlistId': wishlistId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            }
-        },
-        addresses: {
-            add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/add', {
-                    'vat': 'xxx',
-                    'type': 'business',
-                    'street': 'xxx',
-                    'number': 'xxx',
-                    'suburb': 'xxx',
-                    'storeId': storeId,
-                    'business': 'xxx',
-                    'cityTown': 'xxx',
-                    'recipient': 'xxx',
-                    'addressId': 'xxx',
-                    'serverDate': 'xxx',
-                    'postalCode': 'xxx',
-                    'additionalInfo': 'xxx'
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            get: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/get', {
-                    'filter': [
-                        'vat',
-                        'type',
-                        'street',
-                        'number',
-                        'suburb',
-                        'storeId',
-                        'business',
-                        'cityTown',
-                        'recipient',
-                        'addressId',
-                        'serverDate',
-                        'postalCode',
-                        'additionalInfo'
-                    ],
-                    'storeId': storeId,
-                    'addressId': addressId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            list: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/list', {
-                    'filter': [
-                        'vat',
-                        'type',
-                        'street',
-                        'number',
-                        'suburb',
-                        'storeId',
-                        'business',
-                        'cityTown',
-                        'recipient',
-                        'addressId',
-                        'serverDate',
-                        'postalCode',
-                        'additionalInfo'
-                    ],
-                    'storeId': storeId,
-                    'addressId': addressId
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            update: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/update', {
-                    'vat': 'xxx',
-                    'type': 'xxx',
-                    'street': 'xxx',
-                    'suburb': 'xxx',
-                    'number': 'xxx',
-                    'storeId': storeId,
-                    'business': 'xxx',
-                    'cityTown': 'xxx',
-                    'addressId': addressId,
-                    'recipient': 'xxx',
-                    'postalCode': 'xxx',
-                    'additionalInfo': 'xxx'
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
-            },
-            delete: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/addresses/delete', {
-                    'storeId': storeId,
-                    'addressId': addressId
                 })
                     .then(deferred.resolve, deferred.resolve);
 

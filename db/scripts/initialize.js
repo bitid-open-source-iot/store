@@ -1,26 +1,3 @@
-var apis = db.getCollection('tblApis');
-if (apis.count() == 0) {
-    db.tblApis.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
-        '_id': ObjectId('000000000000000000000001'),
-        'url': 'xxx',
-        'body': {},
-        'method': 'POST',
-        'headers': {},
-        'storeId': '000000000000000000000001',
-        'trigger': 'purchase',
-        'serverDate': ISODate()
-    });
-};
-
 var carts = db.getCollection('tblCarts');
 if (carts.count() == 0) {
     db.tblCarts.insert({
@@ -204,25 +181,6 @@ if (products.count() == 0) {
     });
 };
 
-var warnings = db.getCollection('tblWarnings');
-if (warnings.count() == 0) {
-    db.tblWarnings.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
-        '_id': ObjectId('000000000000000000000001'),
-        'storeId': '000000000000000000000001',
-        'serverDate': ISODate(),
-        'description': 'xxx'
-    });
-};
-
 var customers = db.getCollection('tblCustomers');
 if (customers.count() == 0) {
     db.tblCustomers.insert({
@@ -325,33 +283,24 @@ if (wishlists.count() == 0) {
     });
 };
 
-var addresses = db.getCollection('tblAddresses');
-if (addresses.count() == 0) {
-    db.tblAddresses.insert({
+var vouchers = db.getCollection('tblVouchers');
+if (vouchers.count() == 0) {
+    db.tblVouchers.insert({
         '_id': ObjectId('000000000000000000000001'),
-        'vat': 'xxx',
-        'type': 'xxx',
-        'email': 'xxx@xxx.co.za',
-        'vatno': 'xxx',
-        'street': 'xxx',
-        'suburb': 'xxx',
-        'number': 'xxx',
-        'storeId': '000000000000000000000001',
-        'business': 'xxx',
-        'cityTown': 'xxx',
-        'business': 'xxx',
-        'recipient': 'xxx',
-        'serverDate': ISODate(),
-        'postalCode': 'xxx',
-        'additionalInfo': 'xxx'
+        'status': 'available',
+        'storeId': ObjectId('000000000000000000000001'),
+        'quantity': 1,
+        'productId': ObjectId('000000000000000000000001'),
+        'serverDate': ISODate()
     });
 
-    db.tblAddresses.createIndex({
-        'email': 1,
-        'storeId': 1
+    db.tblVouchers.createIndex({
+        "code": 1,
+        "storeId": 1,
+        "productId": 1
     }, {
-        'unique': false
-    });
+        "unique": true
+    })
 };
 
 var departments = db.getCollection('tblDepartments');

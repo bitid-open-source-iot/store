@@ -1,99 +1,11 @@
 const Q = require('q');
 const tools = require('../lib/tools');
-const moment = require('moment');
 const emails = require('./../emails/emails');
 const payfast = require('@payfast/core');
 const dalModule = require('./../dal/dal');
 const ErrorResponse = require('./../lib/error-response');
 
 var module = function () {
-    var bllApis = {
-        trigger: (args) => {
-            var deferred = Q.defer();
-
-            deferred.resolve(args);
-
-            return deferred.promise;
-        },
-
-        add: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.apis.add(args)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        get: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.apis.get(args)
-                .then(tools.setRoleObject, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        list: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.apis.list(args)
-                .then(tools.setRoleList, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        update: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.apis.update(args)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        delete: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.apis.delete(args)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        }
-    };
-
     var bllCarts = {
         add: (req, res) => {
             var args = {
@@ -503,50 +415,18 @@ var module = function () {
         process: (args) => {
             var deferred = Q.defer();
 
-            args.req.body.status = 'initialized';
-
-            var myModule = new dalModule.module();
-            myModule.orders.getStoreId(args)
-                .then(myModule.stores.validate, null)
-                .then(myModule.orders.get, null)
-                .then(myModule.orders.getProductsWithSupplier, null)
+            var dal = new dalModule.module();
+            dal.orders.load(args)
+                .then(dal.orders.paid, null)
+                .then(dal.transactions.order, null)
                 .then(args => {
                     var deferred = Q.defer();
 
-                    try {
-                        args.products.map(product => {
-                            args.order.products.map(item => {
-                                if (item.productId == product.productId) {
-                                    item.cost = product.cost;
-                                    item.title = product.title;
-                                    item.image = product.image;
-                                    item.storeId = product.storeId;
-                                    item.supplier = product.supplier;
-                                };
-                            });
-                        });
-                        args.order.orderId = args.order._id;
-                        delete args.order._id;
-                        deferred.resolve(args);
-                    } catch (error) {
-                        var err = new ErrorResponse();
-                        err.error.errors[0].code = 503;
-                        err.error.errors[0].reason = error.message;
-                        err.error.errors[0].message = error.message;
-                        deferred.reject(err);
-                    };
-
-                    return deferred.promise;
-                }, null)
-                .then(myModule.orders.paid, null)
-                .then(myModule.transactions.order, null)
-                .then(args => {
-                    var deferred = Q.defer();
-
-                    if (args.order.shipping.method == 'deliver') {
+                    if (args.order.shipping.enabled && args.order.shipping.method == 'deliver') {
                         args.req.body.filter = ['icon', 'phone', 'account', 'options', 'description'];
+                        args.req.body.storeId = args.order.storeId;
                         args.req.body.courierId = args.order.shipping.courierId;
-                        myModule.couriers.get(args)
+                        dal.couriers.get(args)
                             .then(args => {
                                 args.courier = args.result;
                                 deferred.resolve(args);
@@ -559,135 +439,9 @@ var module = function () {
 
                     return deferred.promise;
                 }, null)
-                .then(args => {
-                    var deferred = Q.defer();
-
-                    args.order.products.map(product => {
-                        if (product.promotion.enabled) {
-                            product.amount = (product.promotion.price * product.quantity).toFixed(2);
-                        } else {
-                            product.amount = (product.price * product.quantity).toFixed(2);
-                        };
-                    });
-
-                    var notification = {
-                        'payment': {
-                            'vat': args.order.payment.vat.toFixed(2),
-                            'total': args.order.payment.total.toFixed(2),
-                            'discount': args.order.payment.discount.toFixed(2),
-                            'shipping': args.order.payment.shipping.toFixed(2),
-                            'subtotal': args.order.payment.subtotal.toFixed(2)
-                        },
-                        'date': moment().format('YYYY/MM/DD'),
-                        'store': args.store,
-                        'email': args.order.email,
-                        'courier': args.courier,
-                        'orderId': args.order.orderId,
-                        'products': args.order.products,
-                        'shipping': args.order.shipping,
-                        'recipient': args.order.recipient
-                    };
-
-                    emails.confirmation(notification);
-                    deferred.resolve(args);
-
-                    return deferred.promise;
-                }, null)
-                .then(myModule.orders.getSuppliersProducts, null)
-                .then(args => args.suppliers.reduce((promise, supplier) => promise.then(() => {
-                    var deferred = Q.defer();
-
-                    supplier.products.map(product => {
-                        args.order.products.map(item => {
-                            if (product.productId == item.productId) {
-                                product.amount = (product.cost * item.quantity).toFixed(2);
-                                product.quantity = item.quantity.toFixed(2);
-                            };
-                        });
-                    });
-
-                    try {
-                        var notification = {
-                            'payment': {
-                                'vat': 0,
-                                'total': 0,
-                                'subtotal': 0
-                            },
-                            'courier': {
-                                'phone': null,
-                                'display': args.order.shipping.method == 'deliver' ? 'block' : 'none',
-                                'account': null,
-                                'description': null
-                            },
-                            'date': moment().format('YYYY/MM/DD'),
-                            'store': args.store,
-                            'email': supplier.email,
-                            'orderId': args.order.orderId,
-                            'products': supplier.products,
-                            'shipping': args.order.shipping,
-                            'recipient': args.order.recipient
-                        };
-
-                        if (typeof (args.courier) != 'undefined' && args.courier != null && args.courier != '') {
-                            notification.courier = {
-                                'phone': args.courier.phone,
-                                'display': args.order.shipping.method == 'deliver' ? 'block' : 'none',
-                                'account': args.courier.account,
-                                'description': args.courier.description
-                            };
-                        }
-
-                        notification.products.map(product => {
-                            notification.payment.subtotal += parseFloat(product.amount);
-                        });
-                        notification.payment.vat = (notification.payment.subtotal * 0.15).toFixed(2);
-                        notification.payment.total = (notification.payment.subtotal * 1.15).toFixed(2);
-                        notification.payment.subtotal = notification.payment.subtotal.toFixed(2);
-
-                        emails.supplier(notification);
-                        deferred.resolve(args);
-                    } catch (error) {
-                        deferred.resolve(args);
-                    };
-
-                    return deferred.promise;
-                }), Q.when(args)), null)
-                .then(args => {
-                    var deferred = Q.defer();
-
-                    if (args.order.shipping.method == 'exworks') {
-                        myModule.orders.getSuppliersProducts(args)
-                            .then(args => {
-                                args.suppliers.map(supplier => {
-                                    supplier.products.map(product => {
-                                        args.order.products.map(item => {
-                                            if (product.productId == item.productId) {
-                                                product.quantity = item.quantity.toFixed(2);
-                                            };
-                                        });
-                                    });
-                                });
-
-                                var notification = {
-                                    'date': moment().format('YYYY/MM/DD'),
-                                    'store': args.store,
-                                    'email': args.order.email,
-                                    'orderId': args.order.orderId,
-                                    'suppliers': args.suppliers
-                                };
-
-                                emails.exworks(notification);
-
-                                deferred.resolve(args);
-                            }, err => {
-                                deferred.resolve(args);
-                            });
-                    } else {
-                        deferred.resolve(args);
-                    };
-
-                    return deferred.promise;
-                }, null)
+                .then(emails.confirmation, null)
+                .then(emails.suppliers, null)
+                .then(emails.exworks, null)
                 .then(args => {
                     deferred.resolve(args);
                 }, err => {
@@ -1689,88 +1443,6 @@ var module = function () {
         }
     };
 
-    var bllAddresses = {
-        add: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.addresses.add, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        get: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.addresses.get, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        list: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.addresses.list, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        update: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.addresses.update, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        },
-
-        delete: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.stores.validate(args)
-                .then(myModule.addresses.delete, null)
-                .then(args => {
-                    __responder.success(req, res, args.result);
-                }, err => {
-                    __responder.error(req, res, err);
-                });
-        }
-    };
-
     var bllDepartments = {
         add: (req, res) => {
             var args = {
@@ -1948,7 +1620,6 @@ var module = function () {
     };
 
     return {
-        'apis': bllApis,
         'carts': bllCarts,
         'orders': bllOrders,
         'stores': bllStores,
@@ -1961,7 +1632,6 @@ var module = function () {
         'customers': bllCustomers,
         'suppliers': bllSuppliers,
         'wishlists': bllWishlists,
-        'addresses': bllAddresses,
         'departments': bllDepartments,
         'collectionpoints': bllCollectionPoints
     };
