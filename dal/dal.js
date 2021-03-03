@@ -413,6 +413,7 @@ var module = function () {
 			})
 				.then(result => {
 					args.order = JSON.parse(JSON.stringify(result[0]));
+					args.order.vouchers = [];
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -2838,94 +2839,99 @@ var module = function () {
 
 		paid: (args) => {
 			var deferred = Q.defer();
+			
+			if (args.order.products.map(o => o.type).includes('voucher')) {
+				var match = {
+					productId: {
+						$in: args.order.products.map(product => ObjectId(product.productId))
+					},
+					status: 'available'
+				};
 
-			var match = {
-				productId: {
-					$in: args.order.products.map(product => ObjectId(product.productId))
-				},
-				status: 'available'
-			};
-
-			var params = [
-				{
-					$match: match
-				},
-				{
-					$group: {
-						'_id': '$productId',
-						'vouchers': {
-							$push: {
-								code: '$code',
-								file: '$file',
-								voucherId: '$_id'
+				var params = [
+					{
+						$match: match
+					},
+					{
+						$group: {
+							'_id': '$productId',
+							'vouchers': {
+								$push: {
+									code: '$code',
+									file: '$file',
+									voucherId: '$_id'
+								}
 							}
 						}
-					}
-				},
-				{
-					$project: {
-						"_id": 0,
-						"vouchers": 1,
-						"productId": "$_id"
-					}
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblVouchers'
-			})
-				.then(result => {
-					var deferred = Q.defer();
-					
-					var items = JSON.parse(JSON.stringify(result));
-
-					var params = {
-						"_id": {
-							$in: []
-						}
-					};
-
-					var update = {
-						$set: {
-							'status': 'sold',
+					},
+					{
+						$project: {
+							"_id": 0,
+							"vouchers": 1,
+							"productId": "$_id"
 						}
 					}
+				];
 
-					args.order.products.map(product => {
-						items.map(item => {
-							if (item.productId == product.productId) {
-								item.vouchers = item.vouchers.slice(0, product.quantity)
-								params._id.$in = params._id.$in.concat(item.vouchers.map(o => ObjectId(o.voucherId)));
+				db.call({
+					'params': params,
+					'operation': 'aggregate',
+					'collection': 'tblVouchers'
+				})
+					.then(result => {
+						var deferred = Q.defer();
+
+						var items = JSON.parse(JSON.stringify(result));
+
+						var params = {
+							"_id": {
+								$in: []
 							}
+						};
+
+						var update = {
+							$set: {
+								'email': args.req.body.header.email,
+								'status': 'sold'
+							}
+						}
+
+						args.order.products.map(product => {
+							items.map(item => {
+								if (item.productId == product.productId) {
+									item.vouchers = item.vouchers.slice(0, product.quantity)
+									params._id.$in = params._id.$in.concat(item.vouchers.map(o => ObjectId(o.voucherId)));
+								}
+							})
 						})
-					})
-					
-					args.order.vouchers = [];
 
-					items.map(item => item.vouchers.map(o => args.order.vouchers.push(o)))
+						args.order.vouchers = [];
 
-					deferred.resolve({
-						'params': params,
-						'update': update,
-						'operation': 'updateMany',
-						'collection': 'tblVouchers'
+						items.map(item => item.vouchers.map(o => args.order.vouchers.push(o)))
+
+						deferred.resolve({
+							'params': params,
+							'update': update,
+							'operation': 'updateMany',
+							'collection': 'tblVouchers'
+						});
+
+						return deferred.promise;
+					}, null)
+					.then(db.call, null)
+					.then(result => {
+						args.result = JSON.parse(JSON.stringify(result));
+						deferred.resolve(args);
+					}, error => {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = error.code;
+						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
+						deferred.reject(err);
 					});
-
-					return deferred.promise;
-				}, null)
-				.then(db.call, null)
-				.then(result => {
-					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					err.error.errors[0].message = error.message;
-					deferred.reject(err);
-				});
+			} else {
+				deferred.resolve(args);
+			}
 
 			return deferred.promise;
 		},

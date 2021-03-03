@@ -449,9 +449,10 @@ var module = function () {
 
                     return deferred.promise;
                 }, null)
-                .then(emails.confirmation, null)
-                .then(emails.suppliers, null)
                 .then(emails.exworks, null)
+                .then(emails.vouchers, null)
+                .then(emails.suppliers, null)
+                .then(emails.confirmation, null)
                 .then(deferred.resolve, deferred.reject);
 
             return deferred.promise;

@@ -44,6 +44,39 @@ exports.exworks = (args) => {
     return deferred.promise;
 };
 
+exports.vouchers = (args) => {
+    var deferred = Q.defer();
+
+    if (args.order.vouchers.length > 0) {
+        const transporter = nodemailer.createTransport(__settings.smtp);
+    
+        transporter.use('compile', hbs({
+            'viewEngine': {
+                'extName': '.hbs',
+                'layoutsDir': __dirname + '/templates',
+                'partialsDir': __dirname + '/templates',
+                'defaultLayout': 'vouchers.hbs'
+            },
+            'extName': '.hbs',
+            'viewPath': __dirname + '/templates'
+        }));
+    
+        transporter.sendMail({
+            'to': __settings.production ? args.order.email : __settings.smtp.auth.user,
+            'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
+            'context': args.order,
+            'subject': ['Your Vouchers: ', '#', args.order.orderId].join('').toUpperCase(),
+            'template': 'vouchers'
+        });
+                
+        deferred.resolve(args);
+    } else {
+        deferred.resolve(args);
+    };
+
+    return deferred.promise;
+};
+
 exports.suppliers = (args) => {
     var deferred = Q.defer();
 
