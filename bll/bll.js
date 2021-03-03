@@ -419,6 +419,7 @@ var module = function () {
             var dal = new dalModule.module();
             dal.orders.load(args)
                 .then(dal.orders.paid, null)
+                .then(dal.vouchers.paid, null)
                 .then(dal.transactions.order, null)
                 .then(args => {
                     var deferred = Q.defer();

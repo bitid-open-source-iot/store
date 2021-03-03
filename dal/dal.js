@@ -2836,6 +2836,77 @@ var module = function () {
 			return deferred.promise;
 		},
 
+		paid: (args) => {
+			var deferred = Q.defer();
+
+			var match = {
+				productId = {
+					$in: args.order.products.map(product => ObjectId(product.productId))
+				},
+				status: 'available'
+			};
+
+			var params = [
+				{
+					$match: match
+				},
+				{
+					$group: {
+						'_id': '$productId',
+						'vouchers': {
+							$push: {
+								code: '$code',
+								file: '$file',
+								voucherId: '$_id'
+							}
+						}
+					}
+				},
+				{
+					$project: {
+						"_id": 0,
+						"vouchers": 1,
+						"productId": "$_id"
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblVouchers'
+			})
+				.then(result => {
+					var deferred = Q.defer();
+					
+					var items = JSON.parse(JSON.stringify(result));
+
+					args.order.products.map(product => {
+						items.map(item => {
+							if (item.productId == product.productId) {
+								debugger
+								item.vouchers = item.vouchers.slice(0, product.quantity)
+							}
+						})
+					})
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
 		update: (args) => {
 			var deferred = Q.defer();
 

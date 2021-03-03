@@ -2193,7 +2193,7 @@ var tools = {
                         departmentId
                     ],
                     'cost': 50,
-                    'type': 'physical',
+                    'type': 'voucher',
                     'title': 'My First Product',
                     'price': 100,
                     'storeId': storeId,
