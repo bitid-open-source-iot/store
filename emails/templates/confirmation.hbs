@@ -457,6 +457,9 @@
                 color-scheme: light dark;
                 supported-color-schemes: light dark;
             }
+            small {
+                text-decoration: line-through;
+            }
         </style>
     </head>
 
@@ -494,7 +497,7 @@
                                                             </h3>
                                                         </td>
                                                         <td>
-                                                            <h3 class="align-right">{{date}}</h3>
+                                                            <h3 class="align-right">{{date.paid}}</h3>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -521,7 +524,7 @@
                                                                     </td>
                                                                     <td class="align-right" class="purchase_item" style="border-bottom: 1px solid #EEEEEE;">
                                                                         <span class="f-fallback">
-                                                                            R{{amount}}
+                                                                            R{{price}}
                                                                         </span>
                                                                     </td>
                                                                 </tr>
@@ -719,7 +722,7 @@
 									<tr>
 										<td class="content-cell" align="center">
 											<p class="f-fallback sub align-center">
-												&copy; 2020 {{store.description}}. All rights reserved.
+												&copy; 2021 {{store.description}}. All rights reserved.
 											</p>
 
 											<img src="{{store.logo}}" alt="{{store.description}} Logo" class="bitid-logo">

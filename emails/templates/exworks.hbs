@@ -486,7 +486,7 @@
                                                             </h3>
                                                         </td>
                                                         <td>
-                                                            <h3 class="align-right">{{date.purchase}}</h3>
+                                                            <h3 class="align-right">{{date.paid}}</h3>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -504,29 +504,29 @@
                                                                         </p>
                                                                     </th>
                                                                 </tr>
-                                                                {{#each suppliers}}
+                                                                {{#each products}}
                                                                 <tr>
                                                                     <td width="50%" class="purchase_item" style="border-bottom: 1px solid #EEEEEE;">
                                                                         <span class="f-fallback">
                                                                             <table>
                                                                                 <tr>
                                                                                     <td>
-                                                                                        {{address.street}}
+                                                                                        {{supplier.address.street}}
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>
-                                                                                        {{address.suburb}}
+                                                                                        {{supplier.address.suburb}}
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>
-                                                                                        {{address.cityTown}}
+                                                                                        {{supplier.address.cityTown}}
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td>
-                                                                                        {{address.postalCode}}
+                                                                                        {{supplier.address.postalCode}}
                                                                                     </td>
                                                                                 </tr>
                                                                             </table>
@@ -535,13 +535,11 @@
                                                                     <td class="align-right" width="50%" class="purchase_item" style="border-bottom: 1px solid #EEEEEE;">
                                                                         <span class="f-fallback">
                                                                             <table>
-                                                                                {{#each products}}
                                                                                 <tr>
                                                                                     <td>
                                                                                         {{title}} × {{quantity}}
                                                                                     </td>
                                                                                 </tr>
-                                                                                {{/each}}
                                                                             </table>
                                                                         </span>
                                                                     </td>
@@ -573,7 +571,7 @@
 									<tr>
 										<td class="content-cell" align="center">
 											<p class="f-fallback sub align-center">
-												&copy; 2020 {{store.description}}. All rights reserved.
+												&copy; 2021 {{store.description}}. All rights reserved.
 											</p>
 
 											<img src="{{store.logo}}" alt="{{store.description}} Logo" class="bitid-logo">

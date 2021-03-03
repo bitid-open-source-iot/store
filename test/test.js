@@ -1809,10 +1809,11 @@ var tools = {
                             'postalCode': '0000',
                             'additionalInfo': ''
                         },
-                        'method': 'collect',
-                        'optionId': null,
-                        'courierId': null,
-                        'collectionpointId': null
+                        'method': 'exworks',
+                        'enabled': true,
+                        'optionId': '000000000000000000000001',
+                        'courierId': courierId,
+                        'collectionpointId': collectionpointId
                     },
                     'recipient': {
                         'name': {
@@ -2369,9 +2370,9 @@ var tools = {
                 tools.post('/store/couriers/add', {
                     'options': [
                         {
+                            'type': 'exworks',
                             'price': 1,
-                            'optionId': 'express',
-                            'description': 'express'
+                            'optionId': '000000000000000000000001'
                         }
                     ],
                     'icon': 'xxx',

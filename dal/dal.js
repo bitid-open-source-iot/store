@@ -347,6 +347,7 @@ var module = function () {
 				},
 				{
 					$addFields: {
+						"products.cost": "$config.cost",
 						"products.supplierId": "$config.supplierId"
 					}
 				},
@@ -478,16 +479,18 @@ var module = function () {
 		paid: (args) => {
 			var deferred = Q.defer();
 
+			args.order.date.paid = new Date();
+
 			var params = {
 				'_id': ObjectId(args.order.orderId),
 				'email': args.order.email,
 				'status': 'initialized',
-				'storeId': ObjectId(args.req.body.storeId)
+				'storeId': ObjectId(args.order.storeId)
 			};
 			var update = {
 				$set: {
 					'status': 'paid',
-					'date.paid': new Date(),
+					'date.paid': args.order.date.paid,
 					'serverDate': new Date()
 				}
 			};
@@ -570,6 +573,9 @@ var module = function () {
 				if (typeof (args.req.body.shipping.method) != 'undefined') {
 					update.$set['shipping.method'] = args.req.body.shipping.method;
 				};
+				if (typeof (args.req.body.shipping.enabled) != 'undefined') {
+					update.$set['shipping.enabled'] = args.req.body.shipping.enabled;
+				};
 				if (typeof (args.req.body.shipping.optionId) != 'undefined' && args.req.body.shipping.optionId != null && args.req.body.shipping.optionId != '') {
 					if (args.req.body.shipping.optionId.length == 24) {
 						update.$set['shipping.optionId'] = ObjectId(args.req.body.shipping.optionId);
@@ -633,37 +639,6 @@ var module = function () {
 			return deferred.promise;
 		},
 
-		getStoreId: (args) => {
-			var deferred = Q.defer();
-
-			var params = {
-				'_id': ObjectId(args.req.body.orderId)
-			};
-
-			var filter = {
-				'_id': 0,
-				'storeId': 1
-			};
-
-			db.call({
-				'params': params,
-				'filter': filter,
-				'operation': 'find',
-				'collection': 'tblOrders'
-			})
-				.then(result => {
-					args.req.body.storeId = result[0].storeId.toString();
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
 		initialize: (args) => {
 			var deferred = Q.defer();
 
@@ -689,8 +664,9 @@ var module = function () {
 					'subtotal': null
 				},
 				'shipping': {
-					'method': null,
 					'address': {},
+					'method': null,
+					'enabled': null,
 					'optionId': null,
 					'courierId': null
 				},
@@ -721,165 +697,6 @@ var module = function () {
 			})
 				.then(result => {
 					args.orderId = result[0]._id.toString();
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		getSuppliersProducts: (args) => {
-			var deferred = Q.defer();
-
-			var params = [
-				{
-					$match: {
-						'_id': {
-							$in: args.order.products.map(product => ObjectId(product.productId))
-						},
-						'storeId': ObjectId(args.order.storeId)
-					}
-				},
-				{
-					$lookup: {
-						'as': 'supplier',
-						'from': 'tblSuppliers',
-						'localField': 'supplierId',
-						'foreignField': '_id'
-					}
-				},
-				{
-					$unwind: '$supplier'
-				},
-				{
-					$unwind: '$images'
-				},
-				{
-					$match: {
-						'images.main': true
-					}
-				},
-				{
-					$project: {
-						'supplier': {
-							'email': '$supplier.email',
-							'phone': '$supplier.phone',
-							'address': '$supplier.address',
-							'supplierId': '$supplier._id',
-							'description': '$supplier.description'
-						},
-						'cost': 1,
-						'title': 1,
-						'image': '$images.src',
-						'storeId': 1,
-						'productId': '$_id'
-					}
-				}, {
-					$group: {
-						'_id': '$supplier.supplierId',
-						'email': {
-							$first: '$supplier.email'
-						},
-						'phone': {
-							$first: '$supplier.phone'
-						},
-						'address': {
-							$first: '$supplier.address'
-						},
-						'description': {
-							$first: '$supplier.description'
-						},
-						'products': {
-							$push: {
-								'cost': '$cost',
-								'title': '$title',
-								'image': '$image',
-								'storeId': '$storeId',
-								'productId': '$productId'
-							}
-						}
-					}
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblProducts'
-			})
-				.then(result => {
-					args.suppliers = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
-				}, error => {
-					var err = new ErrorResponse();
-					err.error.errors[0].code = error.code;
-					err.error.errors[0].reason = error.message;
-					deferred.reject(err);
-				});
-
-			return deferred.promise;
-		},
-
-		getProductsWithSupplier: (args) => {
-			var deferred = Q.defer();
-
-			var params = [
-				{
-					$match: {
-						'_id': {
-							$in: args.order.products.map(product => ObjectId(product.productId))
-						},
-						'storeId': ObjectId(args.order.storeId)
-					}
-				},
-				{
-					$lookup: {
-						'as': 'supplier',
-						'from': 'tblSuppliers',
-						'localField': 'supplierId',
-						'foreignField': '_id'
-					}
-				},
-				{
-					$unwind: '$supplier'
-				},
-				{
-					$unwind: '$images'
-				},
-				{
-					$match: {
-						'images.main': true
-					}
-				},
-				{
-					$project: {
-						'supplier': {
-							'email': '$supplier.email',
-							'phone': '$supplier.phone',
-							'address': '$supplier.address',
-							'supplierId': '$supplier._id',
-							'description': '$supplier.description'
-						},
-						'cost': 1,
-						'title': 1,
-						'image': '$images.src',
-						'storeId': 1,
-						'productId': '$_id'
-					}
-				}
-			];
-
-			db.call({
-				'params': params,
-				'operation': 'aggregate',
-				'collection': 'tblProducts'
-			})
-				.then(result => {
-					args.products = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -5032,14 +4849,14 @@ var module = function () {
 				'type': 'insert',
 				'query': 'INSERT into tblTransactions SET ?',
 				'params': {
-					'_id': args.req.body.orderId,
+					'_id': args.order.orderId,
 					'type': 'order',
 					'debit': args.req.body.amount.gross,
 					'email': args.req.body.header.email,
 					'credit': args.req.body.amount.gross,
-					'storeId': args.req.body.storeId,
+					'storeId': args.order.storeId,
 					'serverDate': new Date(),
-					'description': 'Order Paid: ' + args.req.body.orderId
+					'description': 'Order Paid: ' + args.order.orderId
 				}
 			};
 

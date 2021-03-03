@@ -1,6 +1,7 @@
 const Q = require('q');
 const tools = require('../lib/tools');
 const emails = require('./../emails/emails');
+const moment = require('moment');
 const payfast = require('@payfast/core');
 const dalModule = require('./../dal/dal');
 const ErrorResponse = require('./../lib/error-response');
@@ -439,11 +440,19 @@ var module = function () {
 
                     return deferred.promise;
                 }, null)
+                .then(args => {
+                    var deferred = Q.defer();
+
+                    args.order.date.paid = moment(args.order.date.paid).format('YYYY/MM/DD');
+                    deferred.resolve(args);
+
+                    return deferred.promise;
+                }, null)
                 .then(emails.confirmation, null)
                 .then(emails.suppliers, null)
                 .then(emails.exworks, null)
                 .then(args => {
-                    deferred.resolve(args);
+                    deferred.resolve(args.order);
                 }, err => {
                     deferred.reject(err);
                 });

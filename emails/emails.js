@@ -1,76 +1,163 @@
 const Q = require('q');
+const _ = require('lodash');
 const hbs = require('nodemailer-express-handlebars');
 const nodemailer = require('nodemailer');
 
-exports.exworks = (notification) => {
+exports.exworks = (args) => {
     var deferred = Q.defer();
 
-    const transporter = nodemailer.createTransport(__settings.smtp);
+    try {
+        if (args.order.shipping.enabled && args.order.shipping.method == 'exworks') {
+            const transporter = nodemailer.createTransport(__settings.smtp);
 
-    transporter.use('compile', hbs({
-        'viewEngine': {
-            'extName': '.hbs',
-            'layoutsDir': __dirname + '/templates',
-            'partialsDir': __dirname + '/templates',
-            'defaultLayout': 'exworks.hbs'
-        },
-        'extName': '.hbs',
-        'viewPath': __dirname + '/templates'
-    }));
+            transporter.use('compile', hbs({
+                'viewEngine': {
+                    'extName': '.hbs',
+                    'layoutsDir': __dirname + '/templates',
+                    'partialsDir': __dirname + '/templates',
+                    'defaultLayout': 'exworks.hbs'
+                },
+                'extName': '.hbs',
+                'viewPath': __dirname + '/templates'
+            }));
 
-    transporter.sendMail({
-        'to': __settings.production ? notification.email : __settings.smtp.auth.user,
-        'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
-        'context': notification,
-        'subject': ['EXWORKS DELIVERY: ', '#', notification.orderId].join('').toUpperCase(),
-        'template': 'exworks'
-    }, (error, info) => {
-        if (error) {
-            __logger.error(error);
+            transporter.sendMail({
+                'to': __settings.production ? args.order.email : __settings.smtp.auth.user,
+                'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
+                'context': args.order,
+                'subject': ['EXWORKS DELIVERY: ', '#', args.order.orderId].join('').toUpperCase(),
+                'template': 'exworks'
+            }, (error, info) => {
+                if (info) {
+                    deferred.resolve(args);
+                } else if (error) {
+                    var err = new ErrorResponse();
+                    err.error.errors[0].code = 503;
+                    err.error.errors[0].reason = 'Issue in exworks email!';
+                    err.error.errors[0].message = error.message;
+                    deferred.reject(err);
+                }
+            });
         } else {
-            __logger.info(info);
+            deferred.resolve(args);
         };
-        deferred.resolve(notification);
-    });
+    } catch (error) {
+        var err = new ErrorResponse();
+        err.error.errors[0].code = 503;
+        err.error.errors[0].reason = 'Issue in exworks email!';
+        err.error.errors[0].message = error.message;
+        deferred.reject(err);
+    }
 
     return deferred.promise;
 };
 
-exports.supplier = (notification) => {
+exports.suppliers = (args) => {
     var deferred = Q.defer();
 
-    const transporter = nodemailer.createTransport(__settings.smtp);
+    try {
+        var config = _.groupBy(args.order.products, o => o.supplierId);
+        var suppliers = [];
+        Object.keys(config).map(key => {
+            suppliers.push({
+                date: args.order.date,
+                phone: config[key][0].supplier.phone,
+                email: config[key][0].supplier.email,
+                store: args.order.store,
+                payment: args.order.payment,
+                address: config[key][0].supplier.address,
+                orderId: args.order.orderId,
+                products: config[key],
+                shipping: args.order.shipping,
+                recipient: args.order.recipient,
+                supplierId: key,
+                description: config[key][0].supplier.description,
+            });
+        });
 
-    transporter.use('compile', hbs({
-        'viewEngine': {
-            'extName': '.hbs',
-            'layoutsDir': __dirname + '/templates',
-            'partialsDir': __dirname + '/templates',
-            'defaultLayout': 'supplier.hbs'
-        },
-        'extName': '.hbs',
-        'viewPath': __dirname + '/templates'
-    }));
+        suppliers.reduce((promise, supplier) => promise.then(() => {
+            var deferred = Q.defer();
 
-    transporter.sendMail({
-        'to': __settings.production ? notification.email : __settings.smtp.auth.user,
-        'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
-        'context': notification,
-        'subject': ['Purchase Order: ', '#', notification.orderId].join('').toUpperCase(),
-        'template': 'supplier'
-    }, (error, info) => {
-        if (error) {
-            __logger.error(error);
-        } else {
-            __logger.info(info);
-        };
-        deferred.resolve(notification);
-    });
+            supplier.payment = {
+                'vat': 0,
+                'total': 0,
+                'subtotal': 0
+            };
+
+            supplier.products.map(product => {
+                supplier.payment.total += product.cost * product.quantity;
+            })
+
+            supplier.payment.vat = supplier.payment.total * 0.15;
+            supplier.payment.subtotal = supplier.payment.total - supplier.payment.vat;
+            
+            const transporter = nodemailer.createTransport(__settings.smtp);
+
+            transporter.use('compile', hbs({
+                'viewEngine': {
+                    'extName': '.hbs',
+                    'layoutsDir': __dirname + '/templates',
+                    'partialsDir': __dirname + '/templates',
+                    'defaultLayout': 'supplier.hbs'
+                },
+                'extName': '.hbs',
+                'viewPath': __dirname + '/templates'
+            }));
+        
+            transporter.sendMail({
+                'context': {
+                    date: supplier.date,
+                    phone: supplier.phone,
+                    email: supplier.email,
+                    store: supplier.store,
+                    payment: supplier.payment,
+                    address: supplier.address,
+                    orderId: supplier.orderId,
+                    shipping: supplier.shipping,
+                    products: supplier.products,
+                    recipient: supplier.recipient,
+                    supplierId: supplier.supplierId,
+                    description: supplier.description
+                },
+                'to': __settings.production ? supplier.email : __settings.smtp.auth.user,
+                'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
+                'subject': ['PURCHASE ORDER: ', '#', args.order.orderId].join('').toUpperCase(),
+                'template': 'supplier'
+            }, (error, info) => {
+                if (info) {
+                    deferred.resolve(supplier);
+                } else if (error) {
+                    var err = new ErrorResponse();
+                    err.error.errors[0].code = 503;
+                    err.error.errors[0].reason = 'Issue in supplier email!';
+                    err.error.errors[0].message = error.message;
+                    deferred.reject(err);
+                }
+            });
+
+            return deferred.promise;
+        }), Q.when(args))
+        .then(res => {
+            deferred.resolve(args);
+        }, err => {
+            var err = new ErrorResponse();
+            err.error.errors[0].code = 503;
+            err.error.errors[0].reason = 'Issue in supplier email!';
+            err.error.errors[0].message = error.message;
+            deferred.reject(err);
+        });
+    } catch (error) {
+        var err = new ErrorResponse();
+        err.error.errors[0].code = 503;
+        err.error.errors[0].reason = 'Issue in supplier email!';
+        err.error.errors[0].message = error.message;
+        deferred.reject(err);
+    }
 
     return deferred.promise;
 };
 
-exports.confirmation = (notification) => {
+exports.confirmation = (args) => {
     var deferred = Q.defer();
 
     const transporter = nodemailer.createTransport(__settings.smtp);
@@ -87,18 +174,21 @@ exports.confirmation = (notification) => {
     }));
 
     transporter.sendMail({
-        'to': __settings.production ? notification.email : __settings.smtp.auth.user,
+        'to': __settings.production ? args.order.email : __settings.smtp.auth.user,
         'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
-        'context': notification,
-        'subject': ['Order Confirmation: ', '#', notification.orderId].join('').toUpperCase(),
+        'context': args.order,
+        'subject': ['Order Confirmation: ', '#', args.order.orderId].join('').toUpperCase(),
         'template': 'confirmation'
     }, (error, info) => {
-        if (error) {
-            __logger.error(error);
-        } else {
-            __logger.info(info);
-        };
-        deferred.resolve(notification);
+        if (info) {
+            deferred.resolve(args);
+        } else if (error) {
+            var err = new ErrorResponse();
+            err.error.errors[0].code = 503;
+            err.error.errors[0].reason = 'Issue in exworks email!';
+            err.error.errors[0].message = error.message;
+            deferred.reject(err);
+        }
     });
 
     return deferred.promise;

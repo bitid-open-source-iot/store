@@ -188,13 +188,13 @@ try {
                     res.sendFile(__dirname + '/app/admin/dist/admin/index.html');
                 });
 
-                appconsole.use((err, req, res, next) => {
-                    portal.errorResponse.error.code = 500;
-                    portal.errorResponse.error.message = 'Something broke';
-                    portal.errorResponse.error.errors[0].code = 500;
-                    portal.errorResponse.error.errors[0].message = 'Something broke';
-                    portal.errorResponse.hiddenErrors.push(err.stack);
-                    __responder.error(req, res, portal.errorResponse);
+                appconsole.use((error, req, res, next) => {
+                    var err = new ErrorResponse();
+                    err.error.code = 500;
+                    err.error.message = 'Something broke';
+                    err.error.errors[0].code = 500;
+                    err.error.errors[0].message = 'Something broke';
+                    __responder.error(req, res, err);
                 });
 
                 var serverconsole = http.createServer(appconsole);
