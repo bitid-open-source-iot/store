@@ -34,11 +34,12 @@ export class AccountService {
 				valid = false;
 			}
 		}
+
+		this.authenticated.next(valid);
 		if (valid) {
-			this.authenticated.next(true);
-			
 			const params = {
 				filter: [
+					'name',
 					'email',
 					'picture',
 					'username'
@@ -51,8 +52,8 @@ export class AccountService {
 			if (response.ok) {
 				this.user.next(response.result);
 			};
-		} else {
-			this.authenticated.next(false);
+
+			return response;
 		}
 	}
 
@@ -72,12 +73,19 @@ export class AccountService {
 
 	public async retrieve(params) {
 		this.localstorage.set('email', params.email);
-		return await this.api.put(environment.auth, '/tokens/retrieve', params);
+		
+		const response = await this.api.put(environment.auth, '/tokens/retrieve', params);
+
+		return response;
 	}
 
 }
 
 interface User {
+	'name': {
+		'last': string;
+		'first': string;
+	};
 	'email': string;
 	'picture': string;
 	'username': string;

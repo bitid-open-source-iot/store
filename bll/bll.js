@@ -234,7 +234,7 @@ var module = function () {
 
                                     args.order.products = products;
 
-                                    if (typeof(args.order.shipping) != 'undefined') {
+                                    if (typeof (args.order.shipping) != 'undefined') {
                                         args.order.shipping.enabled = false;
                                         args.order.products.map(product => {
                                             if (product.type == 'hardware') {
@@ -968,7 +968,7 @@ var module = function () {
                     'req': req,
                     'res': res
                 };
-    
+
                 var myModule = new dalModule.module();
                 myModule.stores.validate(args)
                     .then(myModule.reviews.public.list, null)
@@ -1093,7 +1093,7 @@ var module = function () {
                     'req': req,
                     'res': res
                 };
-    
+
                 var myModule = new dalModule.module();
                 myModule.stores.validate(args)
                     .then(myModule.products.public.get, null)
@@ -1103,13 +1103,13 @@ var module = function () {
                         __responder.error(req, res, err);
                     });
             },
-    
+
             list: (req, res) => {
                 var args = {
                     'req': req,
                     'res': res
                 };
-    
+
                 var myModule = new dalModule.module();
                 myModule.stores.validate(args)
                     .then(myModule.products.public.list, null)
@@ -1470,6 +1470,21 @@ var module = function () {
     };
 
     var bllCustomers = {
+        iam: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.customers.iam(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
         add: (req, res) => {
             var args = {
                 'req': req,
@@ -1540,6 +1555,21 @@ var module = function () {
 
             var myModule = new dalModule.module();
             myModule.customers.delete(args)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
+        requestaccess: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.customers.requestaccess(args)
                 .then(args => {
                     __responder.success(req, res, args.result);
                 }, err => {

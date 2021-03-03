@@ -5,6 +5,11 @@ router.use(function timeLog(req, res, next) {
     next();
 });
 
+router.post('/iam', (req, res) => {
+    var myModule = new bll.module();
+    myModule.customers.iam(req, res);
+});
+
 router.post('/add', (req, res) => {
     var myModule = new bll.module();
     myModule.customers.add(req, res);
@@ -28,6 +33,11 @@ router.post('/update', (req, res) => {
 router.post('/delete', (req, res) => {
     var myModule = new bll.module();
     myModule.customers.delete(req, res);
+});
+
+router.post('/request-access', (req, res) => {
+    var myModule = new bll.module();
+    myModule.customers.requestaccess(req, res);
 });
 
 module.exports = router;

@@ -223,6 +223,23 @@ if (warnings.count() == 0) {
     });
 };
 
+var customers = db.getCollection('tblCustomers');
+if (customers.count() == 0) {
+    db.tblCustomers.insert({
+        '_id': ObjectId('000000000000000000000001'),
+        'email': 'xxx@xxx.co.za',
+        'status': 'accepted',
+        'storeId': ObjectId('000000000000000000000001'),
+        'serverDate': ISODate()
+    });
+    db.tblCustomers.ensureIndex({
+        'email': 1,
+        'storeId': 1
+    }, {
+        'unique': true
+    });
+};
+
 var couriers = db.getCollection('tblCouriers');
 if (couriers.count() == 0) {
     db.tblCouriers.insert({

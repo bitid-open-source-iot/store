@@ -1261,6 +1261,7 @@ var module = function () {
 			} else {
 				var filter = {
 					_id: 1,
+					maps: 1,
 					logo: 1,
 					appId: 1,
 					cover: 1,
@@ -1556,12 +1557,12 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						customers: '$customers.email'
+						customers: '$customers'
 					}
 				},
 				{
 					$addFields: {
-						users: '$bitid.auth.users.email'
+						users: '$bitid.auth.users'
 					}
 				},
 				{
@@ -1606,6 +1607,7 @@ var module = function () {
 						};
 
 						if (args.store.private) {
+							args.store.users = args.store.users.filter(o => o.status == 'accepted').map(o => o.email)
 							if (args.store.users.includes(args.req.body.header.email)) {
 								deferred.resolve(args);
 							} else {
@@ -1736,11 +1738,11 @@ var module = function () {
 		public: {
 			list: (args) => {
 				var deferred = Q.defer();
-	
+
 				var params = {
 					'productId': ObjectId(args.req.body.productId)
 				};
-	
+
 				var filter = {};
 				if (typeof (args.req.body.filter) != 'undefined') {
 					filter._id = 0;
@@ -1752,7 +1754,7 @@ var module = function () {
 						};
 					});
 				};
-	
+
 				db.call({
 					'params': params,
 					'filter': filter,
@@ -1768,7 +1770,7 @@ var module = function () {
 						err.error.errors[0].reason = error.message;
 						deferred.reject(err);
 					});
-	
+
 				return deferred.promise;
 			}
 		},
@@ -2359,12 +2361,12 @@ var module = function () {
 		public: {
 			get: (args) => {
 				var deferred = Q.defer();
-	
+
 				var params = {
 					'_id': ObjectId(args.req.body.productId),
 					'storeId': ObjectId(args.req.body.storeId)
 				};
-	
+
 				var filter = {};
 				if (typeof (args.req.body.filter) != 'undefined') {
 					filter._id = 0;
@@ -2376,7 +2378,7 @@ var module = function () {
 						};
 					});
 				};
-			
+
 				db.call({
 					'params': params,
 					'filter': filter,
@@ -2393,13 +2395,13 @@ var module = function () {
 						err.error.errors[0].message = error.message;
 						deferred.reject(err);
 					});
-	
+
 				return deferred.promise;
 			},
-	
+
 			list: (args) => {
 				var deferred = Q.defer();
-	
+
 				var match = {
 					'storeId': ObjectId(args.req.body.storeId)
 				};
@@ -2425,7 +2427,7 @@ var module = function () {
 						};
 					});
 				};
-	
+
 				var params = [
 					{
 						$lookup: {
@@ -2464,7 +2466,7 @@ var module = function () {
 						$project: filter
 					}
 				];
-	
+
 				db.call({
 					'params': params,
 					'operation': 'aggregate',
@@ -2480,7 +2482,7 @@ var module = function () {
 						err.error.errors[0].message = error.message;
 						deferred.reject(err);
 					});
-	
+
 				return deferred.promise;
 			}
 		},
@@ -2516,7 +2518,7 @@ var module = function () {
 					var params = {
 						'location': {
 							'enabled': false,
-							'latitude':	0,
+							'latitude': 0,
 							'longitude': 0
 						},
 						'cost': args.req.body.cost || 0,
@@ -2540,14 +2542,14 @@ var module = function () {
 						'description': args.req.body.description
 					};
 
-					if (typeof(args.req.body.location) != 'undefined' && args.req.body.location != null) {
-						if (typeof(args.req.body.location.enabled) != 'undefined' && args.req.body.location.enabled != null) {
+					if (typeof (args.req.body.location) != 'undefined' && args.req.body.location != null) {
+						if (typeof (args.req.body.location.enabled) != 'undefined' && args.req.body.location.enabled != null) {
 							params.location.enabled = args.req.body.location.enabled;
 						};
-						if (typeof(args.req.body.location.latitude) != 'undefined' && args.req.body.location.latitude != null) {
+						if (typeof (args.req.body.location.latitude) != 'undefined' && args.req.body.location.latitude != null) {
 							params.location.latitude = args.req.body.location.latitude;
 						};
-						if (typeof(args.req.body.location.longituded) != 'undefined' && args.req.body.location.longituded != null) {
+						if (typeof (args.req.body.location.longituded) != 'undefined' && args.req.body.location.longituded != null) {
 							params.location.longituded = args.req.body.location.longituded;
 						};
 					};
@@ -3414,7 +3416,7 @@ var module = function () {
 		public: {
 			list: (args) => {
 				var deferred = Q.defer();
-	
+
 				var params = {
 					storeId: ObjectId(args.req.body.storeId)
 				};
@@ -3430,7 +3432,7 @@ var module = function () {
 						};
 					});
 				};
-	
+
 				db.call({
 					'params': params,
 					'filter': filter,
@@ -3447,7 +3449,7 @@ var module = function () {
 						err.error.errors[0].message = error.message;
 						deferred.reject(err);
 					});
-	
+
 				return deferred.promise;
 			}
 		},
@@ -3834,6 +3836,43 @@ var module = function () {
 	};
 
 	var dalCustomers = {
+		iam: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'email': args.req.body.header.email,
+				'status': 'accepted'
+			};
+
+			var filter = {
+				'_id': 1
+			};
+
+			db.call({
+				'params': params,
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblCustomers',
+				'allowNoRecordsFound': true
+			})
+				.then(result => {
+					if (result.length == 0) {
+						args.result = false;
+					} else if (result.length == 1) {
+						args.result = true;
+					};
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
 		add: (args) => {
 			var deferred = Q.defer();
 
@@ -3864,6 +3903,7 @@ var module = function () {
 
 					var params = {
 						'email': args.req.body.email,
+						'status': 'accepted',
 						'storeId': ObjectId(args.req.body.storeId),
 						'serverDate': new Date()
 					};
@@ -4171,6 +4211,35 @@ var module = function () {
 				.then(db.call, null)
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					err.error.errors[0].message = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
+		requestaccess: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'email': args.req.body.email,
+				'status': 'requested',
+				'storeId': ObjectId(args.req.body.storeId),
+				'serverDate': new Date()
+			};
+
+			db.call({
+				'params': params,
+				'operation': 'insert',
+				'collection': 'tblCustomers'
+			})
+				.then(result => {
+					args.result = JSON.parse(JSON.stringify(result[0]));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -5322,11 +5391,11 @@ var module = function () {
 		public: {
 			list: (args) => {
 				var deferred = Q.defer();
-	
+
 				var params = {
 					storeId: ObjectId(args.req.body.storeId)
 				};
-	
+
 				var filter = {};
 				if (typeof (args.req.body.filter) != 'undefined') {
 					filter._id = 0;
@@ -5340,7 +5409,7 @@ var module = function () {
 						};
 					});
 				};
-	
+
 				db.call({
 					'params': params,
 					'filter': filter,
@@ -5357,7 +5426,7 @@ var module = function () {
 						err.error.errors[0].message = error.message;
 						deferred.reject(err);
 					});
-	
+
 				return deferred.promise;
 			}
 		},

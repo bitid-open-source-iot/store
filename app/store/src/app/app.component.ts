@@ -8,6 +8,7 @@ import { UpdateService } from './libs/update/update.service';
 import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { WishlistService } from './services/wishlist/wishlist.service';
+import { CustomersService } from './services/customers/customers.service';
 import { PrivateMessageService } from './libs/private-message/private-message.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit {
 	@ViewChild('search', { static: true }) private searchbtn: MatButton;
 	@ViewChild('wishlist', { static: true }) private wishlistbtn: MatButton;
 
-	constructor(public cart: CartService, private config: StoreService, private router: Router, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private popup: PrivateMessageService) { }
+	constructor(public cart: CartService, private popup: PrivateMessageService, private config: StoreService, private router: Router, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, public wishlist: WishlistService, private customers: CustomersService) { }
 
 	public map: boolean;
 	public page: string = '';
@@ -61,12 +62,9 @@ export class AppComponent implements OnInit {
 		await this.splashscreen.show();
 
 		await this.cart.init();
-		await this.config.init();
 		await this.update.init();
 		await this.account.init();
 		await this.wishlist.init();
-		
-		await this.splashscreen.hide();
 	}
 
 	ngOnInit(): void {
@@ -95,10 +93,24 @@ export class AppComponent implements OnInit {
 			}
 		});
 
-		this.config.value.subscribe(store => {
+		this.config.value.subscribe(async store => {
 			if (store) {
-				this.map = this.store.maps;
+				this.map = store.maps;
 				this.store = store;
+				this.initialize();
+				
+				if (window.location.pathname != '/authenticate') {
+					if (this.store.private) {
+						const response = await this.customers.iam({});
+						if (response.ok && !response.result) {
+							this.popup.show();
+						} else if (!response.ok) {
+							this.popup.show();
+						}
+					}
+				}
+		
+				await this.splashscreen.hide();
 			};
 		});
 
@@ -143,14 +155,9 @@ export class AppComponent implements OnInit {
 
 		this.account.authenticated.subscribe(authenticated => {
 			this.authenticated = authenticated;
-			// if (!this.authenticated && this.store.private.value) {
-			// 	this.popup.show();
-			// } else if (this.authenticated && this.store.private.value) {
-			// 	// check for customer
-			// };
 		});
-
-		this.initialize();
+		
+		this.config.init();
 	}
 
 }

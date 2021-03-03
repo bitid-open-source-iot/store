@@ -13,6 +13,10 @@ export class CustomersService {
 
     constructor(private api: ApiService) { }
 
+    public async iam(params) {
+        return await this.api.post(environment.store, '/store/customers/iam', params);
+    }
+
     public async add(params) {
         return await this.api.post(environment.store, '/store/customers/add', params);
     }
