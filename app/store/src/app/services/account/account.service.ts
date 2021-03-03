@@ -71,6 +71,10 @@ export class AccountService {
 		this.router.navigate(['/home']);
 	}
 
+	public async requestaccess(params) {
+		return await this.api.post(environment.store, '/store/customers/request-access', params);
+	}
+
 	public async retrieve(params) {
 		this.localstorage.set('email', params.email);
 		

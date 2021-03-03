@@ -2,6 +2,7 @@ export class Customer {
 
     public role?: number;
     public email?: string;
+    public status?: string;
     public storeId?: string;
     public customerId?: string;
 
@@ -12,6 +13,9 @@ export class Customer {
             }
             if (typeof (args.email) != 'undefined' && args.email != null) {
                 this.email = args.email;
+            }
+            if (typeof (args.status) != 'undefined' && args.status != null) {
+                this.status = args.status;
             }
             if (typeof (args.storeId) != 'undefined' && args.storeId != null) {
                 this.storeId = args.storeId;
@@ -27,6 +31,7 @@ export class Customer {
 interface CUSTOMER {
     role?: number;
     email?: string;
+    status?: string;
     storeId?: string;
     customerId?: string;
 }

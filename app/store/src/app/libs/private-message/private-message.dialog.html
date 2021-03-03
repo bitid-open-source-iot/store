@@ -21,5 +21,9 @@
         <button mat-stroked-button color="primary" (click)="account.signup()" *ngIf="!authenticated">
             Sign Up
         </button>
+
+        <button mat-flat-button color="primary" (click)="request()" *ngIf="authenticated">
+            Request Access
+        </button>
     </div>
 </mat-content>

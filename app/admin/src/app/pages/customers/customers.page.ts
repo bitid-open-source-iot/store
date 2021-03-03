@@ -22,7 +22,7 @@ export class CustomersPage implements OnInit, OnDestroy {
 
 	constructor(private toast: ToastService, private sheet: OptionsService, private confirm: ConfirmService, private router: Router, private service: CustomersService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
 
-	public columns: string[] = ['email', 'options'];
+	public columns: string[] = ['email', 'status', 'options'];
 	public loading: boolean;
 	public customers: MatTableDataSource<Customer> = new MatTableDataSource<Customer>();
 	private subscriptions: any = {};
@@ -37,6 +37,7 @@ export class CustomersPage implements OnInit, OnDestroy {
 			filter: [
 				'role',
 				'email',
+				'status',
 				'customerId'
 			]
 		});
@@ -51,57 +52,84 @@ export class CustomersPage implements OnInit, OnDestroy {
 	}
 
 	public async options(customer: Customer) {
+		let options = [
+			{
+				icon: 'edit',
+				title: 'Edit Customer',
+				handler: () => {
+					this.router.navigate(['/customers', 'editor'], {
+						queryParams: {
+							mode: 'update',
+							customerId: customer.customerId
+						}
+					});
+				},
+				disabled: [0, 1]
+			},
+			{
+				icon: 'delete',
+				title: 'Delete',
+				danger: true,
+				handler: () => {
+					this.confirm.show({
+						message: 'Delete ' + customer.email,
+						handler: async () => {
+							this.loading = true;
+
+							const response = await this.service.delete({
+								customerId: customer.customerId
+							});
+
+							if (response.ok) {
+								for (let i = 0; i < this.customers.data.length; i++) {
+									if (this.customers.data[i].customerId == customer.customerId) {
+										this.customers.data.splice(i, 1);
+										break;
+									}
+								}
+								this.customers.data = this.customers.data.map(o => new Customer(o));
+								this.toast.success('Customer was removed!');
+							} else {
+								this.toast.error(response.error.message);
+							}
+
+							this.loading = false;
+						}
+					});
+				},
+				disabled: [0, 1, 2, 3, 4]
+			}
+		];
+
+		if (customer.status == 'requested') {
+			options.unshift({
+				icon: 'done',
+				title: 'Accept Customer',
+				handler: async () => {
+					this.loading = true;
+
+					const response = await this.service.update({
+						status: 'accepted',
+						storeId: customer.storeId,
+						customerId: customer.customerId
+					});
+			
+					if (response.ok) {
+						customer.status = 'accepted';
+					} else {
+						this.toast.error(response.error.message);
+					}
+
+					this.loading = false;
+				},
+				disabled: [0, 1]
+			})
+		}
+
 		this.sheet.show({
 			role: customer.role,
 			title: customer.email,
-			options: [
-				{
-					icon: 'edit',
-					title: 'Edit Customer',
-					handler: () => {
-						this.router.navigate(['/customers', 'editor'], {
-							queryParams: {
-								mode: 'update',
-								customerId: customer.customerId
-							}
-						});
-					},
-					disabled: [0, 1]
-				},
-				{
-					icon: 'delete',
-					title: 'Delete',
-					danger: true,
-					handler: () => {
-						this.confirm.show({
-							message: 'Delete ' + customer.email,
-							handler: async () => {
-								this.loading = true;
-
-								const response = await this.service.delete({
-									customerId: customer.customerId
-								});
-
-								if (response.ok) {
-									for (let i = 0; i < this.customers.data.length; i++) {
-										if (this.customers.data[i].customerId == customer.customerId) {
-											this.customers.data.splice(i, 1);
-											break;
-										}
-									}
-									this.customers.data = this.customers.data.map(o => new Customer(o));
-									this.toast.success('Customer was removed!');
-								} else {
-									this.toast.error(response.error.message);
-								}
-
-								this.loading = false;
-							}
-						});
-					},
-					disabled: [0, 1, 2, 3, 4]
-				}
-			]
+			options
 		});
 	}
 

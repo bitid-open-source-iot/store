@@ -4129,6 +4129,9 @@ var module = function () {
 					if (typeof (args.req.body.email) != 'undefined') {
 						update.$set.email = args.req.body.email;
 					};
+					if (typeof (args.req.body.status) != 'undefined') {
+						update.$set.status = args.req.body.status;
+					};
 
 					deferred.resolve({
 						'params': params,
@@ -4227,7 +4230,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.email,
+				'email': args.req.body.header.email,
 				'status': 'requested',
 				'storeId': ObjectId(args.req.body.storeId),
 				'serverDate': new Date()
