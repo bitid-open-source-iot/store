@@ -452,11 +452,7 @@ var module = function () {
                 .then(emails.confirmation, null)
                 .then(emails.suppliers, null)
                 .then(emails.exworks, null)
-                .then(args => {
-                    deferred.resolve(args.order);
-                }, err => {
-                    deferred.reject(err);
-                });
+                .then(deferred.resolve, deferred.reject);
 
             return deferred.promise;
         },

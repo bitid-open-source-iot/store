@@ -2840,7 +2840,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				productId = {
+				productId: {
 					$in: args.order.products.map(product => ObjectId(product.productId))
 				},
 				status: 'available'
@@ -2881,14 +2881,37 @@ var module = function () {
 					
 					var items = JSON.parse(JSON.stringify(result));
 
+					var params = {
+						"_id": {
+							$in: []
+						}
+					};
+
+					var update = {
+						$set: {
+							'status': 'sold',
+						}
+					}
+
 					args.order.products.map(product => {
 						items.map(item => {
 							if (item.productId == product.productId) {
-								debugger
 								item.vouchers = item.vouchers.slice(0, product.quantity)
+								params._id.$in = params._id.$in.concat(item.vouchers.map(o => ObjectId(o.voucherId)));
 							}
 						})
 					})
+					
+					args.order.vouchers = [];
+
+					items.map(item => item.vouchers.map(o => args.order.vouchers.push(o)))
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'updateMany',
+						'collection': 'tblVouchers'
+					});
 
 					return deferred.promise;
 				}, null)

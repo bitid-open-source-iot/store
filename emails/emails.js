@@ -27,17 +27,9 @@ exports.exworks = (args) => {
                 'context': args.order,
                 'subject': ['EXWORKS DELIVERY: ', '#', args.order.orderId].join('').toUpperCase(),
                 'template': 'exworks'
-            }, (error, info) => {
-                if (info) {
-                    deferred.resolve(args);
-                } else if (error) {
-                    var err = new ErrorResponse();
-                    err.error.errors[0].code = 503;
-                    err.error.errors[0].reason = 'Issue in exworks email!';
-                    err.error.errors[0].message = error.message;
-                    deferred.reject(err);
-                }
             });
+
+            deferred.resolve(args);
         } else {
             deferred.resolve(args);
         };
@@ -123,17 +115,9 @@ exports.suppliers = (args) => {
                 'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
                 'subject': ['PURCHASE ORDER: ', '#', args.order.orderId].join('').toUpperCase(),
                 'template': 'supplier'
-            }, (error, info) => {
-                if (info) {
-                    deferred.resolve(supplier);
-                } else if (error) {
-                    var err = new ErrorResponse();
-                    err.error.errors[0].code = 503;
-                    err.error.errors[0].reason = 'Issue in supplier email!';
-                    err.error.errors[0].message = error.message;
-                    deferred.reject(err);
-                }
             });
+            
+            deferred.resolve(supplier);
 
             return deferred.promise;
         }), Q.when(args))
@@ -179,17 +163,9 @@ exports.confirmation = (args) => {
         'context': args.order,
         'subject': ['Order Confirmation: ', '#', args.order.orderId].join('').toUpperCase(),
         'template': 'confirmation'
-    }, (error, info) => {
-        if (info) {
-            deferred.resolve(args);
-        } else if (error) {
-            var err = new ErrorResponse();
-            err.error.errors[0].code = 503;
-            err.error.errors[0].reason = 'Issue in exworks email!';
-            err.error.errors[0].message = error.message;
-            deferred.reject(err);
-        }
     });
+            
+    deferred.resolve(args);
 
     return deferred.promise;
 };

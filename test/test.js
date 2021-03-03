@@ -1538,26 +1538,26 @@ describe('Remove Added Items', function () {
             });
     });
 
-    it('/store/vouchers/delete', function (done) {
-        this.timeout(5000);
+    // it('/store/vouchers/delete', function (done) {
+    //     this.timeout(5000);
 
-        tools.api.vouchers.delete()
-            .then((result) => {
-                try {
-                    result.should.have.property('deleted');
-                    expect(result.deleted).to.equal(1);
-                    done();
-                } catch (e) {
-                    done(e);
-                };
-            }, (err) => {
-                try {
-                    done(err);
-                } catch (e) {
-                    done(e);
-                };
-            });
-    });
+    //     tools.api.vouchers.delete()
+    //         .then((result) => {
+    //             try {
+    //                 result.should.have.property('deleted');
+    //                 expect(result.deleted).to.equal(1);
+    //                 done();
+    //             } catch (e) {
+    //                 done(e);
+    //             };
+    //         }, (err) => {
+    //             try {
+    //                 done(err);
+    //             } catch (e) {
+    //                 done(e);
+    //             };
+    //         });
+    // });
 
     it('/store/customers/delete', function (done) {
         this.timeout(5000);
