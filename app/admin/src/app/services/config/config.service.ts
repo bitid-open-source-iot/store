@@ -14,14 +14,7 @@ export class ConfigService {
 	constructor(private api: ApiService) { }
 
 	public async init() {
-		let url: string;
-		if (environment.production) {
-			url = window.location.origin;
-		} else {
-			url = environment.store;
-		}
-
-		const response = await this.api.put(url, '/store/config/get', {});
+		const response = await this.api.put(environment.store, '/store/config/get', {});
 
 		if (response.ok) {
 			Object.keys(response.result).map(key => {

@@ -19,6 +19,7 @@ mat-content {
     .products {
         display: flex;
         padding: 16px 0px;
+        flex-wrap: wrap;
         flex-direction: row;
         .product {
             width: calc(25% - 10px);
