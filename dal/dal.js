@@ -1939,6 +1939,7 @@ var module = function () {
 
 				var params = {
 					'_id': ObjectId(args.req.body.productId),
+					'visible': true,
 					'storeId': ObjectId(args.req.body.storeId)
 				};
 
@@ -1978,6 +1979,7 @@ var module = function () {
 				var deferred = Q.defer();
 
 				var match = {
+					'visible': true,
 					'storeId': ObjectId(args.req.body.storeId)
 				};
 
