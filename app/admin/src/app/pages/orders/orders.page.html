@@ -1,6 +1,50 @@
 <mat-content>
     <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
 
+    <mat-chip-list class="filterbar" *ngIf="filter.storeId.length > 0 || filter.status.length > 0 || (filter.date.to && filter.date.from)">
+        <mat-chip *ngFor="let id of filter.storeId" (removed)="unfilter('storeId', id)">
+            <mat-icon>
+                store
+            </mat-icon>
+            
+            <mat-label>
+                {{ describe(stores.data, 'storeId', id) }}
+            </mat-label>
+            
+            <mat-icon matChipRemove>
+                cancel
+            </mat-icon>
+        </mat-chip>
+        
+        <mat-chip *ngIf="filter.date.to && filter.date.from" (removed)="unfilter('date', true)">
+            <mat-icon>
+                date_range
+            </mat-icon>
+            
+            <mat-label>
+                {{ filter.date.from }} - {{ filter.date.to }}
+            </mat-label>
+            
+            <mat-icon matChipRemove>
+                cancel
+            </mat-icon>
+        </mat-chip>
+
+        <mat-chip *ngFor="let key of filter.status" (removed)="unfilter('status', key)">
+            <mat-icon>
+                batch_prediction
+            </mat-icon>
+            
+            <mat-label>
+                {{ key }}
+            </mat-label>
+            
+            <mat-icon matChipRemove>
+                cancel
+            </mat-icon>
+        </mat-chip>
+    </mat-chip-list>
+
     <table mat-table [dataSource]="orders" matSort>
         <ng-container matColumnDef="orderId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>

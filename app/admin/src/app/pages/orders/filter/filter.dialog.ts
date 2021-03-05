@@ -5,12 +5,13 @@ import { StoresService } from 'src/app/services/stores/stores.service';
 import { FormErrorService } from 'src/app/services/form-error/form-error.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Inject, OnInit, Component, OnDestroy } from '@angular/core';
+import { Inject, OnInit, Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 @Component({
 	selector: 'orders-filter-dialog',
 	styleUrls: ['./filter.dialog.scss'],
-	templateUrl: './filter.dialog.html'
+	templateUrl: './filter.dialog.html',
+    encapsulation: ViewEncapsulation.None
 })
 
 export class OrdersFilterDialog implements OnInit, OnDestroy {
@@ -64,6 +65,21 @@ export class OrdersFilterDialog implements OnInit, OnDestroy {
 			this.toast.error(response.error.message);
 		}
 
+		if (typeof(this.config.date) != 'undefined' && this.config.date != null) {
+			if (typeof(this.config.date.to) != 'undefined' && this.config.date.to != null) {
+				(this.form.controls.date as FormGroup).controls.to.setValue(moment(this.config.date.to).format('YYYY-MM-DD'));
+			};
+			if (typeof(this.config.date.from) != 'undefined' && this.config.date.from != null) {
+				(this.form.controls.date as FormGroup).controls.from.setValue(moment(this.config.date.from).format('YYYY-MM-DD'));
+			};
+		};
+		if (typeof(this.config.status) != 'undefined' && this.config.status != null) {
+			this.form.controls.status.setValue(this.config.status);
+		};
+		if (typeof(this.config.storeId) != 'undefined' && this.config.storeId != null) {
+			this.form.controls.storeId.setValue(this.config.storeId);
+		};
+
 		this.loading = false;
 	}
 
@@ -71,11 +87,6 @@ export class OrdersFilterDialog implements OnInit, OnDestroy {
 		this.subscriptions.form = this.form.valueChanges.subscribe(data => {
 			this.errors = this.formerror.validateForm(this.form, this.errors, true);
 		});
-
-		(this.form.controls.date as FormGroup).controls.to.setValue(moment(this.config.date.to).format('YYYY-MM-DD'));
-		(this.form.controls.date as FormGroup).controls.from.setValue(moment(this.config.date.from).format('YYYY-MM-DD'));
-		this.form.controls.status.setValue(this.config.status);
-		this.form.controls.storeId.setValue(this.config.storeId);
 
 		this.load();
 	}

@@ -1,6 +1,22 @@
 <mat-content>
     <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
 
+    <mat-chip-list class="filterbar" *ngIf="filter.storeId.length > 0">
+        <mat-chip *ngFor="let id of filter.storeId" (removed)="unfilter('storeId', id)">
+            <mat-icon>
+                store
+            </mat-icon>
+            
+            <mat-label>
+                {{ describe(stores.data, 'storeId', id) }}
+            </mat-label>
+            
+            <mat-icon matChipRemove>
+                cancel
+            </mat-icon>
+        </mat-chip>
+    </mat-chip-list>
+
     <table mat-table [dataSource]="collectionpoints" matSort>
         <ng-container matColumnDef="description">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>

@@ -109,13 +109,6 @@ mat-list {
         width: 100%;
     }
 }
-mat-progress-bar {
-    top: 0px !important;
-    left: 0px !important;
-    right: 0px !important;
-    z-index: 100 !important;
-    position: absolute !important;
-}
 home-page,
 orders-page,
 stores-page,
@@ -136,10 +129,10 @@ customers-editor-page,
 collection-points-page,
 departments-editor-page,
 collection-points-editor-page {
-    height: calc(100vh - 56px);
-    display: flex;
-    position: relative;
-    flex-direction: column;
+    height: calc(100vh - 56px) !important;
+    display: flex !important;
+    position: relative !important;
+    flex-direction: column !important;
     mat-footer {
         display: flex;
         align-items: center;
@@ -190,4 +183,16 @@ tfoot td {
 .ql-container {
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+}
+
+.filterbar {
+    padding: 8px 16px !important;
+    background-color: #FAFAFA;
+    mat-chip {
+        padding: 0px 5px !important;
+        mat-label {
+            font-size: 12px !important;
+            padding-left: 8px !important;
+        }
+    }
 }

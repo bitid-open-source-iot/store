@@ -28,6 +28,7 @@ import { StoresService } from './services/stores/stores.service';
 import { AccountService } from './services/account/account.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { ReviewsService } from './services/reviews/reviews.service';
+import { FiltersService } from './services/filters/filters.service';
 import { ProductsService } from './services/products/products.service';
 import { CouriersService } from './services/couriers/couriers.service';
 import { VouchersService } from './services/vouchers/vouchers.service';
@@ -76,6 +77,7 @@ import { environment } from '../environments/environment';
         AccountService,
         ButtonsService,
         ReviewsService,
+        FiltersService,
         VouchersService,
         ProductsService,
         CouriersService,

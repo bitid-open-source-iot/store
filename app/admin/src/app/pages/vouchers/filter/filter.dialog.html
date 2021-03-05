@@ -1,0 +1,39 @@
+<mat-toolbar>
+    <mat-label class="spacer">
+        Filter Vouchers
+    </mat-label>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-content>
+    <form [formGroup]="form" (ngSubmit)="!loading && !form.invalid && submit()">
+        <mat-form-field appearance="outline">
+            <mat-label>
+                Store(s)
+            </mat-label>
+
+            <mat-select name="storeId" formControlName="storeId" multiple>
+                <mat-option [formGroup]="filter">
+                    <ngx-mat-select-search placeholderLabel="filter stores" noEntriesFoundLabel="no stores found" formControlName="store"></ngx-mat-select-search>
+                </mat-option>
+
+                <mat-option *ngFor="let store of stores.data | orderBy : 'description' | filterBy : { description: filter.value.store }" [value]="store.storeId">
+                    {{ store.description }}
+                </mat-option>
+            </mat-select>
+
+            <mat-error *ngIf="errors.storeId">
+                {{ errors.storeId }}
+            </mat-error>
+        </mat-form-field>
+
+        <button type="submit" color="primary" mat-flat-button>
+            submit
+        </button>
+    </form>
+</mat-content>

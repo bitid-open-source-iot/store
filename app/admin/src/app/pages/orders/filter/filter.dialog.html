@@ -12,10 +12,6 @@
 
 <mat-content>
     <form [formGroup]="form" (ngSubmit)="!form.invalid && !loading && submit()">
-        <h2>
-            Date
-        </h2>
-
         <section formGroupName="date">
             <mat-form-field appearance="outline">
                 <mat-label>
@@ -82,13 +78,9 @@
                 {{ errors.status }}
             </mat-error>
         </mat-form-field>
-
-        <button #button type="submit" style="display: none;"></button>
+        
+        <button type="submit" color="primary" mat-flat-button>
+            submit
+        </button>
     </form>
 </mat-content>
-
-<mat-footer>
-    <button type="button" mat-flat-button (click)="button.click()">
-        submit
-    </button>
-</mat-footer>

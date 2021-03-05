@@ -1,10 +1,15 @@
+import { Store } from 'src/app/classes/store';
 import { Review } from 'src/app/classes/review';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { StoresService } from 'src/app/services/stores/stores.service';
 import { OptionsService } from 'src/app/libs/options/options.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ReviewsService } from 'src/app/services/reviews/reviews.service';
+import { FiltersService } from 'src/app/services/filters/filters.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { ReviewsFilterDialog } from './filter/filter.dialog';
 import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
@@ -17,8 +22,11 @@ export class ReviewsPage implements OnInit, OnDestroy {
 
 	@ViewChild(MatSort, { static: true }) private sort: MatSort;
 
-	constructor(private sheet: OptionsService, private toast: ToastService, private service: ReviewsService, private buttons: ButtonsService) { }
+	constructor(private sheet: OptionsService, private dialog: MatDialog, private toast: ToastService, private stores: StoresService, private filters: FiltersService, private service: ReviewsService, private buttons: ButtonsService) { }
 
+	public filter = this.filters.get({
+		storeId: []
+	});
 	public columns: string[] = ['store.description', 'product.title', 'message', 'score', 'status', 'options'];
 	public loading: boolean;
 	public reviews: MatTableDataSource<Review> = new MatTableDataSource<Review>();
@@ -39,7 +47,8 @@ export class ReviewsPage implements OnInit, OnDestroy {
 				'message',
 				'product',
 				'reviewId'
-			]
+			],
+			storeId: this.filter.storeId
 		});
 
 		if (response.ok) {
@@ -50,6 +59,31 @@ export class ReviewsPage implements OnInit, OnDestroy {
 
 		this.loading = false;
 	}
+
+	private async load() {
+		this.loading = true;
+
+		const stores = await this.stores.list({
+			filter: [
+				'storeId',
+				'description'
+			]
+		});
+
+		if (stores.ok) {
+			this.stores.data = stores.result.map(o => new Store(o));
+		} else {
+			this.stores.data = [];
+		}
+
+		this.loading = false;
+	}
+
+    public unfilter(key, value) {
+        this.filter[key] = this.filter[key].filter(o => o != value);
+        this.filters.update(this.filter);
+        this.list();
+    }
 
 	public async options(review: Review) {
 		this.sheet.show({
@@ -104,19 +138,51 @@ export class ReviewsPage implements OnInit, OnDestroy {
 		});
 	}
 
+    public describe(array: any[], key: string, id: string) {
+        let result = '-';
+        array.map(o => {
+            if (o[key] == id) {
+                result = o.description;
+            }
+        });
+        return result;
+    }
+
 	ngOnInit(): void {
 		this.buttons.hide('add');
 		this.buttons.hide('close');
-		this.buttons.hide('filter');
+		this.buttons.show('filter');
 		this.buttons.hide('search');
 
 		this.sort.active = 'message';
 		this.sort.direction = 'desc';
 		this.reviews.sort = this.sort;
 
-		this.list();
+		this.subscriptions.filter = this.buttons.filter.click.subscribe(async event => {
+			const dialog = await this.dialog.open(ReviewsFilterDialog, {
+                data: this.filter,
+                panelClass: 'filter-dialog'
+            });
+
+            await dialog.afterClosed().subscribe(async result => {
+                if (result) {
+                    Object.keys(result).map(key => {
+                        this.filter[key] = result[key];
+                    });
+                    this.filters.update(this.filter);
+                    this.list();
+                };
+            });
+		});
+
+		(async () => {
+			await this.list();
+			await this.load();
+		})();
 	}
 
-	ngOnDestroy(): void { }
+	ngOnDestroy(): void {
+		this.subscriptions.filter.unsubscribe();
+	}
 
 }

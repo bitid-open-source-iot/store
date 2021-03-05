@@ -19,6 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatChipsModule } from '@angular/material/chips';
 
 const routes: Routes = [
     {
@@ -36,6 +37,7 @@ const routes: Routes = [
         MatIconModule,
         MatInputModule,
         MatTableModule,
+        MatChipsModule,
         MatSelectModule,
         MatDialogModule,
         MatButtonModule,

@@ -1,14 +1,19 @@
+import { Store } from 'src/app/classes/store';
 import { Router } from '@angular/router';
-import { Customer } from 'src/app/classes/customer';
 import { MatSort } from '@angular/material/sort';
+import { Customer } from 'src/app/classes/customer';
+import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { StoresService } from 'src/app/services/stores/stores.service';
 import { ConfirmService } from 'src/app/libs/confirm/confirm.service';
 import { OptionsService } from 'src/app/libs/options/options.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
+import { FiltersService } from 'src/app/services/filters/filters.service';
 import { CustomersService } from 'src/app/services/customers/customers.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { LocalstorageService } from 'src/app/services/localstorage/localstorage.service';
 import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { CustomersFilterDialog } from './filter/filter.dialog';
 
 @Component({
 	selector: 'customers-page',
@@ -20,8 +25,11 @@ export class CustomersPage implements OnInit, OnDestroy {
 
 	@ViewChild(MatSort, { static: true }) private sort: MatSort;
 
-	constructor(private toast: ToastService, private sheet: OptionsService, private confirm: ConfirmService, private router: Router, private service: CustomersService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
+	constructor(private toast: ToastService, private dialog: MatDialog, private sheet: OptionsService, public stores: StoresService, private confirm: ConfirmService, private router: Router, private filters: FiltersService, private service: CustomersService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
 
+	public filter = this.filters.get({
+		storeId: []
+	});
 	public columns: string[] = ['email', 'status', 'options'];
 	public loading: boolean;
 	public customers: MatTableDataSource<Customer> = new MatTableDataSource<Customer>();
@@ -39,7 +47,8 @@ export class CustomersPage implements OnInit, OnDestroy {
 				'email',
 				'status',
 				'customerId'
-			]
+			],
+			storeId: this.filter.storeId
 		});
 
 		if (response.ok) {
@@ -50,6 +59,31 @@ export class CustomersPage implements OnInit, OnDestroy {
 
 		this.loading = false;
 	}
+
+	private async load() {
+		this.loading = true;
+
+		const stores = await this.stores.list({
+			filter: [
+				'storeId',
+				'description'
+			]
+		});
+
+		if (stores.ok) {
+			this.stores.data = stores.result.map(o => new Store(o));
+		} else {
+			this.stores.data = [];
+		}
+
+		this.loading = false;
+	}
+
+    public unfilter(key, value) {
+        this.filter[key] = this.filter[key].filter(o => o != value);
+        this.filters.update(this.filter);
+        this.list();
+    }
 
 	public async options(customer: Customer) {
 		let options = [
@@ -133,10 +167,20 @@ export class CustomersPage implements OnInit, OnDestroy {
 		});
 	}
 
+    public describe(array: any[], key: string, id: string) {
+        let result = '-';
+        array.map(o => {
+            if (o[key] == id) {
+                result = o.description;
+            }
+        });
+        return result;
+    }
+
 	ngOnInit(): void {
 		this.buttons.show('add');
 		this.buttons.hide('close');
-		this.buttons.hide('filter');
+		this.buttons.show('filter');
 		this.buttons.hide('search');
 
 		this.sort.active = 'description';
@@ -151,11 +195,32 @@ export class CustomersPage implements OnInit, OnDestroy {
 			});
 		});
 
-		this.list();
+		this.subscriptions.filter = this.buttons.filter.click.subscribe(async event => {
+			const dialog = await this.dialog.open(CustomersFilterDialog, {
+                data: this.filter,
+                panelClass: 'filter-dialog'
+            });
+
+            await dialog.afterClosed().subscribe(async result => {
+                if (result) {
+                    Object.keys(result).map(key => {
+                        this.filter[key] = result[key];
+                    });
+                    this.filters.update(this.filter);
+                    this.list();
+                };
+            });
+		});
+
+		(async () => {
+			await this.list();
+			await this.load();
+		})();
 	}
 
 	ngOnDestroy(): void {
 		this.subscriptions.add.unsubscribe();
+		this.subscriptions.filter.unsubscribe();
 	}
 
 }

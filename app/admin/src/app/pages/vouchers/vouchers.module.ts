@@ -18,14 +18,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
 import { OrderPipeModule } from 'src/app/pipes/order/order.module';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
+import { VouchersFilterDialog } from './filter/filter.dialog';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
     {
@@ -51,11 +54,13 @@ const routes: Routes = [
         MatTableModule,
         MatChipsModule,
         MatInputModule,
+        MatDialogModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         MatFooterModule,
         OrderPipeModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatFormFieldModule,
@@ -67,7 +72,8 @@ const routes: Routes = [
     ],
     declarations: [
         VouchersPage,
-        VouchersEditorPage
+        VouchersEditorPage,
+        VouchersFilterDialog
     ]
 })
 

@@ -1,6 +1,7 @@
 /* --- PAGES --- */
 import { CustomersPage } from './customers.page';
 import { CustomersEditorPage } from './editor/editor.page';
+import { CustomersFilterDialog } from './filter/filter.dialog';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
@@ -25,6 +26,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const routes: Routes = [
     {
@@ -50,11 +53,13 @@ const routes: Routes = [
         MatTableModule,
         MatChipsModule,
         MatInputModule,
+        MatDialogModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         MatFooterModule,
         OrderPipeModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatFormFieldModule,
@@ -65,7 +70,8 @@ const routes: Routes = [
     ],
     declarations: [
         CustomersPage,
-        CustomersEditorPage
+        CustomersEditorPage,
+        CustomersFilterDialog
     ]
 })
 

@@ -1,11 +1,13 @@
+import { Store } from 'src/app/classes/store';
 import { Order } from 'src/app/classes/order';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { OrdersService } from 'src/app/services/orders/orders.service';
+import { StoresService } from 'src/app/services/stores/stores.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
+import { FiltersService } from 'src/app/services/filters/filters.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { OrdersFilterDialog } from './filter/filter.dialog';
-import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
@@ -18,61 +20,20 @@ export class OrdersPage implements OnInit, OnDestroy {
 
 	@ViewChild(MatSort, { static: true }) private sort: MatSort;
 
-	constructor(private dialog: MatDialog, private service: OrdersService, private buttons: ButtonsService) { }
+	constructor(private dialog: MatDialog, public stores: StoresService, private filters: FiltersService, private service: OrdersService, private buttons: ButtonsService) { }
 
 	public orders: MatTableDataSource<Order> = new MatTableDataSource<Order>();
-	public filter: FormGroup = new FormGroup({
-		date: new FormGroup({
-			to: new FormControl(new Date(), [Validators.required]),
-			from: new FormControl(new Date(), [Validators.required])
-		}),
-		status: new FormControl([], [Validators.required]),
-		storeId: new FormControl([], [Validators.required])
+	public filter = this.filters.get({
+		date: {
+			to: null,
+			from: null
+		},
+		status: [],
+		storeId: []
 	});
 	public columns: string[] = ['orderId', 'email', 'date', 'status', 'subtotal', 'vat', 'total'];
 	public loading: boolean;
 	private subscriptions: any = {};
-
-	private async list() {
-		this.loading = true;
-
-		const to = new Date(this.filter.value.date.to);
-		to.setHours(23);
-		to.setMinutes(59);
-		to.setSeconds(59);
-		to.setMilliseconds(999);
-		const from = new Date(this.filter.value.date.from);
-		from.setHours(0);
-		from.setMinutes(0);
-		from.setSeconds(0);
-		from.setMilliseconds(0);
-
-		const response = await this.service.list({
-			date: {
-				to,
-				from
-			},
-			filter: [
-				'vat',
-				'date',
-				'email',
-				'total',
-				'status',
-				'orderId',
-				'subtotal'
-			],
-			status: this.filter.value.status,
-			storeId: this.filter.value.storeId
-		});
-
-		if (response.ok) {
-			this.orders.data = response.result.map(o => new Order(o));
-		} else {
-			this.orders.data = [];
-		}
-
-		this.loading = false;
-	}
 
 	public sum(key) {
 		let result = 0;
@@ -84,6 +45,78 @@ export class OrdersPage implements OnInit, OnDestroy {
 		return result;
 	}
 
+	private async list() {
+		this.loading = true;
+
+		const response = await this.service.list({
+			date: {
+				to: this.filter.date.to,
+				from: this.filter.date.from
+			},
+			filter: [
+				'vat',
+				'date',
+				'email',
+				'total',
+				'status',
+				'orderId',
+				'subtotal'
+			],
+			status: this.filter.status,
+			storeId: this.filter.storeId
+		});
+
+		if (response.ok) {
+			this.orders.data = response.result.map(o => new Order(o));
+		} else {
+			this.orders.data = [];
+		}
+
+		this.loading = false;
+	}
+
+	private async load() {
+		this.loading = true;
+
+		const stores = await this.stores.list({
+			filter: [
+				'storeId',
+				'description'
+			]
+		});
+
+		if (stores.ok) {
+			this.stores.data = stores.result.map(o => new Store(o));
+		} else {
+			this.stores.data = [];
+		}
+
+		this.loading = false;
+	}
+
+    public unfilter(key, value) {
+		if (key == 'date') {
+			this.filter[key] = {
+				to: null,
+				from: null
+			};
+		} else {
+			this.filter[key] = this.filter[key].filter(o => o != value);
+		}
+		this.filters.update(this.filter);
+		this.list();
+    }
+
+    public describe(array: any[], key: string, id: string) {
+        let result = '-';
+        array.map(o => {
+            if (o[key] == id) {
+                result = o.description;
+            }
+        });
+        return result;
+    }
+
 	ngOnInit(): void {
 		this.buttons.hide('add');
 		this.buttons.hide('close');
@@ -94,28 +127,27 @@ export class OrdersPage implements OnInit, OnDestroy {
 		this.sort.direction = 'desc';
 		this.orders.sort = this.sort;
 
-		const date = new Date(this.filter.value.date.from);
-		date.setDate(1);
-		(this.filter.controls.date as FormGroup).controls.from.setValue(date);
-
 		this.subscriptions.filter = this.buttons.filter.click.subscribe(async event => {
 			const dialog = await this.dialog.open(OrdersFilterDialog, {
-				data: this.filter.value,
-				panelClass: 'orders-filter-dialog'
-			});
+                data: this.filter,
+                panelClass: 'filter-dialog'
+            });
 
-			await dialog.afterClosed().subscribe(result => {
-				if (result) {
-					(this.filter.controls.date as FormGroup).controls.to.setValue(result.date.to);
-					(this.filter.controls.date as FormGroup).controls.from.setValue(result.date.from);
-					this.filter.controls.status.setValue(result.status);
-					this.filter.controls.storeId.setValue(result.storeId);
-					this.list();
-				}
-			});
+            await dialog.afterClosed().subscribe(async result => {
+                if (result) {
+                    Object.keys(result).map(key => {
+                        this.filter[key] = result[key];
+                    });
+                    this.filters.update(this.filter);
+                    this.list();
+                };
+            });
 		});
 
-		this.list();
+		(async () => {
+			await this.list();
+			await this.load();
+		})();
 	}
 
 	ngOnDestroy(): void {

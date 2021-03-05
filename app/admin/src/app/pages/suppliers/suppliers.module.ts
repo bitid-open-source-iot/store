@@ -25,6 +25,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SuppliersFilterDialog } from './filter/filter.dialog';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const routes: Routes = [
     {
@@ -49,12 +52,14 @@ const routes: Routes = [
         MatIconModule,
         MatTableModule,
         MatInputModule,
+        MatChipsModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         TextFieldModule,
         MatFooterModule,
         OrderPipeModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatFormFieldModule,
@@ -65,7 +70,8 @@ const routes: Routes = [
     ],
     declarations: [
         SuppliersPage,
-        SuppliersEditorPage
+        SuppliersEditorPage,
+        SuppliersFilterDialog
     ]
 })
 

@@ -1428,6 +1428,16 @@ var module = function () {
 				'bitid.auth.users.email': args.req.body.header.email
 			};
 
+			if (typeof (args.req.body.storeId) != 'undefined') {
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
+			};
+
 			var filter = {};
 			if (typeof (args.req.body.filter) != 'undefined') {
 				filter._id = 0;
@@ -2232,7 +2242,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.productId) != 'undefined') {
@@ -2752,7 +2768,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.voucherId) != 'undefined') {
@@ -3405,7 +3427,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.courierId) != 'undefined') {
@@ -3814,7 +3842,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.customerId) != 'undefined') {
@@ -4207,7 +4241,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.supplierId) != 'undefined') {
@@ -4724,7 +4764,13 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.departmentId) != 'undefined') {
@@ -5164,15 +5210,21 @@ var module = function () {
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
-				match.storeId = ObjectId(args.req.body.storeId);
+				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
+					match.storeId = {
+						$in: args.req.body.storeId.map(id => ObjectId(id))
+					};
+				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
+					match.storeId = ObjectId(args.req.body.storeId);
+				};
 			};
 
 			if (typeof (args.req.body.collectionpointId) != 'undefined') {
-				if (Array.isArray(args.req.body.collectionpointId)) {
+				if (Array.isArray(args.req.body.collectionpointId) && args.req.body.collectionpointId.length > 0) {
 					match._id = {
 						$in: args.req.body.collectionpointId.map(id => ObjectId(id))
 					};
-				} else if (typeof (args.req.body.collectionpointId) == 'string') {
+				} else if (typeof (args.req.body.collectionpointId) == 'string' && args.req.body.collectionpointId.length == 24) {
 					match._id = ObjectId(args.req.body.collectionpointId);
 				};
 			};

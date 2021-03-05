@@ -1,6 +1,7 @@
 /* --- PAGES --- */
 import { ProductsPage } from './products.page';
 import { ProductsEditorPage } from './editor/editor.page';
+import { ProductsFilterDialog } from './filter/filter.dialog';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
@@ -19,8 +20,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
 import { OrderPipeModule } from 'src/app/pipes/order/order.module';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -52,11 +55,13 @@ const routes: Routes = [
         MatTableModule,
         MatChipsModule,
         MatInputModule,
+        MatDialogModule,
         OrderPipeModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         MatFooterModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatGridListModule,
@@ -69,7 +74,8 @@ const routes: Routes = [
     ],
     declarations: [
         ProductsPage,
-        ProductsEditorPage
+        ProductsEditorPage,
+        ProductsFilterDialog
     ]
 })
 

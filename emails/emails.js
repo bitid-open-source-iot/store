@@ -111,10 +111,15 @@ exports.suppliers = (args) => {
 
             supplier.products.map(product => {
                 supplier.payment.total += product.cost * product.quantity;
+                product.cost = product.cost.toFixed(2);
             })
 
             supplier.payment.vat = supplier.payment.total * 0.15;
             supplier.payment.subtotal = supplier.payment.total - supplier.payment.vat;
+
+            supplier.payment.vat = supplier.payment.vat.toFixed(2);
+            supplier.payment.total = supplier.payment.total.toFixed(2);
+            supplier.payment.subtotal = supplier.payment.subtotal.toFixed(2);
             
             const transporter = nodemailer.createTransport(__settings.smtp);
 
@@ -189,11 +194,24 @@ exports.confirmation = (args) => {
         'extName': '.hbs',
         'viewPath': __dirname + '/templates'
     }));
+    
+    var order = JSON.parse(JSON.stringify(args.order));
+
+    order.payment.vat = order.payment.vat.toFixed(2);
+    order.payment.total = order.payment.total.toFixed(2);
+    order.payment.discount = order.payment.discount.toFixed(2);
+    order.payment.shipping = order.payment.shipping.toFixed(2);
+    order.payment.subtotal = order.payment.subtotal.toFixed(2);
+
+    order.products.map(product => {
+        product.price = product.price.toFixed(2);
+        product.promotion.price = product.promotion.price.toFixed(2);
+    })
 
     transporter.sendMail({
         'to': __settings.production ? args.order.email : __settings.smtp.auth.user,
         'from': __settings.production ? 'support@bitid.co.za' : __settings.smtp.auth.user,
-        'context': args.order,
+        'context': order,
         'subject': ['Order Confirmation: ', '#', args.order.orderId].join('').toUpperCase(),
         'template': 'confirmation'
     });

@@ -48,7 +48,7 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		storeId: new FormControl(null, [Validators.required]),
 		quantity: new FormControl(0, [Validators.required]),
 		supplierId: new FormControl(null, [Validators.required]),
-		departments: new FormControl([], [Validators.required]),
+		departments: new FormControl([]),
 		description: new FormControl(null, [Validators.required])
 	});
 	public mode: string;
@@ -190,6 +190,7 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		} else {
 			this.stores.data = [];
 			this.toast.error(stores.error.message);
+			this.router.navigate(['/products'])
 		}
 
 		const products = await this.products.list({
@@ -220,6 +221,7 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		} else {
 			this.suppliers.data = [];
 			this.toast.error(suppliers.error.message);
+			this.router.navigate(['/products'])
 		}
 
 		const departments = await this.departments.list({
@@ -236,7 +238,6 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 			this.departments.data = departments.result.map(o => new Department(o));
 		} else {
 			this.departments.data = [];
-			this.toast.error(departments.error.message);
 		}
 
 		this.loading = false;

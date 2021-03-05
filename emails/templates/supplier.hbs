@@ -559,45 +559,46 @@
                                                     </tr>
                                                 </table>
 
-                                                <table class="address" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                                                    <tr>
-                                                        <td>
-                                                            <h3>
-                                                                ADDRESS
-                                                            </h3>
-                                                        </td>
-                                                        <td>
-                                                            <h3 class="align-right" style="text-transform: uppercase;">
-                                                                METHOD: {{shipping.method}}
-                                                            </h3>
-                                                        </td>
-                                                    </tr>
+                                                {{#if shipping.enabled}}
+                                                    <table class="address" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                                                        <tr>
+                                                            <td>
+                                                                <h3>
+                                                                    ADDRESS
+                                                                </h3>
+                                                            </td>
+                                                            <td>
+                                                                <h3 class="align-right" style="text-transform: uppercase;">
+                                                                    METHOD: {{shipping.method}}
+                                                                </h3>
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <td colspan="2" style="text-transform: uppercase;">
-                                                            {{shipping.address.street}}
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="text-transform: uppercase;">
+                                                                {{shipping.address.street}}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <td colspan="2" style="text-transform: uppercase;">
-                                                            {{shipping.address.suburb}}
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="text-transform: uppercase;">
+                                                                {{shipping.address.suburb}}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <td colspan="2" style="text-transform: uppercase;">
-                                                            {{shipping.address.cityTown}}
-                                                        </td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="text-transform: uppercase;">
+                                                                {{shipping.address.cityTown}}
+                                                            </td>
+                                                        </tr>
 
-                                                    <tr>
-                                                        <td colspan="2" style="text-transform: uppercase;">
-                                                            {{shipping.address.postalCode}}
-                                                        </td>
-                                                    </tr>
-                                                </table>
-
+                                                        <tr>
+                                                            <td colspan="2" style="text-transform: uppercase;">
+                                                                {{shipping.address.postalCode}}
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                {{/if}}
                                                 <table class="address" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                                                     <tr>
                                                         <td>
@@ -637,7 +638,7 @@
                                                     {{/if}}
                                                 </table>
 
-                                                {{#if courier.description}}
+                                                {{#if shipping.enabled}}
                                                 <table class="address" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                                                     <tr>
                                                         <td>

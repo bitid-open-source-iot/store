@@ -35,7 +35,7 @@
 </mat-toolbar>
 
 <mat-drawer-container [class.minified]="minified" [class.authenticated]="authenticated">
-    <mat-drawer mode="side">
+    <mat-drawer mode="side" [disableClose]="true">
         <mat-list>
             <mat-list-item type="button" lines="full" routerLink="/collection-points" routerLinkActive="active"
                 matRipple matTooltip="Collection Points" matTooltipPosition="after">

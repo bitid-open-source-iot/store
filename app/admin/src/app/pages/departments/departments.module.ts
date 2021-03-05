@@ -20,11 +20,13 @@ import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
 import { OrderPipeModule } from 'src/app/pipes/order/order.module';
 import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DepartmentsFilterDialog } from './filter/filter.dialog';
 
 const routes: Routes = [
     {
@@ -48,13 +50,14 @@ const routes: Routes = [
         OptionsModule,
         MatIconModule,
         MatTableModule,
-        MatChipsModule,
         MatInputModule,
+        MatChipsModule,
         MatRippleModule,
         MatButtonModule,
         MatSelectModule,
         MatFooterModule,
         OrderPipeModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatFormFieldModule,
@@ -65,7 +68,8 @@ const routes: Routes = [
     ],
     declarations: [
         DepartmentsPage,
-        DepartmentsEditorPage
+        DepartmentsEditorPage,
+        DepartmentsFilterDialog
     ]
 })
 

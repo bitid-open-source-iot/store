@@ -1,6 +1,7 @@
 /* --- PAGES --- */
 import { CouriersPage } from './couriers.page';
 import { CouriersEditorPage } from './editor/editor.page';
+import { CouriersFilterDialog } from './filter/filter.dialog';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
@@ -13,6 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
@@ -20,6 +22,7 @@ import { MatFooterModule } from 'src/app/libs/mat-footer/mat-footer.module';
 import { OrderPipeModule } from 'src/app/pipes/order/order.module';
 import { FilterPipeModule } from 'src/app/pipes/filter/filter.module';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -56,6 +59,8 @@ const routes: Routes = [
         MatSelectModule,
         MatFooterModule,
         OrderPipeModule,
+        MatDialogModule,
+        MatToolbarModule,
         FilterPipeModule,
         MatContentModule,
         MatCheckboxModule,
@@ -67,7 +72,8 @@ const routes: Routes = [
     ],
     declarations: [
         CouriersPage,
-        CouriersEditorPage
+        CouriersEditorPage,
+        CouriersFilterDialog
     ]
 })
 

@@ -175,14 +175,14 @@
                 </mat-label>
 
                 <mat-select name="type" placeholder="type" formControlName="type" required>
+                    <mat-option value="virtual">
+                        Virtual
+                    </mat-option>
                     <mat-option value="voucher">
                         Voucher
                     </mat-option>
-                    <mat-option value="hardware">
-                        Hardware
-                    </mat-option>
-                    <mat-option value="software">
-                        Software
+                    <mat-option value="physical">
+                        Physical
                     </mat-option>
                 </mat-select>
 
@@ -317,7 +317,7 @@
                     Department(s)
                 </mat-label>
 
-                <mat-select name="departments" formControlName="departments" required multiple>
+                <mat-select name="departments" formControlName="departments" multiple>
                     <mat-option [formGroup]="filter">
                         <ngx-mat-select-search placeholderLabel="filter departments"
                             noEntriesFoundLabel="no departments found" formControlName="department">

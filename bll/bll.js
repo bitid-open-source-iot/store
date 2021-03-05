@@ -150,7 +150,7 @@ var module = function () {
                                     if (typeof (args.order.shipping) != 'undefined') {
                                         args.order.shipping.enabled = false;
                                         args.order.products.map(product => {
-                                            if (product.type == 'hardware') {
+                                            if (product.type == 'physical') {
                                                 args.order.shipping.enabled = true;
                                             };
                                         });
