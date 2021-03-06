@@ -157,7 +157,7 @@ export class StoresPage implements OnInit, OnDestroy {
 		this.buttons.show('add');
 		this.buttons.hide('close');
 		this.buttons.hide('filter');
-		this.buttons.hide('search');
+		this.buttons.show('search');
 
 		this.sort.active = 'description';
 		this.sort.direction = 'desc';
@@ -171,11 +171,17 @@ export class StoresPage implements OnInit, OnDestroy {
 			});
 		});
 
+		this.subscriptions.search = this.buttons.search.value.subscribe(value => {
+			this.stores.filter = value;
+		});
+
 		this.list();
 	}
 
 	ngOnDestroy(): void {
+		this.buttons.reset('search');
 		this.subscriptions.add.unsubscribe();
+		this.subscriptions.search.unsubscribe();
 	}
 
 }

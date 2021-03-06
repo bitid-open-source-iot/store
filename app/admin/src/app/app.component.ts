@@ -7,6 +7,7 @@ import { UpdateService } from './libs/update/update.service';
 import { ButtonsService } from './services/buttons/buttons.service';
 import { AccountService } from './services/account/account.service';
 import { MatIconRegistry } from '@angular/material/icon';
+import { SearchComponent } from './libs/search/search.component';
 import { LocalstorageService } from './services/localstorage/localstorage.service';
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { OnInit, Component, ViewChild, Renderer2 } from '@angular/core';
@@ -26,8 +27,8 @@ export class AppComponent implements OnInit {
 	@ViewChild('add', { static: true }) private add: MatButton;
 	@ViewChild('close', { static: true }) private close: MatButton;
 	@ViewChild('filter', { static: true }) private filter: MatButton;
-	@ViewChild('search', { static: true }) private search: MatButton;
 	@ViewChild('toolbar', { static: true }) private toolbar: MatToolbar;
+	@ViewChild(SearchComponent, { static: true }) private search: SearchComponent;
 
 	constructor(private config: ConfigService, private update: UpdateService, public account: AccountService, private buttons: ButtonsService, private renderer: Renderer2, private registry: MatIconRegistry, private sanitizer: DomSanitizer, private localstorage: LocalstorageService) {
 		this.registry.addSvgIcon('arc', this.sanitizer.bypassSecurityTrustResourceUrl('./assets/shapes/arc.svg'));
@@ -89,7 +90,6 @@ export class AppComponent implements OnInit {
 		this.renderer.listen(this.add._elementRef.nativeElement, 'click', event => this.buttons.add.click.next(event));
 		this.renderer.listen(this.close._elementRef.nativeElement, 'click', event => this.buttons.close.click.next(event));
 		this.renderer.listen(this.filter._elementRef.nativeElement, 'click', event => this.buttons.filter.click.next(event));
-		this.renderer.listen(this.search._elementRef.nativeElement, 'click', event => this.buttons.search.click.next(event));
 
 		this.buttons.add.visible.subscribe(visible => {
 			if (visible) {
@@ -117,11 +117,15 @@ export class AppComponent implements OnInit {
 
 		this.buttons.search.visible.subscribe(visible => {
 			if (visible) {
-				this.renderer.setStyle(this.search._elementRef.nativeElement, 'display', 'block');
+				this.renderer.setStyle(this.search.element, 'display', 'block');
 			} else {
-				this.renderer.setStyle(this.search._elementRef.nativeElement, 'display', 'none');
+				this.renderer.setStyle(this.search.element, 'display', 'none');
 			}
 		});
+		
+		this.search.change.subscribe(event => this.buttons.search.value.next(event));
+		
+		this.buttons.search.reset.subscribe(event => this.search.reset());
 	}
 
 }

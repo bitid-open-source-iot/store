@@ -26,6 +26,8 @@ export class ButtonsService {
 
 	public search: BUTTON = {
 		click: new Subject<MouseEvent | TouchEvent>(),
+		reset: new Subject<MouseEvent | TouchEvent>(),
+		value: new Subject<string>(),
 		visible: new BehaviorSubject(false)
 	};
 
@@ -37,9 +39,15 @@ export class ButtonsService {
 		this[button].visible.next(false);
 	}
 
+	public reset(button) {
+		this[button].reset.next(false);
+	}
+
 }
 
 interface BUTTON {
 	'click': Subject<MouseEvent | TouchEvent>;
+	'value'?: Subject<string>;
+	'reset'?: Subject<MouseEvent | TouchEvent>;
 	'visible': BehaviorSubject<boolean>;
 }

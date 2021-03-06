@@ -121,7 +121,7 @@ export class OrdersPage implements OnInit, OnDestroy {
 		this.buttons.hide('add');
 		this.buttons.hide('close');
 		this.buttons.show('filter');
-		this.buttons.hide('search');
+		this.buttons.show('search');
 
 		this.sort.active = 'date';
 		this.sort.direction = 'desc';
@@ -144,6 +144,10 @@ export class OrdersPage implements OnInit, OnDestroy {
             });
 		});
 
+		this.subscriptions.search = this.buttons.search.value.subscribe(value => {
+			this.orders.filter = value;
+		});
+
 		(async () => {
 			await this.list();
 			await this.load();
@@ -151,7 +155,9 @@ export class OrdersPage implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
+		this.buttons.reset('search');
 		this.subscriptions.filter.unsubscribe();
+		this.subscriptions.search.unsubscribe();
 	}
 
 }
