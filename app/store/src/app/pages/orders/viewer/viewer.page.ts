@@ -178,20 +178,6 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
                                         border: [false, false, false, false],
                                         fontSize: 10
                                     }
-                                ],
-                                [
-                                    {
-                                        text: 'VAT: ' + this.order.recipient.company.vat.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'REG: ' + this.order.recipient.company.reg.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
                                 ]
                             ],
                             widths: ['*']
@@ -332,6 +318,27 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
                 ]
             }
         ];
+
+        if (typeof(this.order.recipient.company) != 'undefined' && this.order.recipient.company != null) {
+            if (typeof(this.order.recipient.company.vat) != 'undefined' && this.order.recipient.company.vat != null) {
+                content[1].columns[0].table.body.push([
+                    {
+                        text: 'VAT: ' + this.order.recipient.company.vat.toUpperCase(),
+                        border: [false, false, false, false],
+                        fontSize: 10
+                    }
+                ]);
+            }
+            if (typeof(this.order.recipient.company.reg) != 'undefined' && this.order.recipient.company.reg != null) {
+                content[1].columns[0].table.body.push([
+                    {
+                        text: 'REG: ' + this.order.recipient.company.reg.toUpperCase(),
+                        border: [false, false, false, false],
+                        fontSize: 10
+                    }
+                ]);
+            }
+        }
 
         this.order.products.map(product => {
             content[2].table.body.push([
