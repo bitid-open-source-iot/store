@@ -11,6 +11,7 @@ import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { DownloadService } from 'src/app/services/download/download.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
+import { convert } from 'src/app/classes/convert-image';
 
 @Component({
     selector: 'orders-viewer-page',
@@ -30,405 +31,414 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
     private subscriptions: any = {};
 
     public async pdf() {
-        let content: any = [
-            {
-                margin: [0, 0, 0, 20],
-                columns: [
-                    {
-                        width: '*',
-                        table: {
-                            body: [
-                                [
-                                    {
-                                        text: this.store.description,
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 18
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.store.address.street.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.store.address.suburb.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.store.address.cityTown.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.store.address.postalCode.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'VAT: ' + this.store.address.vat.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'REG: ' + this.store.address.reg.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
+        convert(this.store.logo, logo => {
+            let content: any = [
+                {
+                    margin: [0, 0, 0, 20],
+                    columns: [
+                        {
+                            width: '*',
+                            table: {
+                                body: [
+                                    [
+                                        {
+                                            width: 50,
+                                            image: logo,
+                                            border: [false, false, false, false]
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.store.description,
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 18
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.store.address.street.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.store.address.suburb.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.store.address.cityTown.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.store.address.postalCode.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'VAT: ' + this.store.address.vat.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'REG: ' + this.store.address.reg.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ]
                                 ]
-                            ]
-                        }
-                    },
-                    {
-                        width: 'auto',
-                        table: {
-                            body: [
-                                [
-                                    
-                                    {
-                                        text: '',
-                                        border: [false, false, false, false]
-                                    },
-                                    {
-                                        text: 'INVOICE',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 18,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'DATE',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: moment(this.order.date.paid).format('YYYY/MM/DD'),
-                                        border: [false, false, false, false],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'ORDER ID',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: this.order.orderId.toUpperCase(),
-                                        border: [false, false, false, false],
-                                        alignment: 'right',
-                                        fontSize: 10
-                                    }
-                                ]
-                            ]
-                        }
-                    }
-                ]
-            },
-            {
-                margin: [0, 0, 0, 20],
-                columns: [
-                    {
-                        width: '48%',
-                        table: {
-                            body: [
-                                [
-                                    {
-                                        text: 'BILL TO',
-                                        bold: true,
-                                        border: [false, false, false, true],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        bold: true,
-                                        text: [this.order.recipient.name.first.toLocaleUpperCase(), ' ', this.order.recipient.name.last.toLocaleUpperCase(), (this.order.recipient.company.name ? ' (' : ''), this.order.recipient.company.name, (this.order.recipient.company.name ? ')' : '')].join(''),
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.order.recipient.number,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: this.order.recipient.email,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    }
-                                ]
-                            ],
-                            widths: ['*']
-                        }
-                    },
-                    {
-                        text: '',
-                        width: '4%'
-                    }
-                ]
-            },
-            {
-                margin: [0, 0, 0, 20],
-                table: {
-                    body: [
-                        [
-                            {
-                                text: 'DESCRIPTION',
-                                bold: true,
-                                margin: [0, 0, 10, 0],
-                                border: [false, false, false, true],
-                                fontSize: 10
-                            },
-                            {
-                                text: 'QTY',
-                                bold: true,
-                                margin: [0, 0, 10, 0],
-                                border: [false, false, false, true],
-                                fontSize: 10,
-                                alignment: 'right'
-                            },
-                            {
-                                text: 'PRICE',
-                                bold: true,
-                                margin: [0, 0, 10, 0],
-                                border: [false, false, false, true],
-                                fontSize: 10,
-                                alignment: 'right'
-                            },
-                            {
-                                text: 'TOTAL',
-                                bold: true,
-                                border: [false, false, false, true],
-                                fontSize: 10,
-                                alignment: 'right'
                             }
-                        ]
-                    ],
-                    widths: ['*', 'auto', 'auto', 'auto']
+                        },
+                        {
+                            width: 'auto',
+                            table: {
+                                body: [
+                                    [
+                                        
+                                        {
+                                            text: '',
+                                            border: [false, false, false, false]
+                                        },
+                                        {
+                                            text: 'INVOICE',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 18,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'DATE',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: moment(this.order.date.paid).format('YYYY/MM/DD'),
+                                            border: [false, false, false, false],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'ORDER ID',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: this.order.orderId.toUpperCase(),
+                                            border: [false, false, false, false],
+                                            alignment: 'right',
+                                            fontSize: 10
+                                        }
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    margin: [0, 0, 0, 20],
+                    columns: [
+                        {
+                            width: '48%',
+                            table: {
+                                body: [
+                                    [
+                                        {
+                                            text: 'BILL TO',
+                                            bold: true,
+                                            border: [false, false, false, true],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            bold: true,
+                                            text: [this.order.recipient.name.first.toLocaleUpperCase(), ' ', this.order.recipient.name.last.toLocaleUpperCase(), (this.order.recipient.company.name ? ' (' : ''), this.order.recipient.company.name, (this.order.recipient.company.name ? ')' : '')].join(''),
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.order.recipient.number,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: this.order.recipient.email,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        }
+                                    ]
+                                ],
+                                widths: ['*']
+                            }
+                        },
+                        {
+                            text: '',
+                            width: '4%'
+                        }
+                    ]
+                },
+                {
+                    margin: [0, 0, 0, 20],
+                    table: {
+                        body: [
+                            [
+                                {
+                                    text: 'DESCRIPTION',
+                                    bold: true,
+                                    margin: [0, 0, 10, 0],
+                                    border: [false, false, false, true],
+                                    fontSize: 10
+                                },
+                                {
+                                    text: 'QTY',
+                                    bold: true,
+                                    margin: [0, 0, 10, 0],
+                                    border: [false, false, false, true],
+                                    fontSize: 10,
+                                    alignment: 'right'
+                                },
+                                {
+                                    text: 'PRICE',
+                                    bold: true,
+                                    margin: [0, 0, 10, 0],
+                                    border: [false, false, false, true],
+                                    fontSize: 10,
+                                    alignment: 'right'
+                                },
+                                {
+                                    text: 'TOTAL',
+                                    bold: true,
+                                    border: [false, false, false, true],
+                                    fontSize: 10,
+                                    alignment: 'right'
+                                }
+                            ]
+                        ],
+                        widths: ['*', 'auto', 'auto', 'auto']
+                    }
+                },
+                {
+                    margin: [0, 0, 0, 20],
+                    columns: [
+                        {
+                            text: '',
+                            width: '*'
+                        },
+                        {
+                            width: '48%',
+                            table: {
+                                body: [
+                                    [
+                                        {
+                                            text: 'SUBTOTAL',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: ['R', this.order.payment.subtotal.toFixed(2)].join(''),
+                                            border: [false, false, false, false],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'SHIPPING',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: ['R', this.order.payment.shipping.toFixed(2)].join(''),
+                                            border: [false, false, false, false],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'DISCOUNT',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: ['R', this.order.payment.discount.toFixed(2)].join(''),
+                                            border: [false, false, false, false],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'VAT (15%)',
+                                            bold: true,
+                                            border: [false, false, false, false],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: ['R', this.order.payment.vat.toFixed(2)].join(''),
+                                            border: [false, false, false, false],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            text: 'TOTAL',
+                                            bold: true,
+                                            border: [false, true, false, true],
+                                            fontSize: 10
+                                        },
+                                        {
+                                            text: ['R', this.order.payment.total.toFixed(2)].join(''),
+                                            bold: true,
+                                            border: [false, true, false, true],
+                                            fontSize: 10,
+                                            alignment: 'right'
+                                        }
+                                    ]
+                                ],
+                                widths: ['*', 'auto']
+                            }
+                        }
+                    ]
                 }
-            },
-            {
-                margin: [0, 0, 0, 20],
-                columns: [
+            ];
+
+            if (typeof(this.order.recipient.company) != 'undefined' && this.order.recipient.company != null) {
+                if (typeof(this.order.recipient.company.vat) != 'undefined' && this.order.recipient.company.vat != null) {
+                    content[1].columns[0].table.body.push([
+                        {
+                            text: 'VAT: ' + this.order.recipient.company.vat.toUpperCase(),
+                            border: [false, false, false, false],
+                            fontSize: 10
+                        }
+                    ]);
+                }
+                if (typeof(this.order.recipient.company.reg) != 'undefined' && this.order.recipient.company.reg != null) {
+                    content[1].columns[0].table.body.push([
+                        {
+                            text: 'REG: ' + this.order.recipient.company.reg.toUpperCase(),
+                            border: [false, false, false, false],
+                            fontSize: 10
+                        }
+                    ]);
+                }
+            }
+
+            this.order.products.map(product => {
+                content[2].table.body.push([
                     {
-                        text: '',
-                        width: '*'
+                        text: product.title.toUpperCase(),
+                        margin: [0, 0, 10, 0],
+                        border: [false, false, false, false],
+                        fontSize: 10
                     },
                     {
-                        width: '48%',
-                        table: {
-                            body: [
-                                [
-                                    {
-                                        text: 'SUBTOTAL',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: ['R', this.order.payment.subtotal.toFixed(2)].join(''),
-                                        border: [false, false, false, false],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'SHIPPING',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: ['R', this.order.payment.shipping.toFixed(2)].join(''),
-                                        border: [false, false, false, false],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'DISCOUNT',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: ['R', this.order.payment.discount.toFixed(2)].join(''),
-                                        border: [false, false, false, false],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'VAT (15%)',
-                                        bold: true,
-                                        border: [false, false, false, false],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: ['R', this.order.payment.vat.toFixed(2)].join(''),
-                                        border: [false, false, false, false],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ],
-                                [
-                                    {
-                                        text: 'TOTAL',
-                                        bold: true,
-                                        border: [false, true, false, true],
-                                        fontSize: 10
-                                    },
-                                    {
-                                        text: ['R', this.order.payment.total.toFixed(2)].join(''),
-                                        bold: true,
-                                        border: [false, true, false, true],
-                                        fontSize: 10,
-                                        alignment: 'right'
-                                    }
-                                ]
+                        text: product.quantity.toFixed(2),
+                        margin: [0, 0, 10, 0],
+                        border: [false, false, false, false],
+                        fontSize: 10,
+                        alignment: 'right'
+                    },
+                    {
+                        text: ['R', product.price.toFixed(2)].join(''),
+                        margin: [0, 0, 10, 0],
+                        border: [false, false, false, false],
+                        fontSize: 10,
+                        alignment: 'right'
+                    },
+                    {
+                        text: ['R', (product.price * product.quantity).toFixed(2)].join(''),
+                        border: [false, false, false, false],
+                        fontSize: 10,
+                        alignment: 'right'
+                    }
+                ]);
+            });
+
+            if (this.order.shipping.enabled) {
+                content[1].columns.push({
+                    width: '48%',
+                    table: {
+                        body: [
+                            [
+                                {
+                                    text: 'SHIP TO',
+                                    bold: true,
+                                    border: [false, false, false, true],
+                                    fontSize: 10
+                                }
                             ],
-                            widths: ['*', 'auto']
-                        }
+                            [
+                                {
+                                    text: [this.order.recipient.name.first, ' ', this.order.recipient.name.last].join('').toLocaleUpperCase(),
+                                    bold: true,
+                                    border: [false, false, false, false],
+                                    fontSize: 10
+                                }
+                            ],
+                            [
+                                {
+                                    text: this.order.shipping.address.street.toUpperCase(),
+                                    border: [false, false, false, false],
+                                    fontSize: 10
+                                }
+                            ],
+                            [
+                                {
+                                    text: this.order.shipping.address.suburb.toUpperCase(),
+                                    border: [false, false, false, false],
+                                    fontSize: 10
+                                }
+                            ],
+                            [
+                                {
+                                    text: this.order.shipping.address.cityTown.toUpperCase(),
+                                    border: [false, false, false, false],
+                                    fontSize: 10
+                                }
+                            ],
+                            [
+                                {
+                                    text: this.order.shipping.address.postalCode.toUpperCase(),
+                                    border: [false, false, false, false],
+                                    fontSize: 10
+                                }
+                            ]
+                        ],
+                        widths: ['*']
                     }
-                ]
+                })
             }
-        ];
 
-        if (typeof(this.order.recipient.company) != 'undefined' && this.order.recipient.company != null) {
-            if (typeof(this.order.recipient.company.vat) != 'undefined' && this.order.recipient.company.vat != null) {
-                content[1].columns[0].table.body.push([
-                    {
-                        text: 'VAT: ' + this.order.recipient.company.vat.toUpperCase(),
-                        border: [false, false, false, false],
-                        fontSize: 10
-                    }
-                ]);
-            }
-            if (typeof(this.order.recipient.company.reg) != 'undefined' && this.order.recipient.company.reg != null) {
-                content[1].columns[0].table.body.push([
-                    {
-                        text: 'REG: ' + this.order.recipient.company.reg.toUpperCase(),
-                        border: [false, false, false, false],
-                        fontSize: 10
-                    }
-                ]);
-            }
-        }
-
-        this.order.products.map(product => {
-            content[2].table.body.push([
-                {
-                    text: product.title.toUpperCase(),
-                    margin: [0, 0, 10, 0],
-                    border: [false, false, false, false],
-                    fontSize: 10
-                },
-                {
-                    text: product.quantity.toFixed(2),
-                    margin: [0, 0, 10, 0],
-                    border: [false, false, false, false],
-                    fontSize: 10,
-                    alignment: 'right'
-                },
-                {
-                    text: ['R', product.price.toFixed(2)].join(''),
-                    margin: [0, 0, 10, 0],
-                    border: [false, false, false, false],
-                    fontSize: 10,
-                    alignment: 'right'
-                },
-                {
-                    text: ['R', (product.price * product.quantity).toFixed(2)].join(''),
-                    border: [false, false, false, false],
-                    fontSize: 10,
-                    alignment: 'right'
-                }
-            ]);
+            pdfMake.createPdf({
+                content: content
+            }).open();
         });
-
-        if (this.order.shipping.enabled) {
-            content[1].columns.push({
-                width: '48%',
-                table: {
-                    body: [
-                        [
-                            {
-                                text: 'SHIP TO',
-                                bold: true,
-                                border: [false, false, false, true],
-                                fontSize: 10
-                            }
-                        ],
-                        [
-                            {
-                                text: [this.order.recipient.name.first, ' ', this.order.recipient.name.last].join('').toLocaleUpperCase(),
-                                bold: true,
-                                border: [false, false, false, false],
-                                fontSize: 10
-                            }
-                        ],
-                        [
-                            {
-                                text: this.order.shipping.address.street.toUpperCase(),
-                                border: [false, false, false, false],
-                                fontSize: 10
-                            }
-                        ],
-                        [
-                            {
-                                text: this.order.shipping.address.suburb.toUpperCase(),
-                                border: [false, false, false, false],
-                                fontSize: 10
-                            }
-                        ],
-                        [
-                            {
-                                text: this.order.shipping.address.cityTown.toUpperCase(),
-                                border: [false, false, false, false],
-                                fontSize: 10
-                            }
-                        ],
-                        [
-                            {
-                                text: this.order.shipping.address.postalCode.toUpperCase(),
-                                border: [false, false, false, false],
-                                fontSize: 10
-                            }
-                        ]
-                    ],
-                    widths: ['*']
-                }
-            })
-        }
-
-        pdfMake.createPdf({
-            content: content
-        }).open();
     }
 
     private async get() {

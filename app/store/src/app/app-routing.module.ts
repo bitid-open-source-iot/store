@@ -36,6 +36,11 @@ const routes: Routes = [
         loadChildren: () => import('./pages/wishlist/wishlist.module').then(m => m.WishlistPageModule)
     },
     {
+        path: 'vouchers',
+        canActivate: [AuthService],
+        loadChildren: () => import('./pages/vouchers/vouchers.module').then(m => m.VouchersPageModule)
+    },
+    {
         path: 'authenticate',
         loadChildren: () => import('./pages/authenticate/authenticate.module').then(m => m.AuthenticatePageModule)
     },

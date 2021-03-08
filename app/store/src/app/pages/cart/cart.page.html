@@ -84,7 +84,7 @@
                     Checkout
                 </button>
 
-                <button mat-flat-button [disabled]="cart.items.length == 0 || (cart.summary | async).total == 0">
+                <button mat-flat-button [disabled]="cart.items.length == 0 || (cart.summary | async).total == 0" (click)="download()">
                     Download Invoice
                 </button>
 

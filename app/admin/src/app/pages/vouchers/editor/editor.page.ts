@@ -96,24 +96,6 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 			this.toast.error(stores.error.message);
 		}
 
-		const products = await this.products.list({
-			sort: {
-				title: 1
-			},
-			filter: [
-				'title',
-				'productId'
-			],
-			type: 'voucher'
-		});
-
-		if (products.ok) {
-			this.products.data = products.result.map(o => new Product(o));
-		} else {
-			this.products.data = [];
-			this.toast.error(products.error.message);
-		}
-
 		this.loading = false;
 	}
 
@@ -153,12 +135,44 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 		this.buttons.hide('filter');
 		this.buttons.hide('search');
 
+		this.products.data = [];
+
 		this.subscriptions.form = this.form.valueChanges.subscribe(data => {
 			this.errors = this.formerror.validateForm(this.form, this.errors, true);
 		});
 
 		this.subscriptions.close = this.buttons.close.click.subscribe(event => {
 			this.router.navigate(['/vouchers']);
+		});
+
+		this.subscriptions.storeId = this.form.controls.storeId.valueChanges.subscribe(async storeId => {
+			for (let i = 0; i < this.stores.data.length; i++) {
+				if (this.stores.data[i].storeId == storeId) {
+					this.loading = true;
+
+					const products = await this.products.list({
+						sort: {
+							title: 1
+						},
+						filter: [
+							'title',
+							'productId'
+						],
+						type: 'voucher',
+						storeId
+					});
+			
+					if (products.ok) {
+						this.products.data = products.result.map(o => new Product(o));
+					} else {
+						this.products.data = [];
+						this.toast.error(products.error.message);
+					}
+		
+					this.loading = false;
+					break;
+				};
+			};
 		});
 
 		const params = this.route.snapshot.queryParams;
@@ -176,6 +190,7 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.subscriptions.form.unsubscribe();
 		this.subscriptions.close.unsubscribe();
+		this.subscriptions.storeId.unsubscribe();
 	}
 
 }

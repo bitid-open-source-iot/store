@@ -2682,8 +2682,17 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'_id': ObjectId(args.req.body.voucherId),
-				'bitid.auth.users.email': args.req.body.header.email
+				$or: [
+					{
+						'_id': ObjectId(args.req.body.voucherId),
+						'email': args.req.body.header.email,
+						'status': 'sold'
+					},
+					{
+						'_id': ObjectId(args.req.body.voucherId),
+						'bitid.auth.users.email': args.req.body.header.email
+					}
+				]
 			};
 
 			var filter = {};
@@ -2764,26 +2773,42 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				$or: [
+					{
+						'email': args.req.body.header.email,
+						'status': 'sold'
+					},
+					{
+						'bitid.auth.users.email': args.req.body.header.email
+					}
+				]
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
 				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
-					match.storeId = {
-						$in: args.req.body.storeId.map(id => ObjectId(id))
-					};
+					match.$or.map(o => {
+						o.storeId = {
+							$in: args.req.body.storeId.map(id => ObjectId(id))
+						};
+					})
 				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
-					match.storeId = ObjectId(args.req.body.storeId);
+					match.$or.map(o => {
+						o.storeId = ObjectId(args.req.body.storeId);
+					})
 				};
 			};
 
 			if (typeof (args.req.body.voucherId) != 'undefined') {
 				if (Array.isArray(args.req.body.voucherId)) {
-					match._id = {
-						$in: args.req.body.voucherId.map(id => ObjectId(id))
-					};
+					match.$or.map(o => {
+						o._id = {
+							$in: args.req.body.voucherId.map(id => ObjectId(id))
+						};
+					});
 				} else if (typeof (args.req.body.voucherId) == 'string') {
-					match._id = ObjectId(args.req.body.voucherId);
+					match.$or.map(o => {
+						o._id = ObjectId(args.req.body.voucherId);
+					})
 				};
 			};
 
@@ -2841,6 +2866,9 @@ var module = function () {
 					$project: filter
 				}
 			];
+			if (Object.keys(filter).length == 0) {
+				params.splice(params.length - 1, 1);
+			}
 
 			db.call({
 				'params': params,

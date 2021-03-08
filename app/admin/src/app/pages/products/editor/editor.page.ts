@@ -193,53 +193,6 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 			this.router.navigate(['/products'])
 		}
 
-		const products = await this.products.list({
-			filter: [
-				'title',
-				'productId'
-			]
-		});
-
-		if (products.ok) {
-			this.products.data = products.result.map(o => new Product(o));
-		} else {
-			this.products.data = [];
-		}
-
-		const suppliers = await this.suppliers.list({
-			sort: {
-				description: 1
-			},
-			filter: [
-				'supplierId',
-				'description'
-			]
-		});
-
-		if (suppliers.ok) {
-			this.suppliers.data = suppliers.result.map(o => new Supplier(o));
-		} else {
-			this.suppliers.data = [];
-			this.toast.error(suppliers.error.message);
-			this.router.navigate(['/products'])
-		}
-
-		const departments = await this.departments.list({
-			sort: {
-				description: 1
-			},
-			filter: [
-				'description',
-				'departmentId'
-			]
-		});
-
-		if (departments.ok) {
-			this.departments.data = departments.result.map(o => new Department(o));
-		} else {
-			this.departments.data = [];
-		}
-
 		this.loading = false;
 	}
 
@@ -333,6 +286,10 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		this.buttons.hide('filter');
 		this.buttons.hide('search');
 
+		this.products.data = [];
+		this.suppliers.data = [];
+		this.departments.data = [];
+
 		this.subscriptions.form = this.form.valueChanges.subscribe(data => {
 			this.errors = this.formerror.validateForm(this.form, this.errors, true);
 		});
@@ -349,6 +306,69 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 				(this.form.controls.expiry as FormGroup).controls.date.setValidators(null);
 				(this.form.controls.expiry as FormGroup).controls.date.updateValueAndValidity();
 			}
+		});
+
+		this.subscriptions.storeId = this.form.controls.storeId.valueChanges.subscribe(async storeId => {
+			for (let i = 0; i < this.stores.data.length; i++) {
+				if (this.stores.data[i].storeId == storeId) {
+					this.loading = true;
+
+					const products = await this.products.list({
+						sort: {
+							title: 1
+						},
+						filter: [
+							'title',
+							'productId'
+						],
+						type: 'voucher',
+						storeId
+					});
+			
+					if (products.ok) {
+						this.products.data = products.result.map(o => new Product(o));
+					} else {
+						this.products.data = [];
+					}
+
+					const suppliers = await this.suppliers.list({
+						sort: {
+							description: 1
+						},
+						filter: [
+							'supplierId',
+							'description'
+						]
+					});
+			
+					if (suppliers.ok) {
+						this.suppliers.data = suppliers.result.map(o => new Supplier(o));
+					} else {
+						this.suppliers.data = [];
+						this.toast.error(suppliers.error.message);
+						this.router.navigate(['/products'])
+					}
+			
+					const departments = await this.departments.list({
+						sort: {
+							description: 1
+						},
+						filter: [
+							'description',
+							'departmentId'
+						]
+					});
+			
+					if (departments.ok) {
+						this.departments.data = departments.result.map(o => new Department(o));
+					} else {
+						this.departments.data = [];
+					}
+		
+					this.loading = false;
+					break;
+				};
+			};
 		});
 
 		this.subscriptions.location = (this.form.controls.location as FormGroup).controls.enabled.valueChanges.subscribe(enabled => {
@@ -391,6 +411,7 @@ export class ProductsEditorPage implements OnInit, OnDestroy {
 		this.subscriptions.form.unsubscribe();
 		this.subscriptions.close.unsubscribe();
 		this.subscriptions.expiry.unsubscribe();
+		this.subscriptions.storeId.unsubscribe();
 		this.subscriptions.location.unsubscribe();
 		this.subscriptions.promotion.unsubscribe();
 	}

@@ -86,6 +86,9 @@ export class AppComponent implements OnInit {
 					case('/wishlist'):
 						this.page = 'Wishlist';
 						break;
+					case('/vouchers'):
+						this.page = 'Vouchers';
+						break;
 					default:
 						this.page = '';
 						break;

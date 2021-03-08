@@ -1,5 +1,6 @@
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
+import { UpdateModule } from './libs/update/update.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -33,6 +34,7 @@ import { WishlistService } from './services/wishlist/wishlist.service';
 import { DownloadService } from './services/download/download.service';
 import { ProductsService } from './services/products/products.service';
 import { CouriersService } from './services/couriers/couriers.service';
+import { VouchersService } from './services/vouchers/vouchers.service';
 import { CustomersService } from './services/customers/customers.service';
 import { FormErrorService } from './services/form-error/form-error.service';
 import { SuppliersService } from './services/suppliers/suppliers.service';
@@ -49,6 +51,7 @@ import { environment } from '../environments/environment';
 
 @NgModule({
     imports: [
+        UpdateModule,
         BrowserModule,
         MatIconModule,
         MatListModule,
@@ -84,6 +87,7 @@ import { environment } from '../environments/environment';
         ProductsService,
         DownloadService,
         CouriersService,
+        VouchersService,
         WishlistService,
         CustomersService,
         FormErrorService,

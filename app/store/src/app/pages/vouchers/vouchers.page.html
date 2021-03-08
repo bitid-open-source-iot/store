@@ -1,0 +1,22 @@
+<mat-content>
+    <div class="container">
+        <mat-list>
+            <mat-list-item lines="full" *ngFor="let voucher of vouchers.data">
+                <section>
+                    <label>
+                        {{ voucher.description }}
+                    </label>
+                    <p>
+                        {{ voucher.code }}
+                    </p>
+                </section>
+                
+                <a mat-icon-button [href]="voucher.file" target="_blank">
+                    <mat-icon>
+                        download
+                    </mat-icon>
+                </a>
+            </mat-list-item>
+        </mat-list>
+    </div>
+</mat-content>
