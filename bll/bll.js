@@ -1152,22 +1152,6 @@ var module = function () {
         }
     };
 
-    var bllDownload = {
-        invoice: (req, res) => {
-            var args = {
-                'req': req,
-                'res': res
-            };
-
-            var myModule = new dalModule.module();
-            myModule.download.invoice(args)
-                .then(pdfs.invoice, null)
-                .then(null, err => {
-                    __responder.error(req, res, err);
-                });
-        }
-    };
-
     var bllSuppliers = {
         add: (req, res) => {
             var args = {
@@ -1650,7 +1634,6 @@ var module = function () {
         'reports': bllReports,
         'payfast': bllPayfast,
         'reviews': bllReviews,
-        'download': bllDownload,
         'products': bllProducts,
         'vouchers': bllVouchers,
         'couriers': bllCouriers,

@@ -54,11 +54,7 @@ try {
 
                 app.use('/', express.static(__dirname + '/app/store/dist/store'));
                 app.get('/*', (req, res, next) => {
-                    if (req.originalUrl.includes('/store/download/invoice')) {
-                        next();
-                    } else {
-                        res.sendFile(__dirname + '/app/store/dist/store/index.html');
-                    }
+                    res.sendFile(__dirname + '/app/store/dist/store/index.html');
                 });
 
                 app.use('/store/carts', require('./api/carts'));
@@ -90,9 +86,6 @@ try {
 
                 app.use('/store/couriers', require('./api/couriers'));
                 __logger.info('Loaded: ./api/store/couriers');
-
-                app.use('/store/download', require('./api/download'));
-                __logger.info('Loaded: ./api/store/download');
 
                 app.use('/store/suppliers', require('./api/suppliers'));
                 __logger.info('Loaded: ./api/store/suppliers');

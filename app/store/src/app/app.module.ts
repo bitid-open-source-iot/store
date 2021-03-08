@@ -30,6 +30,7 @@ import { ButtonsService } from './services/buttons/buttons.service';
 import { AccountService } from './services/account/account.service';
 import { ReviewsService } from './services/reviews/reviews.service';
 import { WishlistService } from './services/wishlist/wishlist.service';
+import { DownloadService } from './services/download/download.service';
 import { ProductsService } from './services/products/products.service';
 import { CouriersService } from './services/couriers/couriers.service';
 import { CustomersService } from './services/customers/customers.service';
@@ -81,6 +82,7 @@ import { environment } from '../environments/environment';
         AccountService,
         ReviewsService,
         ProductsService,
+        DownloadService,
         CouriersService,
         WishlistService,
         CustomersService,

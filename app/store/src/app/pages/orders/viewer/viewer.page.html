@@ -1,8 +1,8 @@
 <mat-content>
     <div class="container">
-        <a mat-stroked-button [href]="link" target="_blank" *ngIf="link">
+        <button mat-stroked-button (click)="pdf()">
             Download PDF
-        </a>
+        </button>
 
         <h2>
             Products
