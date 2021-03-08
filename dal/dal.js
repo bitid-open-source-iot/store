@@ -3671,6 +3671,71 @@ var module = function () {
 			return deferred.promise;
 		}
 	};
+	
+	var dalDownload = {
+		invoice: (args) => {
+			var deferred = Q.defer();
+
+			var params = [
+				{
+					$match: {
+						_id: ObjectId(args.req.query.orderId),
+						email: args.req.query.email
+					}
+				},
+				{
+					$lookup: {
+						as: 'stores',
+						from: 'tblStores',
+						localField: 'storeId',
+						foreignField: '_id'
+					}
+				},
+				{
+					$unwind: '$stores'
+				},
+				{
+					$addFields: {
+						store: {
+							logo: "$stores.logo",
+							contact: "$stores.contact",
+							address: "$stores.address",
+							description: "$stores.description"
+						}
+					}
+				},
+				{
+					$project: {
+						_id: 0,
+						date: 1,
+						store: 1,
+						payment: 1,
+						orderId: "$_id",
+						shipping: 1,
+						products: 1,
+						recipient: 1
+					}
+				}
+			];
+
+			db.call({
+				'params': params,
+				'operation': 'aggregate',
+				'collection': 'tblOrders'
+			})
+				.then(result => {
+					args.order = JSON.parse(JSON.stringify(result[0]));
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		}
+	};
 
 	var dalCustomers = {
 		iam: (args) => {
@@ -5464,6 +5529,7 @@ var module = function () {
 		'products': dalProducts,
 		'vouchers': dalVouchers,
 		'couriers': dalCouriers,
+		'download': dalDownload,
 		'customers': dalCustomers,
 		'suppliers': dalSuppliers,
 		'wishlists': dalWishlists,

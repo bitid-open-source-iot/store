@@ -16,6 +16,7 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
 
     constructor(private toast: ToastService, private route: ActivatedRoute, private config: StoreService, private router: Router, private service: OrdersService, private buttons: ButtonsService) { }
 
+    public link: string;
     public order: Order = new Order();
     public orderId: string;
     public loading: boolean;
@@ -30,6 +31,7 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
 
         if (response.ok) {
             this.order = new Order(response.result);
+            this.link = [window.location.origin, '/store/download/invoice?email=', this.order.email, '&orderId=', this.order.orderId].join('');
         } else {
             this.toast.error(response.error.message);
             this.router.navigate(['/orders']);
