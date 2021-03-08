@@ -160,7 +160,7 @@ export class OrdersViewerPage implements OnInit, OnDestroy {
                                 [
                                     {
                                         bold: true,
-                                        text: [this.order.recipient.name.first.toLocaleUpperCase(), ' ', this.order.recipient.name.last.toLocaleUpperCase(), ' (', this.order.recipient.company.name, ')'].join(''),
+                                        text: [this.order.recipient.name.first.toLocaleUpperCase(), ' ', this.order.recipient.name.last.toLocaleUpperCase(), (this.order.recipient.company.name ? ' (' : ''), this.order.recipient.company.name, (this.order.recipient.company.name ? ')' : '')].join(''),
                                         border: [false, false, false, false],
                                         fontSize: 10
                                     }
