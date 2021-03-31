@@ -1,6 +1,12 @@
 {
     "production": false,
     "authentication": false,
+    "sql": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": ""
+    },
     "auth": {
         "host": "xxx",
         "token": "xxx",
@@ -12,20 +18,6 @@
         "store": "https://store.bitid.co.za",
         "appId": "000000000000000000000021",
         "appName": "Store Admin"
-    },
-    "localwebserver": {
-        "storeport": 7000,
-        "consoleport": 7001
-    },
-    "sql": {
-        "host": "",
-        "user": "",
-        "password": "",
-        "database": ""
-    },
-    "mongodb": {
-        "url": "xxx",
-        "database": "xxx"
     },
     "smtp": {
         "tls": {
@@ -54,5 +46,13 @@
                 "level": "error"
             }
         }
+    },
+    "mongodb": {
+        "url": "xxx",
+        "database": "xxx"
+    },
+    "localwebserver": {
+        "storeport": 7000,
+        "consoleport": 7001
     }
 }

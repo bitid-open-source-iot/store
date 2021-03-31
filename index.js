@@ -6,7 +6,6 @@ const auth = require('./lib/auth');
 const chalk = require('chalk');
 const express = require('express');
 const responder = require('./lib/responder');
-const bodyParser = require('body-parser');
 const healthcheck = require('@bitid/health-check');
 const ErrorResponse = require('./lib/error-response');
 
@@ -23,11 +22,11 @@ try {
             try {
                 var app = express();
                 app.use(cors());
-                app.use(bodyParser.urlencoded({
+                app.use(express.urlencoded({
                     'limit': '100mb',
                     'extended': true
                 }));
-                app.use(bodyParser.json({
+                app.use(express.json({
                     'limit': '100mb'
                 }));
 
@@ -40,11 +39,8 @@ try {
                             })
                                 .then(result => {
                                     next();
-                                }, err => {
-                                    __logger.error('authCheck error: ' + JSON.stringify(err));
-                                    err.error.code = 401;
-                                    err.error.errors[0].code = 401;
-                                    __responder.error(req, res, err);
+                                }, error => {
+                                    __responder.error(req, res, error);
                                 });
                         } else {
                             next();
@@ -175,11 +171,11 @@ try {
             try {
                 var appconsole = express();
                 appconsole.use(cors());
-                appconsole.use(bodyParser.urlencoded({
+                appconsole.use(express.urlencoded({
                     'limit': '100mb',
                     'extended': true
                 }));
-                appconsole.use(bodyParser.json({
+                appconsole.use(express.json({
                     "limit": '100mb'
                 }));
 

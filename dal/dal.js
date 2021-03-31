@@ -1,5 +1,6 @@
 const Q = require('q');
 const db = require('./../db/mongo');
+const format = require('../lib/format');
 const dbMySQL = require('./../db/mysql');
 const ObjectId = require('mongodb').ObjectId;
 const ErrorResponse = require('./../lib/error-response');
@@ -10,7 +11,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId),
 				'quantity': args.req.body.quantity,
 				'productId': ObjectId(args.req.body.productId),
@@ -39,7 +40,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -53,7 +54,7 @@ var module = function () {
 
 					var params = args.req.body.products.map(o => {
 						return {
-							'email': args.req.body.header.email,
+							'email': format.email(args.req.body.header.email),
 							'storeId': ObjectId(args.req.body.storeId),
 							'quantity': o.quantity,
 							'productId': ObjectId(o.productId),
@@ -116,7 +117,7 @@ var module = function () {
 			var params = [
 				{
 					$match: {
-						'email': args.req.body.header.email,
+						'email': format.email(args.req.body.header.email),
 						'storeId': ObjectId(args.req.body.storeId)
 					}
 				},
@@ -181,7 +182,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.cartId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 			var update = {
@@ -217,7 +218,7 @@ var module = function () {
 
 			var params = {
 				'_id': null,
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -254,7 +255,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.orderId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -301,7 +302,7 @@ var module = function () {
 			var params = [
 				{
 					$match: {
-						"_id": ObjectId(args.req.body.orderId)
+						'_id': ObjectId(args.req.body.orderId)
 					}
 				},
 				{
@@ -317,18 +318,18 @@ var module = function () {
 				},
 				{
 					$project: {
-						"date": 1,
-						"email": 1,
-						"storeId": 1,
-						"payment": 1,
-						"orderId": "$_id",
-						"products": 1,
-						"shipping": 1,
-						"recipient": 1,
-						"store.logo": 1,
-						"store.address": 1,
-						"store.contact": 1,
-						"store.description": 1
+						'date': 1,
+						'email': 1,
+						'storeId': 1,
+						'payment': 1,
+						'orderId': '$_id',
+						'products': 1,
+						'shipping': 1,
+						'recipient': 1,
+						'store.logo': 1,
+						'store.address': 1,
+						'store.contact': 1,
+						'store.description': 1
 					}
 				},
 				{
@@ -347,8 +348,8 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						"products.cost": "$config.cost",
-						"products.supplierId": "$config.supplierId"
+						'products.cost': '$config.cost',
+						'products.supplierId': '$config.supplierId'
 					}
 				},
 				{
@@ -364,43 +365,43 @@ var module = function () {
 				},
 				{
 					$addFields: {
-						"products.supplier": {
-							"phone": "$supplier.phone",
-							"email": "$supplier.email",
-							"address": "$supplier.address",
-							"description": "$supplier.description"
+						'products.supplier': {
+							'phone': '$supplier.phone',
+							'email': '$supplier.email',
+							'address': '$supplier.address',
+							'description': '$supplier.description'
 						}
 					}
 				},
 				{
 					$group: {
-						"_id": "$products.productId",
-						"date": {
-							$first: "$date"
+						'_id': '$products.productId',
+						'date': {
+							$first: '$date'
 						},
-						"email": {
-							$first: "$email"
+						'email': {
+							$first: '$email'
 						},
-						"store": {
-							$first: "$store"
+						'store': {
+							$first: '$store'
 						},
-						"orderId": {
-							$first: "$orderId"
+						'orderId': {
+							$first: '$orderId'
 						},
-						"storeId": {
-							$first: "$storeId"
+						'storeId': {
+							$first: '$storeId'
 						},
-						"payment": {
-							$first: "$payment"
+						'payment': {
+							$first: '$payment'
 						},
-						"products": {
-							$push: "$products"
+						'products': {
+							$push: '$products'
 						},
-						"shipping": {
-							$first: "$shipping"
+						'shipping': {
+							$first: '$shipping'
 						},
-						"recipient": {
-							$first: "$recipient"
+						'recipient': {
+							$first: '$recipient'
 						}
 					}
 				}
@@ -429,7 +430,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -521,7 +522,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.orderId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'status': 'initialized',
 				'storeId': ObjectId(args.req.body.storeId)
 			};
@@ -681,10 +682,10 @@ var module = function () {
 						'reg': null,
 						'name': null
 					},
-					'email': args.req.body.header.email,
+					'email': format.email(args.req.body.header.email),
 					'number': null
 				},
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'status': 'initialized',
 				'storeId': ObjectId(args.req.body.storeId),
 				'products': args.req.body.products,
@@ -772,7 +773,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.storeId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -871,7 +872,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -928,11 +929,11 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'bitid.auth.users.email': {
-					$ne: args.req.body.email
+					$ne: format.email(args.req.body.email)
 				},
 				'_id': ObjectId(args.req.body.storeId)
 			};
@@ -940,7 +941,7 @@ var module = function () {
 				$push: {
 					'bitid.auth.users': {
 						'role': args.req.body.role,
-						'email': args.req.body.email
+						'email': format.email(args.req.body.email)
 					}
 				}
 			};
@@ -974,7 +975,7 @@ var module = function () {
 							$gte: 2,
 							$lte: 5
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -1077,7 +1078,7 @@ var module = function () {
 				'bitid.auth.users': {
 					$elemMatch: {
 						'role': 5,
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -1143,7 +1144,7 @@ var module = function () {
 				{
 					$addFields: {
 						users: {
-							$concatArrays: ["$users", "$customers"]
+							$concatArrays: ['$users', '$customers']
 						}
 					}
 				},
@@ -1183,7 +1184,7 @@ var module = function () {
 
 						if (args.store.private) {
 							args.store.users = args.store.users.filter(o => o.status == 'accepted').map(o => o.email)
-							if (args.store.users.includes(args.req.body.header.email)) {
+							if (args.store.users.includes(format.email(args.req.body.header.email))) {
 								deferred.resolve(args);
 							} else {
 								var err = new ErrorResponse();
@@ -1213,7 +1214,7 @@ var module = function () {
 			var params = {
 				'bitid.auth.users': {
 					$elemMatch: {
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -1224,7 +1225,7 @@ var module = function () {
 				},
 				$pull: {
 					'bitid.auth.users': {
-						'email': args.req.body.email
+						'email': format.email(args.req.body.email)
 					}
 				}
 			};
@@ -1257,7 +1258,7 @@ var module = function () {
 						'role': {
 							$gte: 4
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -1274,7 +1275,7 @@ var module = function () {
 					var params = {
 						'bitid.auth.users': {
 							$elemMatch: {
-								'email': args.req.body.email
+								'email': format.email(args.req.body.email)
 							}
 						},
 						'_id': ObjectId(args.req.body.storeId)
@@ -1354,7 +1355,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'score': args.req.body.score,
 				'status': 'pending approval',
 				'storeId': ObjectId(args.req.body.storeId),
@@ -1386,7 +1387,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.reviewId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -1425,7 +1426,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -1521,7 +1522,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.reviewId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 			var update = {
@@ -1560,7 +1561,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.reviewId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -1609,7 +1610,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						},
 						'_id': ObjectId(args.req.body.reviewId)
@@ -1684,7 +1685,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						},
 						'_id': ObjectId(args.req.body.reviewId)
@@ -2083,7 +2084,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -2169,7 +2170,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.productId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -2234,7 +2235,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.type) != 'undefined') {
@@ -2360,7 +2361,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -2495,7 +2496,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -2580,7 +2581,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -2685,12 +2686,12 @@ var module = function () {
 				$or: [
 					{
 						'_id': ObjectId(args.req.body.voucherId),
-						'email': args.req.body.header.email,
+						'email': format.email(args.req.body.header.email),
 						'status': 'sold'
 					},
 					{
 						'_id': ObjectId(args.req.body.voucherId),
-						'bitid.auth.users.email': args.req.body.header.email
+						'bitid.auth.users.email': format.email(args.req.body.header.email)
 					}
 				]
 			};
@@ -2775,11 +2776,11 @@ var module = function () {
 			var match = {
 				$or: [
 					{
-						'email': args.req.body.header.email,
+						'email': format.email(args.req.body.header.email),
 						'status': 'sold'
 					},
 					{
-						'bitid.auth.users.email': args.req.body.header.email
+						'bitid.auth.users.email': format.email(args.req.body.header.email)
 					}
 				]
 			};
@@ -2918,9 +2919,9 @@ var module = function () {
 					},
 					{
 						$project: {
-							"_id": 0,
-							"vouchers": 1,
-							"productId": "$_id"
+							'_id': 0,
+							'vouchers': 1,
+							'productId': '$_id'
 						}
 					}
 				];
@@ -2936,14 +2937,14 @@ var module = function () {
 						var items = JSON.parse(JSON.stringify(result));
 
 						var params = {
-							"_id": {
+							'_id': {
 								$in: []
 							}
 						};
 
 						var update = {
 							$set: {
-								'email': args.req.body.header.email,
+								'email': format.email(args.req.body.header.email),
 								'status': 'sold'
 							}
 						}
@@ -3015,7 +3016,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -3099,7 +3100,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						},
 						'_id': ObjectId(args.req.body.voucherId)
@@ -3220,7 +3221,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -3322,7 +3323,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -3350,7 +3351,7 @@ var module = function () {
 					var params = {
 						'icon': args.req.body.icon,
 						'phone': args.req.body.phone,
-						'email': args.req.body.email,
+						'email': format.email(args.req.body.email),
 						'options': args.req.body.options,
 						'storeId': ObjectId(args.req.body.storeId),
 						'account': args.req.body.account,
@@ -3386,7 +3387,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.courierId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -3451,7 +3452,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -3559,7 +3560,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -3588,8 +3589,8 @@ var module = function () {
 					if (typeof (args.req.body.phone) != 'undefined') {
 						update.$set.phone = args.req.body.phone;
 					};
-					if (typeof (args.req.body.email) != 'undefined') {
-						update.$set.email = args.req.body.email;
+					if (typeof (format.email(args.req.body.email)) != 'undefined') {
+						update.$set.email = format.email(args.req.body.email);
 					};
 					if (Array.isArray(args.req.body.options)) {
 						args.req.body.options.map(option => {
@@ -3657,7 +3658,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -3705,7 +3706,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'status': 'accepted'
 			};
 
@@ -3747,7 +3748,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -3767,7 +3768,7 @@ var module = function () {
 					var deferred = Q.defer();
 
 					var params = {
-						'email': args.req.body.email,
+						'email': format.email(args.req.body.email),
 						'status': 'accepted',
 						'storeId': ObjectId(args.req.body.storeId),
 						'serverDate': new Date()
@@ -3801,7 +3802,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.customerId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -3866,7 +3867,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -3974,7 +3975,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -3997,8 +3998,8 @@ var module = function () {
 							'serverDate': new Date()
 						}
 					};
-					if (typeof (args.req.body.email) != 'undefined') {
-						update.$set.email = args.req.body.email;
+					if (typeof (format.email(args.req.body.email)) != 'undefined') {
+						update.$set.email = format.email(args.req.body.email);
 					};
 					if (typeof (args.req.body.status) != 'undefined') {
 						update.$set.status = args.req.body.status;
@@ -4055,7 +4056,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -4101,7 +4102,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'status': 'requested',
 				'storeId': ObjectId(args.req.body.storeId),
 				'serverDate': new Date()
@@ -4137,7 +4138,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -4166,7 +4167,7 @@ var module = function () {
 							'additionalInfo': args.req.body.address.additionalInfo
 						},
 						'phone': args.req.body.phone,
-						'email': args.req.body.email,
+						'email': format.email(args.req.body.email),
 						'storeId': ObjectId(args.req.body.storeId),
 						'serverDate': new Date(),
 						'description': args.req.body.description
@@ -4200,7 +4201,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.supplierId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -4265,7 +4266,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -4373,7 +4374,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -4416,8 +4417,8 @@ var module = function () {
 					if (typeof (args.req.body.phone) != 'undefined' && args.req.body.phone != null && args.req.body.phone != '') {
 						update.$set.phone = args.req.body.phone;
 					};
-					if (typeof (args.req.body.email) != 'undefined' && args.req.body.email != null && args.req.body.email != '') {
-						update.$set.email = args.req.body.email;
+					if (typeof (format.email(args.req.body.email)) != 'undefined' && format.email(args.req.body.email) != null && format.email(args.req.body.email) != '') {
+						update.$set.email = format.email(args.req.body.email);
 					};
 					if (typeof (args.req.body.description) != 'undefined' && args.req.body.description != null && args.req.body.description != '') {
 						update.$set.description = args.req.body.description;
@@ -4474,7 +4475,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -4522,7 +4523,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId),
 				'quantity': args.req.body.quantity,
 				'productId': ObjectId(args.req.body.productId),
@@ -4551,7 +4552,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var params = {
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -4601,7 +4602,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.wishlistId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 			var update = {
@@ -4637,7 +4638,7 @@ var module = function () {
 
 			var params = {
 				'_id': ObjectId(args.req.body.wishlistId),
-				'email': args.req.body.header.email,
+				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
 
@@ -4670,7 +4671,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -4723,7 +4724,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.departmentId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -4788,7 +4789,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -4896,7 +4897,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -4974,7 +4975,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -5028,7 +5029,7 @@ var module = function () {
 					'_id': args.order.orderId,
 					'type': 'order',
 					'debit': args.req.body.amount.gross,
-					'email': args.req.body.header.email,
+					'email': format.email(args.req.body.header.email),
 					'credit': args.req.body.amount.gross,
 					'storeId': args.order.storeId,
 					'serverDate': new Date(),
@@ -5108,7 +5109,7 @@ var module = function () {
 						'role': {
 							$gte: 2
 						},
-						'email': args.req.body.header.email
+						'email': format.email(args.req.body.header.email)
 					}
 				},
 				'_id': ObjectId(args.req.body.storeId)
@@ -5169,7 +5170,7 @@ var module = function () {
 
 			var match = {
 				'_id': ObjectId(args.req.body.collectionpointId),
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			var filter = {};
@@ -5234,7 +5235,7 @@ var module = function () {
 			var deferred = Q.defer();
 
 			var match = {
-				'bitid.auth.users.email': args.req.body.header.email
+				'bitid.auth.users.email': format.email(args.req.body.header.email)
 			};
 
 			if (typeof (args.req.body.storeId) != 'undefined') {
@@ -5342,7 +5343,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}
@@ -5440,7 +5441,7 @@ var module = function () {
 								'role': {
 									$gte: 2
 								},
-								'email': args.req.body.header.email
+								'email': format.email(args.req.body.header.email)
 							}
 						}
 					}

@@ -1,11 +1,11 @@
 const Q = require('q');
-const pdfs = require('./../pdfs/pdfs');
 const tools = require('../lib/tools');
-const emails = require('./../emails/emails');
+const emails = require('../emails/emails');
 const moment = require('moment');
+const format = require('../lib/format');
 const payfast = require('@payfast/core');
-const dalModule = require('./../dal/dal');
-const ErrorResponse = require('./../lib/error-response');
+const dalModule = require('../dal/dal');
+const ErrorResponse = require('../lib/error-response');
 
 var module = function () {
     var bllCarts = {
@@ -697,7 +697,7 @@ var module = function () {
             } else {
                 var body = {
                     'header': {
-                        'email': args.req.body.email_address,
+                        'email': format.email(args.req.body.email_address),
                         'appId': '000000000000000000000001'
                     },
                     'amount': {

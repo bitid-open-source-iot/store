@@ -6,7 +6,6 @@ const assert = require('chai').assert;
 const expect = require('chai').expect;
 const should = require('chai').should();
 const config = require('./config.json');
-
 chai.use(subset);
 
 var cartId = null;
