@@ -67,10 +67,13 @@ mat-content {
             .description {
                 padding: 5px 16px;
             }
-            .review {
-                padding: 0px !important;
-                mat-stars {
-                    padding-left: 0px !important;
+            .reviews {
+                margin-left: 0px !important;
+                .review {
+                    padding: 0px !important;
+                    mat-stars {
+                        padding-left: 0px !important;
+                    }
                 }
             }
             .review-message {
