@@ -121,7 +121,7 @@ if (reviews.count() == 0) {
         '_id': ObjectId('000000000000000000000001'),
         'email': 'xxx@xxx.co.za',
         'points': NumberInt('5'),
-        'message': 'It's Nice!',
+        'message': 'It is Nice!',
         'storeId': '000000000000000000000001',
         'productId': '000000000000000000000001',
         'serverDate': ISODate()
@@ -190,6 +190,7 @@ if (customers.count() == 0) {
         'storeId': ObjectId('000000000000000000000001'),
         'serverDate': ISODate()
     });
+    
     db.tblCustomers.ensureIndex({
         'email': 1,
         'storeId': 1

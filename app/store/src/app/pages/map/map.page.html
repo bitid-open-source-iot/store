@@ -1,8 +1,14 @@
 <mat-content>
+    <button class="map-toggle" mat-icon-button (click)="toggle()">
+        <mat-icon>
+            {{ isOpen ? 'visibility_off' : 'visibility' }}
+        </mat-icon>
+    </button>
+
     <agm-map [fitBounds]="true">
         <agm-marker-cluster imagePath="https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m">
             <agm-marker *ngFor="let product of products.data" [title]="product.description" [latitude]="product.location.latitude" [longitude]="product.location.longitude" [agmFitBounds]="true" [markerClickable]="true">
-                <agm-info-window [isOpen]="true">
+                <agm-info-window [isOpen]="isOpen">
                     <div class="image" [style.background-image]="'url(' + product.image + ')'"></div>
 
                     <div class="product-details">

@@ -15,7 +15,12 @@ export class MapPage implements OnInit, OnDestroy {
 
     constructor(private cart: CartService, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService) { }
     
+    public isOpen: boolean;
     public loading: boolean;
+
+    public toggle() {
+        this.isOpen = !this.isOpen;
+    };
 
     private async list() {
         this.loading = true;

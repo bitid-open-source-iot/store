@@ -4,6 +4,17 @@ mat-content {
         height: 100%;
     }
 }
+.map-toggle {
+    top: 70px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    z-index: 100000;
+    position: fixed;
+    box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+    border-radius: 4px;
+    background-color: #FAFAFA;
+}
 .product-details {
     display: flex;
     padding: 0px 5px;

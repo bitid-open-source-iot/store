@@ -4,6 +4,7 @@ import { MapPage } from './map.page';
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { AgmCoreModule } from '@agm/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatContentModule } from 'src/app/libs/mat-content/mat-content.module';
@@ -22,6 +23,7 @@ const routes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        MatIconModule,
         MatButtonModule,
         MatContentModule,
         AgmJsMarkerClustererModule,
