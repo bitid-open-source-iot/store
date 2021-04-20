@@ -3707,7 +3707,8 @@ var module = function () {
 
 			var params = {
 				'email': format.email(args.req.body.header.email),
-				'status': 'accepted'
+				'status': 'accepted',
+				'storeId': ObjectId(args.req.body.storeId)
 			};
 
 			var filter = {

@@ -71,6 +71,10 @@ export class AppComponent implements OnInit {
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
 				switch(event.url) {
+					case('/'):
+					case('/home'):
+						this.page = 'Home';
+						break;
 					case('/map'):
 						this.page = 'Map';
 						break;
@@ -104,7 +108,9 @@ export class AppComponent implements OnInit {
 				
 				if (window.location.pathname != '/authenticate') {
 					if (this.store.private) {
-						const response = await this.customers.iam({});
+						const response = await this.customers.iam({
+							storeId: this.store.storeId
+						});
 						if (response.ok && !response.result) {
 							this.popup.show();
 						} else if (!response.ok) {

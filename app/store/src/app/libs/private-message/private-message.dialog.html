@@ -25,5 +25,9 @@
         <button mat-flat-button color="primary" (click)="request()" *ngIf="authenticated">
             Request Access
         </button>
+        
+        <button mat-stroked-button color="primary" (click)="account.signout()" *ngIf="authenticated">
+            Sign Out
+        </button>
     </div>
 </mat-content>
