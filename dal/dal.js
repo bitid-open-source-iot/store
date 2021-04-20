@@ -3723,9 +3723,8 @@ var module = function () {
 				'allowNoRecordsFound': true
 			})
 				.then(result => {
-					if (result.length == 0) {
-						args.result = false;
-					} else if (result.length == 1) {
+					args.result = false;
+					if (result.length >= 1) {
 						args.result = true;
 					};
 					deferred.resolve(args);
