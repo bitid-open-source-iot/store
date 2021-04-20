@@ -67,6 +67,15 @@ mat-content {
             .description {
                 padding: 5px 16px;
             }
+            .review {
+                padding: 0px !important;
+                mat-stars {
+                    padding-left: 0px !important;
+                }
+            }
+            .review-message {
+                font-size: 12px !important;
+            }
             .links {
                 display: flex;
                 padding: 2.5px;

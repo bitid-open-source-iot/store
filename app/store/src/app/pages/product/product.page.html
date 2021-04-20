@@ -58,10 +58,12 @@
                 </mat-toolbar>
 
                 <mat-list>
-                    <mat-list-item *ngFor="let review of reviews.data">
+                    <mat-list-item class="review" *ngFor="let review of reviews.data">
                         <mat-stars size="14" [value]="review.score"></mat-stars>
                         
-                        {{ review.message }}
+                        <span class="review-message">
+                            {{ review.message }}
+                        </span>
                     </mat-list-item>
                 </mat-list>
                 
