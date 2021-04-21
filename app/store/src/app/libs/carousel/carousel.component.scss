@@ -1,0 +1,9 @@
+mat-carousel {
+    padding: 8px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+mat-carousel::-webkit-scrollbar {
+    display: none;
+}

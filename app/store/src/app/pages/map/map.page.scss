@@ -3,6 +3,50 @@ mat-content {
         width: 100%;
         height: 100%;
     }
+    mat-carousel-tile {
+        left: calc(50% - 250px);
+        width: 100%;
+        height: 125px;
+        margin: auto !important;
+        bottom: 16px;
+        display: block;
+        position: fixed;
+        max-width: 500px;
+        background-color: #FFFFFF;
+        .image {
+            width: 30%;
+            height: 125px;
+            background-size: cover;
+            background-color: #FAFAFA;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        .details {
+            display: flex;
+            padding: 8px 16px;
+            flex-direction: column;
+            mat-stars {
+                margin-bottom: 8px;
+            }
+            h3 {
+                height: 18px;
+                font-size: 16px;
+                line-height: 18px;
+                font-weight: 500;
+                margin-bottom: 2px !important;
+                text-transform: uppercase;
+            }
+            h4 {
+                height: 16px;
+                font-size: 14px;
+                line-height: 16px;
+                text-transform: uppercase;
+            }
+            .description {
+                overflow: hidden;
+            }
+        }
+    }
 }
 .map-toggle {
     top: 70px;
@@ -13,25 +57,11 @@ mat-content {
     position: fixed;
     box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
     border-radius: 4px;
-    background-color: #FAFAFA;
+    background-color: #fafafa;
 }
-.product-details {
-    display: flex;
-    padding: 0px 5px;
-    max-width: 150px;
-    margin-top: 4px;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-    h3 {
-        width: 100px;
-        overflow: hidden;
-        font-size: 12px !important;
-        text-align: center;
-        line-height: 14px !important;
-        font-weight: 500 !important;
-        white-space: nowrap; 
-        text-overflow: ellipsis; 
-        text-transform: uppercase;
+@media screen and (max-width: 532px) {
+    mat-carousel-tile {
+        left: 16px !important;
+        width: calc(100% - 32px) !important;
     }
 }

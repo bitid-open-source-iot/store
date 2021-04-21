@@ -1,0 +1,12 @@
+mat-carousel-tile {
+    margin: 8px;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 8px;
+    flex-direction: row;
+    .mat-carousel-tile-content {
+        display: flex;
+        flex-direction: row;
+    }
+}
