@@ -131,7 +131,7 @@ export class CustomersPage implements OnInit, OnDestroy {
 						}
 					});
 				},
-				disabled: [0, 1, 2, 3, 4]
+				disabled: [0, 1]
 			}
 		];
 
