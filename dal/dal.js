@@ -644,9 +644,19 @@ var module = function () {
 		initialize: (args) => {
 			var deferred = Q.defer();
 
-			args.req.body.products.map(product => {
-				product.productId = ObjectId(product.productId);
+			args.req.body.products = args.req.body.products.filter(o => o.quantity > 0).map(o => {
+				o.productId = ObjectId(o.productId);
+				return o;
 			});
+
+			if (args.req.body.products.length < 1) {
+				var err = new ErrorResponse();
+				err.error.errors[0].code = 503;
+				err.error.errors[0].reason = 'Not enough products to fill order!';
+				err.error.errors[0].message = 'Not enough products to fill order!';
+				deferred.reject(err);
+				return deferred.promise;
+			};
 
 			var params = {
 				'date': {
