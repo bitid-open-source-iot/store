@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
+import { ToastService } from '../toast/toast.service';
 import { AccountService } from '../account/account.service';
 import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../localstorage/localstorage.service';
@@ -20,7 +21,7 @@ export class CartService {
         'discount': 0
     });
 
-    constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) { };
+    constructor(private api: ApiService, private toast: ToastService, private account: AccountService, private localstorage: LocalstorageService) { };
 
     public async clear() {
         this.items = [];
@@ -110,6 +111,7 @@ export class CartService {
         };
         this.localstorage.setObject('cart', this.items);
         this.calculate();
+        this.toast.success('Item was added to your cart!');
     };
 
     public async more(params: any) {

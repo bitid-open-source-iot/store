@@ -1994,6 +1994,12 @@ var module = function () {
 					'storeId': ObjectId(args.req.body.storeId)
 				};
 
+				if (typeof (args.req.body.location) != 'undefined' && args.req.body.location != null) {
+					if (typeof (args.req.body.location.enabled) != 'undefined' && args.req.body.location.enabled != null) {
+						match['location.enabled'] = args.req.body.location.enabled;
+					};
+				};
+
 				if (typeof (args.req.body.productId) != 'undefined' && args.req.body.productId != null) {
 					if (Array.isArray(args.req.body.productId) && args.req.body.productId.length > 0) {
 						match._id = {
@@ -2249,6 +2255,12 @@ var module = function () {
 					};
 				} else if (typeof (args.req.body.storeId) == 'string' && args.req.body.storeId.length == 24) {
 					match.storeId = ObjectId(args.req.body.storeId);
+				};
+			};
+
+			if (typeof (args.req.body.location) != 'undefined' && args.req.body.location != null) {
+				if (typeof (args.req.body.location.enabled) != 'undefined' && args.req.body.location.enabled != null) {
+					match['location.enabled'] = args.req.body.location.enabled;
 				};
 			};
 

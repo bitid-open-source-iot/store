@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
+import { ToastService } from '../toast/toast.service';
 import { AccountService } from '../account/account.service';
 import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../localstorage/localstorage.service';
@@ -14,7 +15,7 @@ export class WishlistService {
     public items: any[] = [];
     public count: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-    constructor(private api: ApiService, private account: AccountService, private localstorage: LocalstorageService) {};
+    constructor(private api: ApiService, private toast: ToastService, private account: AccountService, private localstorage: LocalstorageService) {};
 
     public async init() {
         if (this.account.authenticated.value) {
@@ -76,6 +77,7 @@ export class WishlistService {
         };
         this.localstorage.setObject('wishlist', this.items);
         this.count.next(this.items.length);
+        this.toast.success('Item was added to your wishlist!');
     };
 
     public async list(params: any) {

@@ -24,13 +24,13 @@
                         {{ product.title }}
                     </div>
     
-                    <button mat-icon-button (click)="wishlist.add(product)">
+                    <button [class.selected]="wishlist.includes(product.productId)" mat-icon-button (click)="wishlist.add(product)">
                         <mat-icon>
                             favorite
                         </mat-icon>
                     </button>
             
-                    <button mat-icon-button (click)="cart.add(product)">
+                    <button [class.selected]="cart.includes(product.productId)" mat-icon-button (click)="cart.add(product)">
                         <mat-icon>
                             add_shopping_cart
                         </mat-icon>
@@ -44,6 +44,18 @@
                 <mat-stars size="20" [value]="product.score"></mat-stars>
     
                 <div class="description" [innerHtml]="product.description"></div>
+
+                <div class="map-container" *ngIf="product.location.enabled">
+                    <button mat-icon-button routerLink="/map" [queryParams]="{productId: product.productId}">
+                        <mat-icon>
+                            map
+                        </mat-icon>
+                    </button>
+
+                    <agm-map [fitBounds]="true">
+                        <agm-marker [title]="product.title" [latitude]="product.location.latitude" [longitude]="product.location.longitude" [agmFitBounds]="true"></agm-marker>
+                    </agm-map>
+                </div>
                 
                 <mat-toolbar>
                     <mat-label class="spacer">

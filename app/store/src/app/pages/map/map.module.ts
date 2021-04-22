@@ -33,13 +33,13 @@ const routes: Routes = [
         MatContentModule,
         MatCarouselModule,
         AgmJsMarkerClustererModule,
+        RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
             apiKey: environment.googleMapsApiKey,
             libraries: [
                 'places'
             ]
-        }),
-        RouterModule.forChild(routes)
+        })
     ],
     declarations: [
         MapPage

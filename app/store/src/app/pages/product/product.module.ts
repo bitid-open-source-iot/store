@@ -6,6 +6,7 @@ import { ProductReviewDialog } from './review/review.dialog';
 import { NgModule } from '@angular/core';
 import { StarsModule } from 'src/app/libs/stars/stars.module';
 import { CommonModule } from '@angular/common';
+import { AgmCoreModule } from '@agm/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +22,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
     {
@@ -48,7 +51,13 @@ const routes: Routes = [
         ReactiveFormsModule,
         MatProgressBarModule,
         MatProgressSpinnerModule,
-        RouterModule.forChild(routes)
+        RouterModule.forChild(routes),
+        AgmCoreModule.forRoot({
+            apiKey: environment.googleMapsApiKey,
+            libraries: [
+                'places'
+            ]
+        })
     ],
     declarations: [
         ProductPage,

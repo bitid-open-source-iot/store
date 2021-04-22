@@ -24,6 +24,7 @@ mat-content {
         .product {
             width: calc(25% - 10px);
             margin: 5px;
+            cursor: pointer;
             display: flex;
             padding: 0px;
             outline: none !important;

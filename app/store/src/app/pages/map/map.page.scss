@@ -12,6 +12,7 @@ mat-content {
         display: block;
         position: fixed;
         max-width: 500px;
+        box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
         background-color: #FFFFFF;
         .image {
             width: 30%;
@@ -47,17 +48,6 @@ mat-content {
             }
         }
     }
-}
-.map-toggle {
-    top: 70px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    z-index: 100000;
-    position: fixed;
-    box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
-    border-radius: 4px;
-    background-color: #fafafa;
 }
 @media screen and (max-width: 532px) {
     mat-carousel-tile {

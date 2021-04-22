@@ -1,7 +1,7 @@
 import { AgmMap } from '@agm/core';
 import { Product } from 'src/app/classes/product';
 import { CartService } from 'src/app/services/cart/cart.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
@@ -17,17 +17,11 @@ declare const google: any;
 
 export class MapPage implements OnInit, OnDestroy {
 
-    @ViewChild(AgmMap, { static: true }) private map: AgmMap;
-
-    constructor(private cart: CartService, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService, private sanitizer: DomSanitizer) { }
+    constructor(private cart: CartService, private route: ActivatedRoute, public products: ProductsService, private buttons: ButtonsService, private wishlist: WishlistService) { }
     
-    public isOpen: boolean;
     public loading: boolean;
     public product: Product;
-
-    public toggle() {
-        this.isOpen = !this.isOpen;
-    };
+    public productId: string;
 
     private async list() {
         this.loading = true;
@@ -40,16 +34,24 @@ export class MapPage implements OnInit, OnDestroy {
                 'image',
                 'location',
                 'promotion',
-                'productId',
-                'description'
-            ]
+                'productId'
+            ],
+            location: {
+                enabled: true
+            }
         });
 
         if (response.ok) {
             this.products.data = response.result.map(o => new Product(o));
-            this.products.data.map(product => {
-                product.description = this.sanitizer.bypassSecurityTrustHtml(product.description);
-            });
+            const params = this.route.snapshot.queryParams;
+            if (typeof(params.productId) != 'undefined' && params.productId != null) {
+                for (let i = 0; i < this.products.data.length; i++) {
+                    if (this.products.data[i].productId == params.productId) {
+                        this.view(this.products.data[i]);
+                        break;;
+                    };
+                };
+            };
         } else {
             this.products.data = [];
         }
@@ -60,8 +62,10 @@ export class MapPage implements OnInit, OnDestroy {
     public view(product: Product) {
         if (this.product && this.product.productId == product.productId) {
             delete this.product;
+            this.productId = null;
         } else {
             this.product = product;
+            this.productId = product.productId;
         };
     };
 

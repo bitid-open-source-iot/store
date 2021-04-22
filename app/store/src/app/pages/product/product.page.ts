@@ -57,6 +57,7 @@ export class ProductPage implements OnInit, OnDestroy {
                 'title',
                 'score',
                 'images',
+                'location',
                 'promotion',
                 'productId',
                 'description'
@@ -107,10 +108,10 @@ export class ProductPage implements OnInit, OnDestroy {
     };
 
     ngOnInit(): void {
-        this.buttons.hide('cart');
+        this.buttons.show('cart');
         this.buttons.show('close');
         this.buttons.hide('search');
-        this.buttons.hide('wishlist');
+        this.buttons.show('wishlist');
 
         this.subscriptions.close = this.buttons.close.click.subscribe(params => {
             window.history.back();
