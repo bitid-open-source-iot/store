@@ -15,28 +15,34 @@ export class PrivateMessageDialog implements OnInit, OnDestroy {
 
 	constructor(private toast: ToastService, private dialog: MatDialogRef<PrivateMessageDialog>, public account: AccountService, public config: StoreService) { }
 
+	public storeId: string;
 	public authenticated: boolean;
 	private subscriptions: any = {};
 
 	public async request() {
 		const response = await this.account.requestaccess({
-			'storeId': this.config.value.value.storeId
+			'storeId': this.storeId
 		});
 		
 		if (response.ok) {
 			this.toast.success('Access was requested!');	
 		} else {
-			this.toast.success(response.error.message);	
+			this.toast.error(response.error.message);	
 		}
 	}
 
 	ngOnInit(): void {
+		this.subscriptions.config = this.config.value.subscribe(value => {
+			this.storeId = value.storeId;
+		});
+
 		this.subscriptions.authenticated = this.account.authenticated.subscribe(authenticated => {
 			this.authenticated = authenticated;
 		});
 	};
 
 	ngOnDestroy(): void {
+		this.subscriptions.config.unsubscribe();
 		this.subscriptions.authenticated.unsubscribe();
 	};
 
