@@ -1237,36 +1237,29 @@ var module = function () {
 					'collection': 'tblStores'
 				})
 					.then(result => {
-						try {
-							args.store = JSON.parse(JSON.stringify(result[0]));
-							if (typeof (args.req.body.storeId) == 'undefined' || args.req.body.storeId == null || args.req.body.storeId == '') {
-								args.req.body.storeId = args.store.storeId;
-							};
-	
-							if (args.store.private) {
-								args.store.users = args.store.users.filter(o => o.status == 'accepted').map(o => o.email)
-								if (args.store.users.includes(format.email(args.req.body.header.email))) {
-									deferred.resolve(args);
-								} else {
-									var err = new ErrorResponse();
-									err.error.code = 503;
-									err.error.errors[0].code = 69;
-									err.error.errors[0].reason = 'Store is private!';
-									err.error.errors[0].message = 'Store is private!';
-									deferred.reject(err);
-									return deferred.promise;
-								};
-							} else {
+						args.store = JSON.parse(JSON.stringify(result[0]));
+						if (typeof (args.req.body.storeId) == 'undefined' || args.req.body.storeId == null || args.req.body.storeId == '') {
+							args.req.body.storeId = args.store.storeId;
+						};
+
+						if (args.store.private) {
+							args.store.users = args.store.users.filter(o => o.status == 'accepted').map(o => o.email)
+							if (args.store.users.includes(format.email(args.req.body.header.email))) {
 								deferred.resolve(args);
+							} else {
+								var err = new ErrorResponse();
+								err.error.code = 503;
+								err.error.errors[0].code = 69;
+								err.error.errors[0].reason = 'Store is private!';
+								err.error.errors[0].message = 'Store is private!';
+								err.error.errors[0].location = 'dalStores';
+								err.error.errors[0].locationType = 'Validation Error';
+								deferred.reject(err);
+								return deferred.promise;
 							};
-						} catch (error) {
-							var err = new ErrorResponse();
-							err.error.code = 503;
-							err.error.errors[0].code = 503;
-							err.error.errors[0].reason = error.message;
-							err.error.errors[0].message = error.message;
-							deferred.reject(err);
-						}
+						} else {
+							deferred.resolve(args);
+						};
 					}, error => {
 						var err = new ErrorResponse();
 						err.error.errors[0].code = error.code;
