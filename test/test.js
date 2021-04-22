@@ -1383,7 +1383,7 @@ describe('Orders', function () {
 
 describe('Payfast', function () {
     it('/store/payfast/payment', function (done) {
-        this.timeout(50000);
+        this.timeout(10000);
 
         tools.api.payfast.payment()
             .then((result) => {

@@ -644,69 +644,109 @@ var module = function () {
 		initialize: (args) => {
 			var deferred = Q.defer();
 
-			args.req.body.products = args.req.body.products.filter(o => o.quantity > 0).map(o => {
-				o.productId = ObjectId(o.productId);
-				return o;
-			});
-
-			if (args.req.body.products.length < 1) {
-				var err = new ErrorResponse();
-				err.error.errors[0].code = 503;
-				err.error.errors[0].reason = 'Not enough products to fill order!';
-				err.error.errors[0].message = 'Not enough products to fill order!';
-				deferred.reject(err);
-				return deferred.promise;
-			};
-
 			var params = {
-				'date': {
-					'paid': null,
-					'sent': null,
-					'returned': null,
-					'delivered': null,
-					'initialized': new Date()
-				},
-				'payment': {
-					'vat': null,
-					'total': null,
-					'credit': null,
-					'method': null,
-					'discount': null,
-					'shipping': null,
-					'subtotal': null
-				},
-				'shipping': {
-					'address': {},
-					'method': null,
-					'enabled': null,
-					'optionId': null,
-					'courierId': null
-				},
-				'recipient': {
-					'name': {
-						'last': null,
-						'first': null
-					},
-					'company': {
-						'vat': null,
-						'reg': null,
-						'name': null
-					},
-					'email': format.email(args.req.body.header.email),
-					'number': null
-				},
-				'email': format.email(args.req.body.header.email),
-				'status': 'initialized',
-				'storeId': ObjectId(args.req.body.storeId),
-				'products': args.req.body.products,
-				'serverDate': new Date()
-			};
+				_id: {
+					$in: args.req.body.products.map(o => ObjectId(o.productId))
+				}
+			}
+			var filter = {
+				_id: 1,
+				quantity: 1
+			}
 
 			db.call({
 				'params': params,
-				'operation': 'insert',
-				'collection': 'tblOrders'
+				'filter': filter,
+				'operation': 'find',
+				'collection': 'tblProducts'
 			})
+				.then(result => {
+					var deferred = Q.defer();
+
+					result.map(o => {
+						o.productId = o._id.toString();
+						args.req.body.products.map(product => {
+							if (o.productId == product.productId) {
+								product.max = o.quantity;
+							}
+						})
+					});
+
+					args.req.body.products = args.req.body.products.filter(o => o.max > 0);
+
+					if (args.req.body.products.length == 0) {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = 503;
+						err.error.errors[0].reason = 'Not enough products to fill order!';
+						err.error.errors[0].message = 'Not enough products to fill order!';
+						deferred.reject(err);
+						return deferred.promise;
+					} else {
+						args.req.body.products.map(o => {
+							if (o.max < o.quantity) {
+								o.quantity = o.max;
+							};
+						});
+
+						args.req.body.products = args.req.body.products.map(o => {
+							o.productId = ObjectId(o.productId);
+							return o;
+						})
+
+						var params = {
+							'date': {
+								'paid': null,
+								'sent': null,
+								'returned': null,
+								'delivered': null,
+								'initialized': new Date()
+							},
+							'payment': {
+								'vat': null,
+								'total': null,
+								'credit': null,
+								'method': null,
+								'discount': null,
+								'shipping': null,
+								'subtotal': null
+							},
+							'shipping': {
+								'address': {},
+								'method': null,
+								'enabled': null,
+								'optionId': null,
+								'courierId': null
+							},
+							'recipient': {
+								'name': {
+									'last': null,
+									'first': null
+								},
+								'company': {
+									'vat': null,
+									'reg': null,
+									'name': null
+								},
+								'email': format.email(args.req.body.header.email),
+								'number': null
+							},
+							'email': format.email(args.req.body.header.email),
+							'status': 'initialized',
+							'storeId': ObjectId(args.req.body.storeId),
+							'products': args.req.body.products,
+							'serverDate': new Date()
+						};
+
+						deferred.resolve({
+							'params': params,
+							'operation': 'insert',
+							'collection': 'tblOrders'
+						});
+					};
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
 				.then(result => {
 					args.orderId = result[0]._id.toString();
 					deferred.resolve(args);
