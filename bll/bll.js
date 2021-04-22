@@ -124,7 +124,7 @@ var module = function () {
                             args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
                             args.req.body.productId = args.order.products.map(product => product.productId);
 
-                            myModule.products.list(args)
+                            myModule.products.public.list(args)
                                 .then(args => {
                                     var products = [];
 
@@ -294,7 +294,7 @@ var module = function () {
                         if (args.req.body.productId.length > 0) {
                             args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
 
-                            myModule.products.list(args)
+                            myModule.products.public.list(args)
                                 .then(args => {
                                     args.orders.map(order => {
                                         if (order.status == 'initialized') {
@@ -1385,7 +1385,7 @@ var module = function () {
 
                     return deferred.promise;
                 }, null)
-                .then(myModule.products.list, null)
+                .then(myModule.products.public.list, null)
                 .then(args => {
                     var deferred = Q.defer();
 
