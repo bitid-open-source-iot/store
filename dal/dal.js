@@ -1251,6 +1251,7 @@ var module = function () {
 								err.error.errors[0].reason = 'Store is private!';
 								err.error.errors[0].message = 'Store is private!';
 								deferred.reject(err);
+								return deferred.promise;
 							};
 						} else {
 							deferred.resolve(args);
