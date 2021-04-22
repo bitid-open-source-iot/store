@@ -276,8 +276,6 @@ var module = function () {
 				});
 			};
 
-			console.log(args.req.originalUrl, JSON.stringify(params));
-
 			db.call({
 				'params': params,
 				'filter': filter,
