@@ -276,6 +276,8 @@ var module = function () {
 				});
 			};
 
+			console.log(args.req.originalUrl, JSON.stringify(params));
+
 			db.call({
 				'params': params,
 				'filter': filter,
@@ -1221,8 +1223,6 @@ var module = function () {
 					}
 				}
 			];
-
-			console.log(args.req.originalUrl, JSON.stringify(params));
 
 			if (Object.keys(match).length == 0) {
 				var err = new ErrorResponse();
