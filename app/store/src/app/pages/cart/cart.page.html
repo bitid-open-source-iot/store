@@ -16,7 +16,7 @@
                             </small>
                         </span>
                         <p>
-                            ✕ <input type="number" min="1" [max]="item.max" step="1" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)">
+                            {{ item.max > 0 ? '✕' : '' }} <input type="number" min="1" [max]="item.max" [disabled]="item.max == 0" step="1" [(ngModel)]="item.quantity" (ngModelChange)="cart.update(item)" *ngIf="item.max > 0"> {{ item.max == 0 ? 'Out of stock!' : '' }}
                         </p>
                     </section>
 

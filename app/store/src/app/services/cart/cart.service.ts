@@ -65,8 +65,21 @@ export class CartService {
     };
 
     public async add(params: any) {
+        const available = await this.api.put(environment.store, '/store/products/public/get', {
+            filter: [
+                'quantity'
+            ],
+            productId: params.productId
+        });
+
+        if (!available.ok) {
+            this.toast.error('Issue retrieving product availability!');
+            return false;
+        }
+
         if (this.account.authenticated.value) {
             params.quantity = 1;
+            
             const response = await this.api.post(environment.store, '/store/carts/add', params);
 
             if (response.ok) {
@@ -79,6 +92,7 @@ export class CartService {
                 });
                 if (!found) {
                     this.items.push({
+                        'max': available.result.quantity,
                         'title': params.title,
                         'price': params.price,
                         'image': params.image,

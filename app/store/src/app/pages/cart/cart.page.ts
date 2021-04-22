@@ -33,38 +33,37 @@ export class CartPage implements OnInit, OnDestroy {
 
         if (this.account.authenticated.value) {
             await this.cart.list({});
-        } else {
-            const products = await this.products.list({
-                'filter': [
-                    'title',
-                    'price',
-                    'image',
-                    'storeId',
-                    'quantity',
-                    'productId',
-                    'promotion'
-                ],
-                'productId': this.cart.items.map(o => o.productId)
-            });
+        };
+        const products = await this.products.list({
+            'filter': [
+                'title',
+                'price',
+                'image',
+                'storeId',
+                'quantity',
+                'productId',
+                'promotion'
+            ],
+            'productId': this.cart.items.map(o => o.productId)
+        });
 
-            if (products.ok) {
-                for (let i = 0; i < this.cart.items.length; i++) {
-                    products.result.map(item => {
-                        if (this.cart.items[i].productId == item.productId) {
-                            if (this.cart.items[i].quantity > item.quantity) {
-                                this.cart.items[i].quantity = item.quantity;
-                            };
-                            this.cart.items[i].max = item.quantity;
-                            this.cart.items[i].title = item.title;
-                            this.cart.items[i].price = item.price;
-                            this.cart.items[i].image = item.image;
-                            this.cart.items[i].storeId = item.storeId;
-                            this.cart.items[i].promotion = item.promotion;
+        if (products.ok) {
+            for (let i = 0; i < this.cart.items.length; i++) {
+                products.result.map(item => {
+                    if (this.cart.items[i].productId == item.productId) {
+                        if (this.cart.items[i].quantity > item.quantity) {
+                            this.cart.items[i].quantity = item.quantity;
                         };
-                    });
-                };
-                this.cart.calculate();
+                        this.cart.items[i].max = item.quantity;
+                        this.cart.items[i].title = item.title;
+                        this.cart.items[i].price = item.price;
+                        this.cart.items[i].image = item.image;
+                        this.cart.items[i].storeId = item.storeId;
+                        this.cart.items[i].promotion = item.promotion;
+                    };
+                });
             };
+            this.cart.calculate();
         };
 
         this.loading = false;
