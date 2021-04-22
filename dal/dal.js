@@ -1222,7 +1222,7 @@ var module = function () {
 				}
 			];
 
-			console.log(params);
+			console.log(args.req.originalUrl, JSON.stringify(params));
 
 			if (Object.keys(match).length == 0) {
 				var err = new ErrorResponse();
