@@ -1246,8 +1246,8 @@ var module = function () {
 								deferred.resolve(args);
 							} else {
 								var err = new ErrorResponse();
-								err.error.code = 401;
-								err.error.errors[0].code = 401;
+								err.error.code = 503;
+								err.error.errors[0].code = 69;
 								err.error.errors[0].reason = 'Store is private!';
 								err.error.errors[0].message = 'Store is private!';
 								deferred.reject(err);
