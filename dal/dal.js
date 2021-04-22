@@ -1222,6 +1222,8 @@ var module = function () {
 				}
 			];
 
+			console.log(params);
+
 			if (Object.keys(match).length == 0) {
 				var err = new ErrorResponse();
 				err.error.errors[0].code = 503;
