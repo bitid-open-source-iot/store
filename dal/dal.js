@@ -1260,6 +1260,7 @@ var module = function () {
 						var err = new ErrorResponse();
 						err.error.errors[0].code = error.code;
 						err.error.errors[0].reason = error.message;
+						err.error.errors[0].message = error.message;
 						deferred.reject(err);
 					});
 			};
