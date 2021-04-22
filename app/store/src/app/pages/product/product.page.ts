@@ -9,6 +9,7 @@ import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { WishlistService } from 'src/app/services/wishlist/wishlist.service';
 import { ProductReviewDialog } from './review/review.dialog';
+import { ProductGalleryDialog } from './gallery/gallery.dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 
@@ -28,6 +29,13 @@ export class ProductPage implements OnInit, OnDestroy {
     public productId: string;
     public authenticated: boolean;
     private subscriptions: any = {};
+
+    public gallery() {
+        this.dialog.open(ProductGalleryDialog, {
+            data: this.product.images.map(o => o.src),
+            panelClass: 'fullscreen-dialog'
+        });
+    };
 
     private async load() {
         this.loading = true;

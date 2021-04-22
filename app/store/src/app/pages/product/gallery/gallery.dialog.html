@@ -1,0 +1,31 @@
+<mat-toolbar>
+    <mat-label class="spacer">
+        Product Gallery
+    </mat-label>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-content>
+    <button class="previous" mat-icon-button (click)="previous()">
+        <mat-icon>
+            arrow_back
+        </mat-icon>
+    </button>
+
+    <mat-tab-group>
+        <mat-tab *ngFor="let image of images">
+            <img [src]="image" alt="image">
+        </mat-tab>
+    </mat-tab-group>
+
+    <button class="next" mat-icon-button (click)="next()">
+        <mat-icon>
+            arrow_forward
+        </mat-icon>
+    </button>
+</mat-content>

@@ -5,7 +5,13 @@
         <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
             <div fxFlex="25" fxFlex.lg="30" fxFlex.md="30" fxFlex.sm="100" fxFlex.xs="100">
                 <div class="images">
-                    <div class="image" [style.background-image]="'url(' + product.image + ')'" *ngIf="product.image"></div>
+                    <div class="image" [style.background-image]="'url(' + product.image + ')'" *ngIf="product.image">
+                        <button class="gallery" mat-icon-button (click)="gallery()">
+                            <mat-icon>
+                                zoom_in
+                            </mat-icon>
+                        </button>
+                    </div>
                     <div class="selection">
                         <div class="image" *ngFor="let image of product.images" [style.background-image]="'url(' + image.src + ')'" matRipple (click)="product.image = image.src">
                             <div class="selected" *ngIf="product.image == image.src">

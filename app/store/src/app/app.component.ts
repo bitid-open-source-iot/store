@@ -162,6 +162,13 @@ export class AppComponent implements OnInit {
 			}
 		});
 
+		this.account.events.subscribe(event => {
+			if (event == 'sign-out') {
+				this.config.value.next(null);
+				this.config.init();
+			}
+		});
+		
 		this.account.authenticated.subscribe(authenticated => {
 			this.authenticated = authenticated;
 		});

@@ -1,6 +1,7 @@
 /* --- PAGES --- */
 import { ProductPage } from './product.page';
 import { ProductReviewDialog } from './review/review.dialog';
+import { ProductGalleryDialog } from './gallery/gallery.dialog';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
@@ -9,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from '@agm/core';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatRippleModule } from '@angular/material/core';
@@ -39,6 +41,7 @@ const routes: Routes = [
         CommonModule,
         MatIconModule,
         MatListModule,
+        MatTabsModule,
         MatInputModule,
         MatDialogModule,
         MatSliderModule,
@@ -61,7 +64,8 @@ const routes: Routes = [
     ],
     declarations: [
         ProductPage,
-        ProductReviewDialog
+        ProductReviewDialog,
+        ProductGalleryDialog
     ]
 })
 

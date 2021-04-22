@@ -954,7 +954,15 @@ var module = function () {
 			})
 				.then(result => {
 					args.result = JSON.parse(JSON.stringify(result));
-					deferred.resolve(args);
+					if (args.result.n == 1) {
+						deferred.resolve(args)
+					} else {
+						var err = new ErrorResponse();
+						err.error.errors[0].code = 70;
+						err.error.errors[0].reason = 'Could not share user!';
+						err.error.errors[0].message = 'Could not share user!';
+						deferred.reject(err);
+					};
 				}, error => {
 					var err = new ErrorResponse();
 					err.error.errors[0].code = error.code;

@@ -35,7 +35,9 @@ export class AuthenticatePage implements OnInit, OnDestroy {
 			await this.service.init();
 
 			if (this.store.private) {
-				const response = await this.customers.iam({});
+				const response = await this.customers.iam({
+					storeId: this.store.storeId
+				});
 				if (response.ok && !response.result) {
 					this.popup.show();
 				} else if (!response.ok) {

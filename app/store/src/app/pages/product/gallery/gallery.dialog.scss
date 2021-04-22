@@ -1,0 +1,19 @@
+img {
+    max-width: 100vw;
+    max-height: calc(100vh - 56px);
+}
+.next,
+.previous {
+    top: 50%;
+    z-index: 1000;
+    position: fixed;
+    box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+    // border-radius: 2px;
+    background-color: #FAFAFA;
+}
+.next {
+    right: 16px;
+}
+.previous {
+    left: 16px;
+}

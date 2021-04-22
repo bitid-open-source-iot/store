@@ -52,6 +52,13 @@ if (stores.count() == 0) {
     }, {
         'unique': true
     });
+    
+    db.tblStores.createIndex({
+        '_id': 1,
+        'bitid.auth.users.email': 1
+    }, {
+        'unique': true
+    });
 };
 
 var orders = db.getCollection('tblOrders');
@@ -150,15 +157,6 @@ if (products.count() == 0) {
                 'position': NumberInt('1')
             }
         ],
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
         'departments': [
             '000000000000000000000001'
         ],
@@ -202,15 +200,6 @@ if (customers.count() == 0) {
 var couriers = db.getCollection('tblCouriers');
 if (couriers.count() == 0) {
     db.tblCouriers.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
         'options': [
             {
                 'price': 60,
@@ -239,15 +228,6 @@ if (couriers.count() == 0) {
 var suppliers = db.getCollection('tblSuppliers');
 if (suppliers.count() == 0) {
     db.tblSuppliers.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
         '_id': ObjectId('000000000000000000000001'),
         'phone': '0000000000',
         'email': 'xxx@xxx.co.za',
@@ -307,15 +287,6 @@ if (vouchers.count() == 0) {
 var departments = db.getCollection('tblDepartments');
 if (departments.count() == 0) {
     db.tblDepartments.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
         '_id': ObjectId('000000000000000000000001'),
         'storeId': '000000000000000000000001',
         'description': 'xxx'
@@ -332,15 +303,6 @@ if (departments.count() == 0) {
 var collectionpoints = db.getCollection('tblCollectionPoints');
 if (collectionpoints.count() == 0) {
     db.tblCollectionPoints.insert({
-        'bitid': {
-            'auth': {
-                'users': [{
-                    'role': NumberInt('5'),
-                    'email': 'xxx@xxx.co.za'
-                }],
-                'organizationOnly': NumberInt('1')
-            }
-        },
         '_id': ObjectId('000000000000000000000001'),
         'vat': 'xxx',
         'type': 'xxx',

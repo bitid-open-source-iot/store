@@ -17,6 +17,26 @@ mat-content {
                 background-color: #fff !important;
                 background-repeat: no-repeat;
                 background-position: center center;
+                .gallery {
+                    top: 10px;
+                    width: 40px;
+                    right: 10px;
+                    height: 40px;
+                    display: flex;
+                    z-index: 100;
+                    padding: 0px !important;
+                    position: absolute;
+                    box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+                    align-items: center;
+                    border-radius: 2px;
+                    justify-content: center;
+                    background-color: #fff;
+                    mat-icon {
+                        width: 28px;
+                        height: 28px;
+                        font-size: 28px;
+                    }
+                }
             }
             .selection {
                 display: flex;

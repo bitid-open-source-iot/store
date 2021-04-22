@@ -2,8 +2,8 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../localstorage/localstorage.service';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,6 +12,7 @@ import { LocalstorageService } from '../localstorage/localstorage.service';
 export class AccountService {
 
 	public user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+	public events: Subject<any> = new Subject<any>();
 	public authenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	constructor(private api: ApiService, private router: Router, private localstorage: LocalstorageService) { }
@@ -69,6 +70,7 @@ export class AccountService {
 		this.localstorage.clear();
 		this.authenticated.next(false);
 		this.router.navigate(['/home']);
+		this.events.next('sign-out');
 	}
 
 	public async requestaccess(params) {

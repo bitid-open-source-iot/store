@@ -66,6 +66,9 @@ table {
 }
 mat-toolbar {
     max-height: 56px !important;
+    mat-label {
+        font-size: 16px;
+    }
 }
 mat-list {
     padding: 0px !important;
@@ -132,6 +135,41 @@ orders-viewer-page {
         button {
             max-width: 400px;
         }
+    }
+}
+.fullscreen-dialog .mat-dialog-container {
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding: 0px;
+    z-index: 5000;
+    position: fixed;
+    border-radius: 0px;
+    product-gallery-dialog {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+}
+product-gallery-dialog {
+    mat-toolbar {
+        color: #FFF !important;
+        background-color: #212121 !important;
+    }
+    mat-tab-header {
+        display: none !important;
+    }
+    mat-content {
+        position: relative !important;
+    }
+    .mat-tab-body-content {
+        height: calc(100vh - 56px);
+        display: flex !important;
+        align-items: center !important;
+        flex-direction: column;
+        justify-content: center !important;
+        background-color: #000 !important;
     }
 }
 button[mat-menu-item] {
