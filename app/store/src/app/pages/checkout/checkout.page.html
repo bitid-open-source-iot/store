@@ -376,8 +376,7 @@
                     <input type="hidden" name="email_address" [(ngModel)]="order.email" required>
                     <input type="hidden" name="payment_method" [(ngModel)]="payment.value.method" required>
                     <input type="hidden" name="item_description" value="Online Store Purchase" required>
-                    <input type="hidden" name="email_confirmation" value="1" required>
-                    <input type="hidden" name="confirmation_address" [(ngModel)]="order.email" required>
+                    <input type="hidden" name="email_confirmation" value="0" required>
         
                     <button type="button" mat-flat-button color="accent" type="button" color="primary" mat-flat-button (click)="verify()" [disabled]="payment.value.total == 0">
                         {{ loading ? '' : 'Confirm & Pay' }}
