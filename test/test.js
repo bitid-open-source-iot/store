@@ -2886,6 +2886,10 @@ var tools = {
 
         const result = await response.json();
 
+        if (!response.ok) {
+            console.log(result);
+        }
+
         deferred.resolve(result);
 
         return deferred.promise;

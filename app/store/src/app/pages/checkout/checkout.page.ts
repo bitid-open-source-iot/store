@@ -7,11 +7,11 @@ import { OrdersService } from 'src/app/services/orders/orders.service';
 import { ButtonsService } from 'src/app/services/buttons/buttons.service';
 import { ActivatedRoute } from '@angular/router';
 import { CouriersService } from 'src/app/services/couriers/couriers.service';
+import { CollectionPoint } from 'src/app/classes/collection-point';
 import { MatVerticalStepper } from '@angular/material/stepper';
 import { CollectionPointsService } from 'src/app/services/collection-points/collection-points.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OnInit, Component, OnDestroy, ViewChild } from '@angular/core';
-import { CollectionPoint } from 'src/app/classes/collection-point';
 
 @Component({
     selector: 'checkout-page',
@@ -232,6 +232,8 @@ export class CheckoutPage implements OnInit, OnDestroy {
 
         this.subscriptions.loaded = this.config.loaded.subscribe(loaded => {
             if (loaded) {
+                this.payfast.merchant_id = this.config.value.value.payfast.merchantId;
+                this.payfast.merchant_key = this.config.value.value.payfast.merchantKey;
                 const params = this.route.snapshot.queryParams;
                 this.orderId = params.orderId;
                 this.load();
