@@ -223,7 +223,7 @@ var module = function () {
                             });
                             args.req.body.total = (args.req.body.subtotal + args.req.body.shipping) - args.req.body.credit;
                             args.req.body.vat = args.req.body.total * 0.15;
-                            args.req.body.total = args.req.body.total + args.req.body.vat;
+                            args.req.body.subtotal -= args.req.body.vat;
 
                             if (typeof (args.order.payment) != 'undefined') {
                                 if (typeof (args.order.payment.vat) != 'undefined') {
@@ -387,7 +387,7 @@ var module = function () {
                         });
                         summary.total = summary.subtotal + summary.shipping + summary.discount;
                         summary.vat = summary.total * 0.15;
-                        summary.total = summary.total * 1.15;
+                        summary.subtotal -= summary.vat;
 
                         args.result.payment.vat = parseFloat(summary.vat.toFixed(2));
                         args.result.payment.total = parseFloat(summary.total.toFixed(2));

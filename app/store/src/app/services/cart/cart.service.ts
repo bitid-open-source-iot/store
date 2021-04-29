@@ -45,11 +45,12 @@ export class CartService {
     };
 
     public async calculate() {
-        let summary: Summary = {};
-        summary.vat = 0;
-        summary.total = 0;
-        summary.subtotal = 0;
-        summary.discount = 0;
+        let summary: Summary = {
+            vat: 0,
+            total: 0,
+            subtotal: 0,
+            discount: 0
+        };
         this.items.map(item => {
             item.quantity = parseInt(item.quantity);
             summary.subtotal += item.price * item.quantity;
@@ -57,9 +58,9 @@ export class CartService {
                 summary.discount -= (item.price - item.promotion.price) * item.quantity;
             };
         });
+        summary.vat = (summary.subtotal + summary.discount) * 0.15;
         summary.total = summary.subtotal + summary.discount;
-        summary.vat = summary.total * 0.15;
-        summary.total = summary.total * 1.15;
+        summary.subtotal -= summary.vat;
         this.summary.next(summary);
         this.count.next(this.items.length);
     };

@@ -204,7 +204,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
         });
         summary.total = summary.subtotal + summary.shipping + summary.discount;
         summary.vat = summary.total * 0.15;
-        summary.total = summary.total * 1.15;
+        summary.subtotal -= summary.vat;
         this.payment.controls['vat'].setValue(summary.vat);
         this.payment.controls['total'].setValue(summary.total);
         this.payment.controls['shipping'].setValue(summary.shipping);
