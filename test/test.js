@@ -1791,13 +1791,13 @@ var tools = {
 
                 tools.post('/store/orders/update', {
                     'payment': {
-                        'vat': 30,
-                        'total': 230,
+                        'vat': 15,
+                        'total': 100,
                         'credit': 0,
                         'method': 'cc',
                         'shipping': 0,
                         'discount': 0,
-                        'subtotal': 200
+                        'subtotal': 85
                     },
                     'shipping': {
                         'address': {
