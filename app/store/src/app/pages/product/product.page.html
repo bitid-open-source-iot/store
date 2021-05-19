@@ -28,6 +28,9 @@
                 <mat-toolbar>
                     <div class="page-title spacer">
                         {{ product.title }}
+                        <small>
+                            Qty: {{ product.quantity }}
+                        </small>
                     </div>
     
                     <button [class.selected]="wishlist.includes(product.productId)" mat-icon-button (click)="wishlist.add(product)">

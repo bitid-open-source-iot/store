@@ -65,6 +65,7 @@ export class ProductPage implements OnInit, OnDestroy {
                 'title',
                 'score',
                 'images',
+                'quantity',
                 'location',
                 'promotion',
                 'productId',
