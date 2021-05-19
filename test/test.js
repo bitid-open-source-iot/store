@@ -2196,6 +2196,7 @@ var tools = {
                     'title': 'My First Product',
                     'price': 100,
                     'storeId': storeId,
+                    'visible': true,
                     'supplierId': supplierId,
                     'description': 'xxx',
                     'organizationOnly': 0

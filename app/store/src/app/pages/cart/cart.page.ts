@@ -75,6 +75,7 @@ export class CartPage implements OnInit, OnDestroy {
         const response = await this.orders.initialize({});
 
         if (response.ok) {
+            this.cart.clear();
             this.router.navigate(['/checkout'], {
                 queryParams: {
                     orderId: response.result.orderId
