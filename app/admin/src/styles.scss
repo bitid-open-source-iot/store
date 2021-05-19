@@ -54,6 +54,15 @@ table {
     -moz-user-select: none;
     -webkit-user-select: none;
 }
+/* --- FOR SAFARI SUPPORT --- */
+input,
+select {
+    user-select: all !important;
+    -ms-user-select: all !important;
+    -moz-user-select: all !important;
+    -webkit-user-select: all !important;
+}
+/* --- FOR SAFARI SUPPORT --- */
 .spacer {
     flex: 1 auto;
 }

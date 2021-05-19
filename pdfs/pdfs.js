@@ -1,4 +1,3 @@
-const fs = require('fs');
 const Q = require('q');
 const Maker = require('pdfmake');
 const moment = require('moment');
