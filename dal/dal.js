@@ -3286,7 +3286,8 @@ var module = function () {
 				},
 				{
 					$project: {
-						'bitid': '$stores.bitid'
+						'bitid': '$stores.bitid',
+						'productId': 1
 					}
 				},
 				{
