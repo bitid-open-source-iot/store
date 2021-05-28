@@ -3342,6 +3342,28 @@ var module = function () {
 					args.result = JSON.parse(JSON.stringify(result));
 
 					var params = {
+						'status': 'available',
+						'productId': ObjectId(args.req.body.productId)
+					};
+					var filter = {
+						_id: 1
+					};
+
+					deferred.resolve({
+						'params': params,
+						'filter': filter,
+						'operation': 'find',
+						'collection': 'tblVouchers',
+						'allowNoRecordsFound': true
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					var deferred = Q.defer();
+
+					var params = {
 						'_id': ObjectId(args.req.body.productId)
 					};
 					var update = {
@@ -3361,7 +3383,6 @@ var module = function () {
 				}, null)
 				.then(db.call, null)
 				.then(result => {
-					// args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
