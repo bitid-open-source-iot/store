@@ -26,11 +26,11 @@ export class ProductsPage implements OnInit, OnDestroy {
 	@ViewChild(MatSort, { static: true }) private sort: MatSort;
 
 	constructor(private toast: ToastService, private dialog: MatDialog, public stores: StoresService, private sheet: OptionsService, private filters: FiltersService, private confirm: ConfirmService, private router: Router, private service: ProductsService, private buttons: ButtonsService, private localstorage: LocalstorageService) { }
-	
+
 	public filter = this.filters.get({
 		storeId: []
 	});
-	public columns: string[] = ['image', 'title', 'price', 'options'];
+	public columns: string[] = ['image', 'title', 'price', 'quantity', 'options'];
 	public loading: boolean;
 	public products: MatTableDataSource<Product> = new MatTableDataSource<Product>();
 	private subscriptions: any = {};
@@ -47,6 +47,7 @@ export class ProductsPage implements OnInit, OnDestroy {
 				'title',
 				'image',
 				'price',
+				'quantity',
 				'promotion',
 				'productId'
 			],
@@ -81,11 +82,11 @@ export class ProductsPage implements OnInit, OnDestroy {
 		this.loading = false;
 	}
 
-    public unfilter(key, value) {
-        this.filter[key] = this.filter[key].filter(o => o != value);
-        this.filters.update(this.filter);
-        this.list();
-    }
+	public unfilter(key, value) {
+		this.filter[key] = this.filter[key].filter(o => o != value);
+		this.filters.update(this.filter);
+		this.list();
+	}
 
 	public async options(product: Product) {
 		this.sheet.show({
@@ -155,15 +156,15 @@ export class ProductsPage implements OnInit, OnDestroy {
 		});
 	}
 
-    public describe(array: any[], key: string, id: string) {
-        let result = '-';
-        array.map(o => {
-            if (o[key] == id) {
-                result = o.description;
-            }
-        });
-        return result;
-    }
+	public describe(array: any[], key: string, id: string) {
+		let result = '-';
+		array.map(o => {
+			if (o[key] == id) {
+				result = o.description;
+			}
+		});
+		return result;
+	}
 
 	ngOnInit(): void {
 		this.buttons.show('add');
@@ -185,19 +186,19 @@ export class ProductsPage implements OnInit, OnDestroy {
 
 		this.subscriptions.filter = this.buttons.filter.click.subscribe(async event => {
 			const dialog = await this.dialog.open(ProductsFilterDialog, {
-                data: this.filter,
-                panelClass: 'filter-dialog'
-            });
+				data: this.filter,
+				panelClass: 'filter-dialog'
+			});
 
-            await dialog.afterClosed().subscribe(async result => {
-                if (result) {
-                    Object.keys(result).map(key => {
-                        this.filter[key] = result[key];
-                    });
-                    this.filters.update(this.filter);
-                    this.list();
-                };
-            });
+			await dialog.afterClosed().subscribe(async result => {
+				if (result) {
+					Object.keys(result).map(key => {
+						this.filter[key] = result[key];
+					});
+					this.filters.update(this.filter);
+					this.list();
+				};
+			});
 		});
 
 		this.subscriptions.search = this.buttons.search.value.subscribe(value => {

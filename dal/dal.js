@@ -2967,7 +2967,7 @@ var module = function () {
 
 		paid: (args) => {
 			var deferred = Q.defer();
-			
+
 			if (args.order.products.map(o => o.type).includes('voucher')) {
 				var match = {
 					productId: {
@@ -3298,7 +3298,8 @@ var module = function () {
 								},
 								'email': format.email(args.req.body.header.email)
 							}
-						}
+						},
+						'_id': ObjectId(args.req.body.voucherId)
 					}
 				}
 			];
@@ -3310,6 +3311,8 @@ var module = function () {
 			})
 				.then(result => {
 					var deferred = Q.defer();
+
+					args.req.body.productId = result[0].productId.toString();
 
 					var params = {
 						'_id': ObjectId(args.req.body.voucherId),
@@ -3333,7 +3336,31 @@ var module = function () {
 				}, null)
 				.then(db.call, null)
 				.then(result => {
+					var deferred = Q.defer();
+
 					args.result = JSON.parse(JSON.stringify(result));
+
+					var params = {
+						'_id': ObjectId(args.req.body.productId)
+					};
+					var update = {
+						$set: {
+							'quantity': result.length
+						}
+					};
+
+					deferred.resolve({
+						'params': params,
+						'update': update,
+						'operation': 'update',
+						'collection': 'tblProducts'
+					});
+
+					return deferred.promise;
+				}, null)
+				.then(db.call, null)
+				.then(result => {
+					// args.result = JSON.parse(JSON.stringify(result));
 					deferred.resolve(args);
 				}, error => {
 					var err = new ErrorResponse();
@@ -3775,7 +3802,7 @@ var module = function () {
 			return deferred.promise;
 		}
 	};
-	
+
 	var dalCustomers = {
 		iam: (args) => {
 			var deferred = Q.defer();
