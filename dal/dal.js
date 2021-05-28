@@ -3114,31 +3114,19 @@ var module = function () {
 						return deferred.promise;
 					}, null)
 					.then(db.call, null)
-					.then(result => result.reduce((promise, product) => promise.then(() => {
-						var deferred = Q.defer();
-						debugger
-						db.call({
-							'params': {
-								_id: product.productId
-							},
-							'update': {
-								$set: {
-									'quantity': product.quantity
-								}
-							},
-							'operation': 'update',
-							'collection': 'tblProducts',
-							'allowNoRecordsFound': true
-						})
-						.then(res => {
-							debugger
-						}, err => {
-							debugger
-						})
-
-						return deferred.promise;
-					}), Promise.resolve()), null)
-					.then(db.call, null)
+					.then(result => result.reduce((promise, product) => promise.then(() => db.call({
+						'params': {
+							_id: product.productId
+						},
+						'update': {
+							$set: {
+								'quantity': product.quantity
+							}
+						},
+						'operation': 'update',
+						'collection': 'tblProducts',
+						'allowNoRecordsFound': true
+					})), Promise.resolve()), null)
 					.then(result => {
 						deferred.resolve(args);
 					}, error => {
