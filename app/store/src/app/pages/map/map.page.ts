@@ -89,8 +89,6 @@ export class MapPage implements OnInit, OnDestroy {
         this.buttons.hide('search');
         this.buttons.show('wishlist');
 
-        // google.maps.ControlPosition = 'TOP_RIGHT';
-
         this.list();
     }
 
