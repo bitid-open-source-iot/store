@@ -3048,7 +3048,98 @@ var module = function () {
 					}, null)
 					.then(db.call, null)
 					.then(result => {
+						var deferred = Q.defer();
+
 						args.result = JSON.parse(JSON.stringify(result));
+
+						var params = [
+							{
+								$match: {
+									productId: {
+										$in: args.order.products.map(product => ObjectId(product.productId))
+									}
+								}
+							},
+							{
+								$group: {
+									_id: '$productId',
+									quantity: {
+										$push: '$status'
+									},
+									productId: {
+										$first: '$productId'
+									}
+								}
+							},
+							{
+								$addFields: {
+									quantity: {
+										$filter: {
+											cond: {
+												$and: [
+													{
+														$eq: ['$$status', 'available']
+													}
+												]
+											},
+											as: 'status',
+											input: '$quantity'
+										}
+									}
+								}
+							},
+							{
+								$addFields: {
+									quantity: {
+										$size: '$quantity'
+									}
+								}
+							},
+							{
+								$project: {
+									_id: 0,
+									quantity: 1,
+									productId: 1
+								}
+							}
+						];
+
+						deferred.resolve({
+							'params': params,
+							'operation': 'aggregate',
+							'collection': 'tblVouchers',
+							'allowNoRecordsFound': true
+						});
+
+						return deferred.promise;
+					}, null)
+					.then(db.call, null)
+					.then(result => result.reduce((promise, product) => promise.then(() => {
+						var deferred = Q.defer();
+						debugger
+						db.call({
+							'params': {
+								_id: product.productId
+							},
+							'update': {
+								$set: {
+									'quantity': product.quantity
+								}
+							},
+							'operation': 'update',
+							'collection': 'tblProducts',
+							'allowNoRecordsFound': true
+						})
+						.then(res => {
+							debugger
+						}, err => {
+							debugger
+						})
+
+						return deferred.promise;
+					}), Promise.resolve()), null)
+					.then(db.call, null)
+					.then(result => {
 						deferred.resolve(args);
 					}, error => {
 						var err = new ErrorResponse();
