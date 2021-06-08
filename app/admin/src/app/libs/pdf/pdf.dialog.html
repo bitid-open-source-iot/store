@@ -1,0 +1,15 @@
+<mat-toolbar>
+    <mat-label class="spacer">
+        {{ message }}
+    </mat-label>
+
+    <button mat-icon-button (click)="close()">
+        <mat-icon>
+            close
+        </mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-content>
+    <pdf-viewer [src]="src" [autoresize]="true" [fit-to-page]="true" *ngIf="src"></pdf-viewer>
+</mat-content>

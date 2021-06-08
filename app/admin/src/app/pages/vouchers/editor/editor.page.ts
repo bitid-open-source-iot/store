@@ -10,6 +10,7 @@ import { FormErrorService } from 'src/app/services/form-error/form-error.service
 import { Router, ActivatedRoute } from '@angular/router';
 import { OnInit, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { PdfService } from 'src/app/libs/pdf/pdf.service';
 
 @Component({
 	selector: 'vouchers-editor-page',
@@ -19,7 +20,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export class VouchersEditorPage implements OnInit, OnDestroy {
 
-	constructor(private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: VouchersService, public products: ProductsService, private buttons: ButtonsService, private formerror: FormErrorService) { }
+	constructor(private pdf: PdfService, private toast: ToastService, private route: ActivatedRoute, public stores: StoresService, private router: Router, private service: VouchersService, public products: ProductsService, private buttons: ButtonsService, private formerror: FormErrorService) { }
 
 	public form: FormGroup = new FormGroup({
 		code: new FormControl(null, [Validators.required]),
@@ -42,6 +43,14 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 	public voucher: Voucher = new Voucher();
 	public voucherId: string;
 	private subscriptions: any = {};
+
+	public async view() {
+		await this.pdf.show({
+			src: this.form.value.file,
+			message: 'View Voucher',
+			handler: () => {}
+		});
+	}
 
 	private async get() {
 		this.loading = true;
@@ -161,14 +170,14 @@ export class VouchersEditorPage implements OnInit, OnDestroy {
 						type: 'voucher',
 						storeId
 					});
-			
+
 					if (products.ok) {
 						this.products.data = products.result.map(o => new Product(o));
 					} else {
 						this.products.data = [];
 						this.toast.error(products.error.message);
 					}
-		
+
 					this.loading = false;
 					break;
 				};

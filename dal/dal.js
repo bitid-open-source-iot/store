@@ -2860,6 +2860,10 @@ var module = function () {
 				]
 			};
 
+			if (args.req.body.mine) {
+				match.$or.splice(1, 1);
+			};
+
 			if (typeof (args.req.body.storeId) != 'undefined') {
 				if (Array.isArray(args.req.body.storeId) && args.req.body.storeId.length > 0) {
 					match.$or.map(o => {

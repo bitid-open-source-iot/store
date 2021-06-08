@@ -10,8 +10,8 @@
 
                 <input matInput type="text" formControlName="images" style="display: none;" required>
 
-                <mat-grid-list cols="3" rowHeight="1:1">
-                    <mat-grid-tile *ngIf="form.value.images.length < 3" upload [upload-src]="image" (upload-change)="AddImage($event)" matRipple>
+                <mat-grid-list cols="5" rowHeight="1:1">
+                    <mat-grid-tile *ngIf="form.value.images.length < 5" upload [upload-src]="image" (upload-change)="AddImage($event)" matRipple>
                         <mat-icon>
                             upload
                         </mat-icon>

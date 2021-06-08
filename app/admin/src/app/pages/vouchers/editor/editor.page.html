@@ -9,6 +9,10 @@
                 </mat-icon>
             </div>
 
+            <button class="link" mat-button [disabled]="!form?.value?.file" (click)="view()">
+                View this voucher?
+            </button>
+
             <mat-form-field appearance="outline">
                 <mat-label>
                     Store

@@ -4,6 +4,7 @@ import { VouchersEditorPage } from './editor/editor.page';
 
 /* --- MODULES --- */
 import { NgModule } from '@angular/core';
+import { PdfModule } from 'src/app/libs/pdf/pdf.module';
 import { CommonModule } from '@angular/common';
 import { UploadModule } from 'src/app/libs/upload/upload.module';
 import { OptionsModule } from 'src/app/libs/options/options.module';
@@ -43,6 +44,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
+        PdfModule,
         FormsModule,
         CommonModule,
         UploadModule,

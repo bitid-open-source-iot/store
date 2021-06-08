@@ -21,6 +21,8 @@ export class VouchersPage implements OnInit, OnDestroy {
         this.loading = true;
 
         const response = await this.vouchers.list({
+            mine: true,
+            status: 'sold'
         });
 
         if (response.ok) {
