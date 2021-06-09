@@ -641,6 +641,34 @@ var module = function () {
 			return deferred.promise;
 		},
 
+		delete: (args) => {
+			var deferred = Q.defer();
+
+			var params = {
+				'_id': ObjectId(args.req.body.orderId),
+				'email': format.email(args.req.body.header.email),
+				'status': 'initialized',
+				'storeId': ObjectId(args.req.body.storeId)
+			};
+			
+			db.call({
+				'params': params,
+				'operation': 'remove',
+				'collection': 'tblOrders'
+			})
+				.then(result => {
+					args.result = result;
+					deferred.resolve(args);
+				}, error => {
+					var err = new ErrorResponse();
+					err.error.errors[0].code = error.code;
+					err.error.errors[0].reason = error.message;
+					deferred.reject(err);
+				});
+
+			return deferred.promise;
+		},
+
 		initialize: (args) => {
 			var deferred = Q.defer();
 

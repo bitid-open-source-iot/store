@@ -29,6 +29,10 @@ export class OrdersService {
 		return await this.api.post(environment.store, '/store/orders/verify', params);
 	}
 
+	public async delete(params) {
+		return await this.api.post(environment.store, '/store/orders/delete', params);
+	}
+
 	public async initialize(params) {
 		return await this.api.post(environment.store, '/store/orders/initialize', params);
 	}

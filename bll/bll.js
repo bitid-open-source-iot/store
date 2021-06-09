@@ -414,6 +414,22 @@ var module = function () {
                 });
         },
 
+        delete: (req, res) => {
+            var args = {
+                'req': req,
+                'res': res
+            };
+
+            var myModule = new dalModule.module();
+            myModule.stores.validate(args)
+                .then(myModule.orders.delete, null)
+                .then(args => {
+                    __responder.success(req, res, args.result);
+                }, err => {
+                    __responder.error(req, res, err);
+                });
+        },
+
         process: (args) => {
             var deferred = Q.defer();
 

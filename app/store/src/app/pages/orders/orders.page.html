@@ -10,6 +10,10 @@
                     Pay
                 </button>
 
+                <button mat-stroked-button (click)="remove(order)" *ngIf="order.status == 'initialized'">
+                    Remove
+                </button>
+
                 <button mat-stroked-button routerLink="viewer" [queryParams]="{orderId: order.orderId}" *ngIf="order.status == 'paid' || order.status == 'delivered'">
                     View
                 </button>

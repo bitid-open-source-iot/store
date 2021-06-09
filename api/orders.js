@@ -20,6 +20,11 @@ router.post('/verify', (req, res) => {
     myModule.orders.verify(req, res);
 });
 
+router.post('/delete', (req, res) => {
+    var myModule = new bll.module();
+    myModule.orders.delete(req, res);
+});
+
 router.post('/update', (req, res) => {
     var myModule = new bll.module();
     myModule.orders.update(req, res);
