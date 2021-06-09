@@ -9,14 +9,15 @@
 
     <div class="container products">
         <div class="product" *ngFor="let product of products.data" [routerLink]="['/product', product.productId]">
+            <div class="out-of-stock" *ngIf="product.quantity == 0">
+                Out of stock!
+            </div>
+
             <div class="product-image" [style.background-image]="'url(' + product.image + ')'" matRipple></div>
 
             <div class="product-details" matRipple>
                 <h3>
                     {{ product.title }}
-                    <small>
-                        {{ product.quantity == 0 ? 'Out of stock!' : '' }} 
-                    </small>
                 </h3>
                 <h4>
                     {{ product.promotion.enabled ? (product.promotion.price | currency : 'R') : (product.price | currency : 'R') }}
