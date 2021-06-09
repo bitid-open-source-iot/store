@@ -29,7 +29,7 @@
                     <div class="page-title spacer">
                         {{ product.title }}
                         <small>
-                            Qty: {{ product.quantity }}
+                            {{ product.quantity > 0 ? ('Qty: ' + product.quantity) : 'Out of stock!' }} 
                         </small>
                     </div>
     

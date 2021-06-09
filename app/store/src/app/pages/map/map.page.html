@@ -13,6 +13,9 @@
 
             <h3>
                 {{ product.title }}
+                <small>
+                    {{ product.quantity == 0 ? 'Out of stock!' : '' }} 
+                </small>
             </h3>
 
             <h4>

@@ -32,6 +32,7 @@ export class MapPage implements OnInit, OnDestroy {
                 'title',
                 'score',
                 'image',
+                'quantity',
                 'location',
                 'promotion',
                 'productId'

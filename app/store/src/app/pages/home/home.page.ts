@@ -30,6 +30,7 @@ export class HomePage implements OnInit, OnDestroy {
                 'title',
                 'score',
                 'image',
+                'quantity',
                 'promotion',
                 'productId'
             ]
