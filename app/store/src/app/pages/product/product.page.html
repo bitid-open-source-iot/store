@@ -28,7 +28,7 @@
                 <mat-toolbar>
                     <div class="page-title spacer">
                         {{ product.title }}
-                        <small *ngIf="product">
+                        <small *ngIf="product.title">
                             {{ product.quantity > 0 ? ('Qty: ' + product.quantity) : 'Out of stock!' }} 
                         </small>
                     </div>
