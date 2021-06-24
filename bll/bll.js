@@ -278,54 +278,55 @@ var module = function () {
                 .then(myModule.orders.list, null)
                 .then(args => {
                     var deferred = Q.defer();
-
+                    
                     try {
-                        // args.req.body.productId = [];
-
                         args.orders = args.result;
-                        // delete args.result;
 
-                        // args.orders.map(o => {
-                        //     if (o.status == 'initialized') {
-                        //         o.products.map(product => product.productId).map(id => args.req.body.productId.push(id));
-                        //     };
-                        // });
+                        delete args.result;
 
-                        // if (args.req.body.productId.length > 0) {
-                        //     args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
+                        args.req.body.productId = [];
 
-                        //     myModule.products.public.list(args)
-                        //         .then(args => {
-                        //             args.orders.map(order => {
-                        //                 if (order.status == 'initialized') {
-                        //                     order.products = order.products.map(item => {
-                        //                         var tmp = {
-                        //                             'quantity': item.quantity,
-                        //                             'productId': item.productId
-                        //                         };
+                        args.orders.map(o => {
+                            if (o.status == 'initialized') {
+                                o.products.map(product => product.productId).map(id => args.req.body.productId.push(id));
+                            };
+                        });
 
-                        //                         args.result.map(product => {
-                        //                             if (item.productId == product._id) {
-                        //                                 tmp.type = product.type;
-                        //                                 tmp.image = product.image;
-                        //                                 tmp.title = product.title;
-                        //                                 tmp.price = product.price;
-                        //                                 tmp.promotion = product.promotion;
-                        //                             };
-                        //                         });
+                        if (args.req.body.productId.length > 0) {
+                            args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
 
-                        //                         return tmp;
-                        //                     });
-                        //                 };
-                        //             });
+                            myModule.products.public.list(args)
+                                .then(args => {
+                                    args.orders.map(order => {
+                                        if (order.status == 'initialized') {
+                                            order.products = order.products.map(item => {
+                                                var tmp = {
+                                                    'quantity': item.quantity,
+                                                    'productId': item.productId
+                                                };
+
+                                                args.result.map(product => {
+                                                    if (item.productId == product._id) {
+                                                        tmp.type = product.type;
+                                                        tmp.image = product.image;
+                                                        tmp.title = product.title;
+                                                        tmp.price = product.price;
+                                                        tmp.promotion = product.promotion;
+                                                    };
+                                                });
+
+                                                return tmp;
+                                            });
+                                        };
+                                    });
 
                                     deferred.resolve(args);
-                        //         }, err => {
-                        //             deferred.reject(err);
-                        //         });
-                        // } else {
-                        //     deferred.resolve(args);
-                        // };
+                                }, err => {
+                                    deferred.reject(err);
+                                });
+                        } else {
+                            deferred.resolve(args);
+                        };
                     } catch (error) {
                         var err = new ErrorResponse();
                         err.error.errors[0].code = 503;
