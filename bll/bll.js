@@ -276,66 +276,66 @@ var module = function () {
             var myModule = new dalModule.module();
             myModule.stores.validate(args)
                 .then(myModule.orders.list, null)
-                // .then(args => {
-                //     var deferred = Q.defer();
+                .then(args => {
+                    var deferred = Q.defer();
 
-                //     try {
-                //         args.req.body.productId = [];
+                    try {
+                        // args.req.body.productId = [];
 
-                //         args.orders = args.result;
-                //         delete args.result;
+                        args.orders = args.result;
+                        // delete args.result;
 
-                //         args.orders.map(o => {
-                //             if (o.status == 'initialized') {
-                //                 o.products.map(product => product.productId).map(id => args.req.body.productId.push(id));
-                //             };
-                //         });
+                        // args.orders.map(o => {
+                        //     if (o.status == 'initialized') {
+                        //         o.products.map(product => product.productId).map(id => args.req.body.productId.push(id));
+                        //     };
+                        // });
 
-                //         if (args.req.body.productId.length > 0) {
-                //             args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
+                        // if (args.req.body.productId.length > 0) {
+                        //     args.req.body.filter = ['type', 'image', 'title', 'price', 'promotion', 'productId'];
 
-                //             myModule.products.public.list(args)
-                //                 .then(args => {
-                //                     args.orders.map(order => {
-                //                         if (order.status == 'initialized') {
-                //                             order.products = order.products.map(item => {
-                //                                 var tmp = {
-                //                                     'quantity': item.quantity,
-                //                                     'productId': item.productId
-                //                                 };
+                        //     myModule.products.public.list(args)
+                        //         .then(args => {
+                        //             args.orders.map(order => {
+                        //                 if (order.status == 'initialized') {
+                        //                     order.products = order.products.map(item => {
+                        //                         var tmp = {
+                        //                             'quantity': item.quantity,
+                        //                             'productId': item.productId
+                        //                         };
 
-                //                                 args.result.map(product => {
-                //                                     if (item.productId == product._id) {
-                //                                         tmp.type = product.type;
-                //                                         tmp.image = product.image;
-                //                                         tmp.title = product.title;
-                //                                         tmp.price = product.price;
-                //                                         tmp.promotion = product.promotion;
-                //                                     };
-                //                                 });
+                        //                         args.result.map(product => {
+                        //                             if (item.productId == product._id) {
+                        //                                 tmp.type = product.type;
+                        //                                 tmp.image = product.image;
+                        //                                 tmp.title = product.title;
+                        //                                 tmp.price = product.price;
+                        //                                 tmp.promotion = product.promotion;
+                        //                             };
+                        //                         });
 
-                //                                 return tmp;
-                //                             });
-                //                         };
-                //                     });
+                        //                         return tmp;
+                        //                     });
+                        //                 };
+                        //             });
 
-                //                     deferred.resolve(args);
-                //                 }, err => {
-                //                     deferred.reject(err);
-                //                 });
-                //         } else {
-                //             deferred.resolve(args);
-                //         };
-                //     } catch (error) {
-                //         var err = new ErrorResponse();
-                //         err.error.errors[0].code = 503;
-                //         err.error.errors[0].reason = error.message;
-                //         err.error.errors[0].message = error.message;
-                //         deferred.reject(err);
-                //     };
+                                    deferred.resolve(args);
+                        //         }, err => {
+                        //             deferred.reject(err);
+                        //         });
+                        // } else {
+                        //     deferred.resolve(args);
+                        // };
+                    } catch (error) {
+                        var err = new ErrorResponse();
+                        err.error.errors[0].code = 503;
+                        err.error.errors[0].reason = error.message;
+                        err.error.errors[0].message = error.message;
+                        deferred.reject(err);
+                    };
 
-                //     return deferred.promise;
-                // }, null)
+                    return deferred.promise;
+                }, null)
                 .then(args => {
                     __responder.success(req, res, args.orders);
                 }, err => {
