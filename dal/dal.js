@@ -433,6 +433,7 @@ var module = function () {
 				'email': format.email(args.req.body.header.email),
 				'storeId': ObjectId(args.req.body.storeId)
 			};
+			console.log('list orders: ', args.req.body.storeId)
 
 			if (typeof (args.req.body.orderId) != 'undefined') {
 				if (Array.isArray(args.req.body.orderId)) {
