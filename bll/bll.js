@@ -462,15 +462,19 @@ var module = function () {
                 .then(args => {
                     var deferred = Q.defer();
 
-                    args.order.date.paid = moment(args.order.date.paid).format('YYYY/MM/DD');
-                    deferred.resolve(args);
+                    try {
+                        args.order.date.paid = moment(args.order.date.paid).format('YYYY/MM/DD');
+                        emails.exworks(args);
+                        emails.vouchers(args);
+                        emails.suppliers(args);
+                        emails.confirmation(args);
+                        deferred.resolve(args);
+                    } catch (error) {
+                        deferred.resolve(args);
+                    }
 
                     return deferred.promise;
                 }, null)
-                .then(emails.exworks, null)
-                .then(emails.vouchers, null)
-                .then(emails.suppliers, null)
-                .then(emails.confirmation, null)
                 .then(deferred.resolve, deferred.reject);
 
             return deferred.promise;
