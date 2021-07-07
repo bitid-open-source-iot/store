@@ -278,7 +278,7 @@ var module = function () {
                 .then(myModule.orders.list, null)
                 .then(args => {
                     var deferred = Q.defer();
-                    
+
                     try {
                         args.orders = args.result;
 

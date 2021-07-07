@@ -3003,7 +3003,7 @@ var module = function () {
 			if (args.order.products.map(o => o.type).includes('voucher')) {
 				var match = {
 					productId: {
-						$in: args.order.products.map(product => ObjectId(product.productId))
+						$in: args.order.products.filter(o => o.type == 'voucher').map(o => ObjectId(o.productId))
 					},
 					status: 'available'
 				};
@@ -3056,18 +3056,17 @@ var module = function () {
 							}
 						}
 
+						args.order.vouchers = [];
+
 						args.order.products.map(product => {
 							items.map(item => {
 								if (item.productId == product.productId) {
-									item.vouchers = item.vouchers.slice(0, product.quantity)
-									params._id.$in = params._id.$in.concat(item.vouchers.map(o => ObjectId(o.voucherId)));
+									item.vouchers = item.vouchers.slice(0, product.quantity);
+									item.vouchers.map(o => params._id.$in.concat(ObjectId(o.voucherId)));
+									item.vouchers.map(o => args.order.vouchers.push(o));
 								}
 							})
 						})
-
-						args.order.vouchers = [];
-
-						items.map(item => item.vouchers.map(o => args.order.vouchers.push(o)))
 
 						deferred.resolve({
 							'params': params,
@@ -3088,7 +3087,7 @@ var module = function () {
 							{
 								$match: {
 									productId: {
-										$in: args.order.products.map(product => ObjectId(product.productId))
+										$in: args.order.products.map(o => ObjectId(o.productId))
 									}
 								}
 							},
@@ -3146,13 +3145,13 @@ var module = function () {
 						return deferred.promise;
 					}, null)
 					.then(db.call, null)
-					.then(result => result.reduce((promise, product) => promise.then(() => db.call({
+					.then(result => result.reduce((promise, o) => promise.then(() => db.call({
 						'params': {
-							_id: product.productId
+							_id: o.productId
 						},
 						'update': {
 							$set: {
-								'quantity': product.quantity
+								'quantity': o.quantity
 							}
 						},
 						'operation': 'update',

@@ -48,7 +48,7 @@ export class UploadDirective implements OnChanges, AfterViewInit {
 					const request = new XMLHttpRequest();
 
 					for (let i = 0; i < files.length; i++) {
-						formData.append('uploads[]', files[i], files[i].name);
+						formData.append('uploads[]', files[i], files[i].name.split(',').join(''));
 					}
 
 					request.onreadystatechange = (event) => {
