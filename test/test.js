@@ -6,6 +6,7 @@ const assert = require('chai').assert;
 const expect = require('chai').expect;
 const should = require('chai').should();
 const config = require('./config.json');
+const random = require('../lib/tools').encryption.generateRandomString;
 chai.use(subset);
 
 var cartId = null;
@@ -741,6 +742,27 @@ describe('Vouchers', function () {
             });
     });
 
+    it('/store/vouchers/add', function (done) {
+        this.timeout(5000);
+
+        tools.api.vouchers.add()
+            .then((result) => {
+                try {
+                    voucherId = result.voucherId;
+                    result.should.have.property('voucherId');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
     it('/store/vouchers/get', function (done) {
         this.timeout(5000);
 
@@ -1383,7 +1405,7 @@ describe('Orders', function () {
 
 describe('Payfast', function () {
     it('/store/payfast/payment', function (done) {
-        this.timeout(10000);
+        this.timeout(1000000000000);
 
         tools.api.payfast.payment()
             .then((result) => {
@@ -2287,17 +2309,12 @@ var tools = {
         },
         vouchers: {
             add: () => {
-                var deferred = Q.defer();
-
-                tools.post('/store/vouchers/add', {
-                    'code': 'xxx',
+                return tools.post('/store/vouchers/add', {
+                    'code': random(10),
                     'file': 'xxx',
                     'storeId': storeId,
-                    'productId': productId,
-                })
-                    .then(deferred.resolve, deferred.resolve);
-
-                return deferred.promise;
+                    'productId': productId
+                });
             },
             get: () => {
                 var deferred = Q.defer();
