@@ -1405,7 +1405,7 @@ describe('Orders', function () {
 
 describe('Payfast', function () {
     it('/store/payfast/payment', function (done) {
-        this.timeout(1000000000000);
+        this.timeout(5000);
 
         tools.api.payfast.payment()
             .then((result) => {
