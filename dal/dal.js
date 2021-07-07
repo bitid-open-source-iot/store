@@ -375,7 +375,7 @@ var module = function () {
 				},
 				{
 					$group: {
-						'_id': '$products.productId',
+						'_id': '$_id',
 						'date': {
 							$first: '$date'
 						},

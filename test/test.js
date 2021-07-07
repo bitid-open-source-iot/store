@@ -16,6 +16,7 @@ var reviewId = null;
 var voucherId = null;
 var productId = null;
 var courierId = null;
+var productIds = [];
 var customerId = null;
 var supplierId = null;
 var wishlistId = null;
@@ -612,6 +613,29 @@ describe('Products', function () {
             .then((result) => {
                 try {
                     productId = result.productId;
+                    productIds.push(productId);
+                    result.should.have.property('productId');
+                    done();
+                } catch (e) {
+                    done(e);
+                };
+            }, (err) => {
+                try {
+                    done(err);
+                } catch (e) {
+                    done(e);
+                };
+            });
+    });
+
+    it('/store/products/add', function (done) {
+        this.timeout(5000);
+
+        tools.api.products.add()
+            .then((result) => {
+                try {
+                    productId = result.productId;
+                    productIds.push(productId);
                     result.should.have.property('productId');
                     done();
                 } catch (e) {
@@ -724,7 +748,7 @@ describe('Vouchers', function () {
     it('/store/vouchers/add', function (done) {
         this.timeout(5000);
 
-        tools.api.vouchers.add()
+        tools.api.vouchers.add(productIds[0])
             .then((result) => {
                 try {
                     voucherId = result.voucherId;
@@ -745,7 +769,7 @@ describe('Vouchers', function () {
     it('/store/vouchers/add', function (done) {
         this.timeout(5000);
 
-        tools.api.vouchers.add()
+        tools.api.vouchers.add(productIds[1])
             .then((result) => {
                 try {
                     voucherId = result.voucherId;
@@ -1405,7 +1429,7 @@ describe('Orders', function () {
 
 describe('Payfast', function () {
     it('/store/payfast/payment', function (done) {
-        this.timeout(5000);
+        this.timeout(5000000000000000000);
 
         tools.api.payfast.payment()
             .then((result) => {
@@ -1813,13 +1837,13 @@ var tools = {
 
                 tools.post('/store/orders/update', {
                     'payment': {
-                        'vat': 15,
-                        'total': 100,
+                        'vat': 0.75,
+                        'total': 5,
                         'credit': 0,
                         'method': 'cc',
                         'shipping': 0,
                         'discount': 0,
-                        'subtotal': 85
+                        'subtotal': 4.25
                     },
                     'shipping': {
                         'address': {
@@ -1862,12 +1886,12 @@ var tools = {
                 tools.post('/store/orders/initialize', {
                     'products': [
                         {
-                            'quantity': 2,
-                            'productId': productId
+                            'quantity': 1,
+                            'productId': productIds[0]
                         },
                         {
                             'quantity': 1,
-                            'productId': '000000000000000000000001'
+                            'productId': productIds[1]
                         }
                     ],
                     'storeId': storeId
@@ -2213,10 +2237,10 @@ var tools = {
                     'departments': [
                         departmentId
                     ],
-                    'cost': 50,
+                    'cost': 1.5,
                     'type': 'voucher',
-                    'title': 'My First Product',
-                    'price': 100,
+                    'title': 'My First Product - ' + Date.now(),
+                    'price': 2.5,
                     'storeId': storeId,
                     'visible': true,
                     'supplierId': supplierId,
@@ -2308,12 +2332,12 @@ var tools = {
             }
         },
         vouchers: {
-            add: () => {
+            add: (id) => {
                 return tools.post('/store/vouchers/add', {
                     'code': random(10),
                     'file': 'xxx',
                     'storeId': storeId,
-                    'productId': productId
+                    'productId': id
                 });
             },
             get: () => {
