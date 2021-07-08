@@ -3062,7 +3062,7 @@ var module = function () {
 							items.map(item => {
 								if (item.productId == product.productId) {
 									item.vouchers = item.vouchers.slice(0, product.quantity);
-									item.vouchers.map(o => params._id.$in.concat(ObjectId(o.voucherId)));
+									item.vouchers.map(o => params._id.$in.push(ObjectId(o.voucherId)));
 									item.vouchers.map(o => args.order.vouchers.push(o));
 								}
 							})
